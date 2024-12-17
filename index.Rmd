@@ -8,4 +8,4 @@ output: html_document
 - [post1](posts/post1/post1.html)
 - [post2](posts/post2/post2.html)
 
-Last updated: 2024-12-17 09:40:52
+Last updated: 2024-12-17 10:59:07

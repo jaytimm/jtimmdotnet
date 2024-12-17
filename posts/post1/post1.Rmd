@@ -1,8 +1,7 @@
 ---
 title: "Post 1"
-output:
-  html_document:
-    css: ../../assets/style.css
+date: "August 5, 2022"
+output: html_document
 ---
 
 ## Analysis of MPG vs Weight

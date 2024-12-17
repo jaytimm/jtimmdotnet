@@ -1,8 +1,6 @@
 ---
 title: "Post 2"
-output:
-  html_document:
-    css: ../../assets/style.css
+output: html_document
 ---
 
 ## Exploring Iris Dataset
@@ -10,7 +8,7 @@ output:
 This post demonstrates a simple summary of the famous **Iris dataset** and a visualization.
 
 
-77
+77 party
 
 ### Summary of Data
 
