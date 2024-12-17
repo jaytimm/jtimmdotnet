@@ -1,0 +1,15 @@
+---
+title: "Post 2"
+output:
+  html_document:
+    css: ../../assets/style.css
+---
+
+## Exploring Iris Dataset
+
+This post demonstrates a simple summary of the famous **Iris dataset** and a visualization.
+
+### Summary of Data
+
+```{r summary-iris, echo=TRUE}
+summary(iris)

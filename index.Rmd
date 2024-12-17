@@ -1,0 +1,11 @@
+---
+title: 'My Blog'
+output: html_document
+---
+
+# Welcome to My Blog
+This page lists all posts. Click to read:
+
+## Posts
+- [post1](posts/post1/post1.html)
+- [post2](posts/post2/post2.html)

@@ -1,0 +1,16 @@
+---
+title: "Post 1"
+output:
+  html_document:
+    css: ../../assets/style.css
+---
+
+## Analysis of MPG vs Weight
+
+Here's a plot:
+
+```{r scatterplot, fig.path = "images/"}
+library(ggplot2)
+ggplot(mtcars, aes(mpg, wt)) +
+    geom_point() +
+    ggtitle("Scatterplot of MPG vs Weight")
