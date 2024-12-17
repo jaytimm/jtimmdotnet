@@ -24,8 +24,6 @@ cache/
 # Post-specific images (exclude generated images from tracking)
 posts/*/images/
 
-# Ignore all .html files
-*.html
 
 # Exception: Allow only the root index.html
 !index.html
