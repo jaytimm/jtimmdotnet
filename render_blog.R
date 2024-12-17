@@ -64,3 +64,4 @@ generate_index <- function(post_dirs, baseurl) {
 
 # Run the script
 render_blog()
+
