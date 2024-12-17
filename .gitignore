@@ -24,8 +24,11 @@ cache/
 # Post-specific images (exclude generated images from tracking)
 posts/*/images/
 
-# Output files (optional: include only source .Rmd and exclude rendered .html)
+# Ignore all .html files
 *.html
+
+# Exception: Allow only the root index.html
+!index.html
 
 # System files
 .DS_Store
