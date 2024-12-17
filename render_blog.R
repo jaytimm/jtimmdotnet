@@ -34,15 +34,16 @@ render_blog <- function() {
 }
 
 generate_index <- function(post_dirs) {
-  # Generate links to posts
+  # Generate links dynamically
   post_links <- lapply(post_dirs, function(post_dir) {
     post_html <- list.files(post_dir, pattern = "\\.html$", full.names = FALSE)
     if (length(post_html) == 0) return(NULL)
-    post_name <- gsub("\\.html$", "", post_html)
-    paste0("- [", post_name, "](", file.path(post_dir, post_html), ")")
+    post_name <- gsub("\\.html$", "", post_html)  # Remove .html for display
+    relative_path <- file.path(post_dir, post_html)  # Correct relative path
+    paste0("- [", post_name, "](", relative_path, ")")
   })
   
-  # Write the index file
+  # Write the landing page content
   index_content <- c(
     "---",
     "title: 'My Blog'",
@@ -50,14 +51,13 @@ generate_index <- function(post_dirs) {
     "---",
     "",
     "# Welcome to My Blog",
-    "This page lists all posts. Click to read:",
-    "",
     "## Posts",
     paste(unlist(post_links), collapse = "\n")
   )
   
+  # Write and render index
   writeLines(index_content, "index.Rmd")
-  render("index.Rmd", output_file = "index.html")
+  rmarkdown::render("index.Rmd", output_file = "index.html")
 }
 
 # Execute the rendering process
