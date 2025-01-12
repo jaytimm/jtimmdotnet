@@ -214,7 +214,7 @@ generate_index <- function(posts_folder = "posts", baseurl = NULL) {
       template = template_path,
       css = css_path,
       fig_caption = TRUE,
-      self_contained = FALSE
+      self_contained = TRUE
     )
   )
   
