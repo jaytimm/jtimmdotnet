@@ -210,6 +210,7 @@ generate_index <- function(posts_folder = "posts", baseurl = NULL) {
   rmarkdown::render(
     input = "index.Rmd",
     output_file = "index.html",  # Explicitly place index.html in the root directory
+    
     output_format = rmarkdown::html_document(
       template = template_path,
       css = css_path,
