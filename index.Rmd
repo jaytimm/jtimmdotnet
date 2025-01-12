@@ -6,7 +6,10 @@ output:
     css: assets/style.css
 ---
 
+> I am a research assistant professor at the University of New Mexico, a linguist & a data scientist. I like to talk #rstats, NLP, LLMs, and American Politics.  [GitHub](https://github.com/jaytimm) | [BlueSky](https://bsky.app/profile/jaytimm.bsky.social)
+
 ___
+
 * 2024-06-18 | [A plot demonstration in r](2024-06-18-plot-demo.html)
 
 * 2024-06-08 | [some quick thoughts on gerrymandering](2023-06-18-thoughts-gerrymander.html)
@@ -15,10 +18,6 @@ ___
 
 ![](assets/footer-image.png)
 
-Last updated: 2025-01-12 12:33:21
+Last updated: 2025-01-12 13:03:04
 
 ___
-
-About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.
-
-[GitHub](https://github.com/jaytimm)

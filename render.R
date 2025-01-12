@@ -105,7 +105,11 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
     "    css: assets/style.css",
     "---",
     "",
+    "> I am a research assistant professor at the University of New Mexico, a linguist & a data scientist. I like to talk #rstats, NLP, LLMs, and American Politics.  [GitHub](https://github.com/jaytimm) | [BlueSky](https://bsky.app/profile/jaytimm.bsky.social)",
+    "",
     "___",
+    
+    "",
     paste(post_links, collapse = "\n\n"),
     "",
     # Add your image at the bottom
@@ -115,11 +119,8 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
     
     "",
     
-    "___",
-    "",
-    "About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.",
-    "",
-    "[GitHub](https://github.com/jaytimm)"
+    "___"
+
   )
   
   
