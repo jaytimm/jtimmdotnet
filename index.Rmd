@@ -6,13 +6,12 @@ output:
     css: assets/style.css
 ---
 
+* 2024-06-18 | [A plot demonstration in r](2024-06-18-plot-demo.html)
 
-* 2024-06-18 | [A plot demonstration in r](posts/2024-06-18-plot-demo.html)
+* 2024-06-08 | [some quick thoughts on gerrymandering](2023-06-18-thoughts-gerrymander.html)
 
-* 2024-06-08 | [some quick thoughts on gerrymandering](posts/2023-06-18-thoughts-gerrymander.html)
-
-* 2022-06-18 | [sun, sky & grass](posts/2022-02-14-sun-sky-grass.html)
-
+* 2022-06-18 | [sun, sky & grass](2022-02-14-sun-sky-grass.html)
 
 
-Last updated: 2025-01-12 09:51:07
+
+Last updated: 2025-01-12 10:14:58
