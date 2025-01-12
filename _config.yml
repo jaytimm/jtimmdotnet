@@ -2,6 +2,6 @@ title: "Jason Timm"
 email: "your-email@domain.com"
 description: > # This means to ignore newlines until "baseurl:"
   This is Jason Timm's personal blog. A clean, simple site for posts, analysis, and thoughts.
-baseurl: "/blog/" # The subpath of your site, e.g., /blog
+baseurl: "/blog" # The subpath of your site, e.g., /blog
 url: "https://jaytimm.github.io" # The base hostname & protocol
 github_username: "jaytimm"
