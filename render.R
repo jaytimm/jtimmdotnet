@@ -105,12 +105,17 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
     "    css: assets/style.css",
     "---",
     "",
+    "___",
     paste(post_links, collapse = "\n\n"),
     "",
     # Add your image at the bottom
     "![](assets/footer-image.png)",
     "",
     paste0("Last updated: ", timestamp),
+    
+    "",
+    
+    "___",
     "",
     "About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.",
     "",

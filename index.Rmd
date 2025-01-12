@@ -6,6 +6,7 @@ output:
     css: assets/style.css
 ---
 
+___
 * 2024-06-18 | [A plot demonstration in r](2024-06-18-plot-demo.html)
 
 * 2024-06-08 | [some quick thoughts on gerrymandering](2023-06-18-thoughts-gerrymander.html)
@@ -14,7 +15,9 @@ output:
 
 ![](assets/footer-image.png)
 
-Last updated: 2025-01-12 10:59:01
+Last updated: 2025-01-12 11:36:59
+
+___
 
 About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.
 
