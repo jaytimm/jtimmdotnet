@@ -26,8 +26,12 @@ render_rmd <- function(post_rmd) {
   # Set fig.path for knitr
   knitr::opts_chunk$set(fig.path = paste0(images_dir, "/"))
   
-  # Determine correct output directory
-  output_dir <- "posts"  # Always render into posts/
+  # Dynamically set the output directory
+  output_dir <- if (dirname(post_rmd) == "posts") {
+    "posts"  # If already in 'posts', don't nest
+  } else {
+    "posts"  # Otherwise, send it to 'posts'
+  }
   
   # Render the Rmd file
   rmarkdown::render(
@@ -40,8 +44,10 @@ render_rmd <- function(post_rmd) {
       self_contained = TRUE
     )
   )
+  
+  message("Rendering complete for: ", post_rmd)
+  return(file_prefix)
 }
-
 
 render_blog(input_files = c("posts/2022-02-14-sun-sky-grass.Rmd", 
               "posts/2024-06-18-plot-demo.Rmd", 
