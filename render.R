@@ -4,7 +4,7 @@ render_rmd <- function(post_rmd) {
     stop("File does not exist: ", post_rmd)
   }
   
-  # Extract Rmd filename without extension
+  # Extract filename without extension
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
   
   # Define paths
@@ -17,26 +17,19 @@ render_rmd <- function(post_rmd) {
     dir.create(images_dir, recursive = TRUE)
   }
   
-  # Clean up all related images for this post
-  message("Cleaning up existing images for: ", file_prefix)
+  # Clean up existing images for this post
   existing_images <- list.files(images_dir, pattern = paste0(file_prefix, ".*\\.(png|jpg|jpeg|gif)$"), full.names = TRUE)
   if (length(existing_images) > 0) {
     file.remove(existing_images)
-    message("Removed existing images: ", length(existing_images))
   }
   
-  # Set fig.path for knitr to output images into posts/images
+  # Set fig.path for knitr
   knitr::opts_chunk$set(fig.path = paste0(images_dir, "/"))
   
-  # Dynamically set output_dir based on input file location
-  output_dir <- if (dirname(post_rmd) == "posts") {
-    "posts"  # If already in posts, don't nest
-  } else {
-    "posts"  # For other locations, output to posts
-  }
+  # Determine correct output directory
+  output_dir <- "posts"  # Always render into posts/
   
   # Render the Rmd file
-  message("Rendering: ", post_rmd)
   rmarkdown::render(
     input = post_rmd,
     output_dir = output_dir,
@@ -47,11 +40,7 @@ render_rmd <- function(post_rmd) {
       self_contained = TRUE
     )
   )
-  
-  message("Rendering complete for: ", post_rmd)
-  return(file_prefix)  # Return file prefix for further processing
 }
-
 
 
 render_blog(input_files = c("posts/2022-02-14-sun-sky-grass.Rmd", 
