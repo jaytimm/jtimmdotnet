@@ -1,11 +1,18 @@
 ---
-title: 'My Blog'
-output: html_document
+title: 'Jason Timm'
+output:
+  html_document:
+    template: assets/template.html
+    css: assets/style.css
 ---
 
-# Welcome to My Blog
-## Posts
-- [post1](posts/post1/post1.html)
-- [post2](posts/post2/post2.html)
 
-Last updated: 2024-12-17 11:06:07
+* 2024-06-18 | [A plot demonstration in r](posts/2024-06-18-plot-demo.html)
+
+* 2024-06-08 | [some quick thoughts on gerrymandering](posts/2023-06-18-thoughts-gerrymander.html)
+
+* 2022-06-18 | [sun, sky & grass](posts/2022-02-14-sun-sky-grass.html)
+
+
+
+Last updated: 2025-01-12 07:58:51

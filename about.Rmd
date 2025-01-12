@@ -1,7 +1,11 @@
 ---
 title: "About"
-output: html_document
+output:
+  html_document:
+    template: "assets/template.html"
+    css: "assets/style.css"
 ---
+
 
 # About Me
 

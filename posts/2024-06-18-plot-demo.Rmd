@@ -1,6 +1,6 @@
 ---
-title: "Post 1"
-date: "August 5, 2022"
+title: "A plot demonstration in r"
+date: 2024-06-18
 output: html_document
 ---
 
@@ -13,3 +13,15 @@ library(ggplot2)
 ggplot(mtcars, aes(mpg, wt)) +
     geom_point() +
     ggtitle("Scatterplot of MPG vs Weight")
+```
+
+
+---
+
+
+#### Also:
+
+```{r}
+mtcars |> head() |> knitr::kable()
+```
+
