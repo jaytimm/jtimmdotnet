@@ -95,19 +95,28 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
   timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   
   # Build the index.Rmd content
+  # Replace "footer-image.png" with your actual file name
   index_content <- c(
     "---",
-    "title: 'Jason Timm'",   # Or whatever title you prefer
+    "title: 'Jason Timm'",
     "output:",
     "  html_document:",
-    "    template: assets/template.html", 
+    "    template: assets/template.html",
     "    css: assets/style.css",
     "---",
     "",
     paste(post_links, collapse = "\n\n"),
-    "\n\n",
-    paste0("Last updated: ", timestamp)
+    "",
+    # Add your image at the bottom
+    "![](assets/footer-image.png)",
+    "",
+    paste0("Last updated: ", timestamp),
+    "",
+    "About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.",
+    "",
+    "[GitHub](https://github.com/jaytimm)",
   )
+  
   
   # Write index.Rmd in the current (root) folder
   writeLines(index_content, "index.Rmd")

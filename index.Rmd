@@ -12,6 +12,10 @@ output:
 
 * 2022-06-18 | [sun, sky & grass](2022-02-14-sun-sky-grass.html)
 
+![](assets/footer-image.png)
 
+Last updated: 2025-01-12 10:56:54
 
-Last updated: 2025-01-12 10:38:43
+About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.
+
+[GitHub](https://github.com/jaytimm)
