@@ -114,7 +114,7 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
     "",
     "About: I am a research assistant professor at the University of New Mexico, a linguist & a data scientist.",
     "",
-    "[GitHub](https://github.com/jaytimm)",
+    "[GitHub](https://github.com/jaytimm)"
   )
   
   
