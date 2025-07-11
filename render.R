@@ -64,8 +64,8 @@ generate_index <- function(posts_folder = ".", baseurl = NULL) {
     # Generate the .html file name (in the same folder as the .Rmd/.md)
     html_file <- gsub("\\.(Rmd|md)$", ".html", basename(post_source))
     
-    # Build link (local or with baseurl)
-    link <- if (!is.null(baseurl)) file.path(baseurl, html_file) else html_file
+    # Build link (always prefix with posts/)
+    link <- file.path("posts", html_file)
     
     # Add metadata to our list
     post_metadata[[length(post_metadata) + 1]] <- list(
