@@ -1,0 +1,21 @@
+---
+title: "News"
+output:
+  html_document:
+    template: ../assets/template.html
+---
+
+## Latest News
+
+- 2025-07-11 - [Advantages and Disadvantages of AI in Education](https://www.schoolsthatlead.org/blog/ai-in-education-pros-cons)
+- [How AI is Changing Education](https://usdla.org/blog/ai-education/)
+- 2025-07-08 - [Q&A: Education researcher discusses the future of AI in K-12 education](https://phys.org/news/2025-07-qa-discusses-future-ai.html)
+- 2025-07-08 - [AFT to launch National Academy for AI Instruction with Microsoft, OpenAI, Anthropic and United Federation of Teachers](https://news.microsoft.com/source/2025/07/08/aft-to-launch-national-academy-for-ai-instruction-with-microsoft-openai-anthropic-and-united-federation-of-teachers/)
+- 2025-07-09 - [Microsoft, OpenAI Partner With AFT to Train Teachers on AI](https://www.edweek.org/technology/microsoft-openai-partner-with-aft-to-train-teachers-on-ai/2025/07)
+- 2025-07-09 - [The AI Industry is Funding A Massive AI Training Initiative for Teachers](https://time.com/7301335/ai-education-microsoft-openai-anthropic/)
+- 2025-07-08 - [Microsoft, OpenAI, and a US Teachers’ Union Are Hatching a Plan to ‘Bring AI Into the Classroom’](https://www.wired.com/story/microsoft-openai-and-a-us-teachers-union-are-hatching-a-plan-to-bring-ai-into-the-classroom/)
+- 2025-07-09 - [A Classroom Experiment](https://www.nytimes.com/2025/07/09/briefing/artificial-intelligence-education-students.html)
+- 2025-07-10 - [Microsoft, OpenAI and Anthropic are investing millions to train teachers how to use AI](https://www.bnnbloomberg.ca/business/technology/2025/07/10/microsoft-openai-and-anthropic-are-investing-millions-to-train-teachers-how-to-use-ai/)
+- 2025-07-08 - [AI and Education: Balancing Innovation with Cognitive Engagement](https://www.devdiscourse.com/article/education/3496596-ai-and-education-balancing-innovation-with-cognitive-engagement)
+
+<!-- Add more news items as needed --> 
