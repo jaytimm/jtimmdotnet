@@ -180,7 +180,7 @@ render_rmd <- function(post_rmd) {
   message("Rendering: ", post_rmd)
   rmarkdown::render(
     input = post_rmd,
-    output_dir = ".",  # Write the final .html here in the root folder
+    output_dir = dirname(post_rmd),  # Write the final .html in the same folder as the .Rmd
     output_format = rmarkdown::html_document(
       template = template_path,
       css = css_path,
@@ -197,11 +197,11 @@ render_blog <- function(input_files) {
   lapply(input_files, render_rmd)
 }
 
-# Example usage (if you are in the root blog folder):
-render_blog(c(
-  "2022-02-14-sun-sky-grass.Rmd",
-  "2024-06-18-plot-demo.Rmd",
-  "2023-06-18-thoughts-gerrymander.Rmd"
-))
-
-generate_index()
+# Remove or comment out the following example usage:
+# render_blog(c(
+#   "2022-02-14-sun-sky-grass.Rmd",
+#   "2024-06-18-plot-demo.Rmd",
+#   "2023-06-18-thoughts-gerrymander.Rmd"
+# ))
+#
+# generate_index()

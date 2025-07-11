@@ -35,3 +35,9 @@ Thumbs.db
 # Git ignore for any personal files
 personal_notes/
 
+# Ignore generated site output
+/news/
+/posts/
+/images/
+news.html
+
