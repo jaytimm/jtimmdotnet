@@ -1,6 +1,6 @@
 # Standalone script: web search, scrape, and paginated news HTML generation
 # Requires: textpress, stringr
-setwd("/home/jtimm/Dropbox/GitHub/blog")
+# setwd("/home/jtimm/Dropbox/GitHub/blog")
 library(textpress)
 library(stringr)
 
