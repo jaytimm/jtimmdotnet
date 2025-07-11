@@ -3,7 +3,8 @@ title: "A plot demonstration in r"
 date: 2024-06-18
 output:
   html_document:
-    template: assets/template.html
+    template: ../assets/template.html
+    css: ../assets/style.css
 ---
 
 ## Analysis of MPG vs Weight

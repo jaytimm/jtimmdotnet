@@ -24,6 +24,8 @@ cache/
 # Post-specific images (exclude generated images from tracking)
 posts/*/images/
 
+# Ignore Rmd source files in posts/
+posts/*.Rmd
 
 # Exception: Allow only the root index.html
 !index.html

@@ -3,7 +3,8 @@ title: "sun, sky & grass"
 date: 2022-06-18
 output:
   html_document:
-    template: assets/template.html
+    template: ../assets/template.html
+    css: ../assets/style.css
 ---
 
 
