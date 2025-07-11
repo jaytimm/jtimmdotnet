@@ -1,6 +1,6 @@
 title: "Jason Timm"
 description: "Research assistant professor at UNM, linguist & data scientist. #rstats, NLP, LLMs, and American Politics."
-url: "https://jaytimm.github.io"
+url: "https://jtimm.net"
 baseurl: ""
 
 # Build settings
@@ -38,6 +38,9 @@ exclude:
   - _site/
   - .Rhistory
   - .RData
+  - jekyll_build.R
+  - build_jekyll.R
+  - news_build.R
 
 # Include in processing
 include:
