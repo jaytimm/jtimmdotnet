@@ -29,16 +29,15 @@ urls <- unique(c(bingesults$raw_url, yresults$raw_url, ddgesults$raw_url))
 txt <- textpress::web_scrape_urls(x = urls, cores = 3)
 
 # 3. Paginated HTML news page generation
-# Read the template
-if (!file.exists("assets/template.html")) stop("Template file not found: assets/template.html")
-template <- readLines("assets/template.html")
+# Read the new minimal template
+template <- readLines("assets/news_template.html")
 
 # Helper to fill template
 fill_template <- function(title, date, body) {
   t <- template
-  t <- str_replace(t, "\\$title\\$", title)
-  t <- str_replace(t, "\\$date\\$", date)
-  t <- str_replace(t, "\\$body\\$", body)
+  t <- gsub("{{title}}", title, t, fixed=TRUE)
+  t <- gsub("{{date}}", date, t, fixed=TRUE)
+  t <- gsub("{{body}}", body, t, fixed=TRUE)
   paste(t, collapse = "\n")
 }
 
@@ -69,11 +68,11 @@ for (i in seq_len(n_pages)) {
   if (n_pages > 1) {
     nav <- "<div style='margin-top:1em;'>"
     if (i > 1) {
-      prev <- if (i == 2) "news.html" else paste0("news", i - 1, ".html")
+      prev <- paste0("page", i - 1, ".html")
       nav <- paste0(nav, "<a href='", prev, "'>&laquo; Previous</a> ")
     }
     if (i < n_pages) {
-      next_page <- paste0("news", i + 1, ".html")
+      next_page <- paste0("page", i + 1, ".html")
       nav <- paste0(nav, "<a href='", next_page, "'>Next &raquo;</a>")
     }
     nav <- paste0(nav, "</div>")
@@ -87,8 +86,6 @@ for (i in seq_len(n_pages)) {
   )
   
   # Write file
-  fname <- if (i == 1) "news/news.html" else paste0("news/news", i, ".html")
+  fname <- paste0("news/page", i, ".html")
   writeLines(html, fname)
-}
-# Copy first page to root for clean URL
-file.copy("news/news.html", "news.html", overwrite = TRUE) 
+} 
