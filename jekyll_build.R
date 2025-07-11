@@ -38,54 +38,7 @@ process_news <- function() {
   }
 }
 
-# Function to render DT tables to static HTML
-render_dt_to_html <- function(rmd_content) {
-  # Find DT widget HTML and replace with static table
-  dt_pattern <- '<div class="datatables html-widget html-fill-item"[^>]*>.*?<script type="application/json"[^>]*>(.*?)</script>'
-  dt_matches <- stringr::str_match_all(rmd_content, dt_pattern)
-  
-  for (match in dt_matches[[1]]) {
-    if (length(match) > 1) {
-      tryCatch({
-        # Parse the JSON data
-        json_data <- jsonlite::fromJSON(match[2])
-        
-        # Extract table data
-        data_matrix <- json_data$x$data
-        col_names <- c("", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
-        
-        # Create static HTML table
-        html_table <- sprintf("
-<div class='table-responsive'>
-<table class='table table-striped table-bordered'>
-<thead>
-<tr>
-%s
-</tr>
-</thead>
-<tbody>
-%s
-</tbody>
-</table>
-</div>", 
-          paste0("<th>", col_names, "</th>", collapse = ""),
-          paste0("<tr>", 
-                 paste0("<td>", data_matrix[i,], "</td>", collapse = ""), 
-                 "</tr>", collapse = "\n")
-        )
-        
-        # Replace the entire DT widget with static HTML
-        rmd_content <- stringr::str_replace(rmd_content, match[1], html_table)
-        
-      }, error = function(e) {
-        # If we can't parse, just leave it as is
-        cat("Could not parse DT widget JSON\n")
-      })
-    }
-  }
-  
-  return(rmd_content)
-}
+
 
 # Process Rmd files
 rmd_files <- list.files("posts", pattern = "\\.Rmd$", full.names = TRUE)
@@ -131,12 +84,9 @@ if (length(rmd_files) > 0) {
       envir = new.env()
     )
     
-    # Read the rendered markdown and process DT tables
+    # Read the rendered markdown
     rendered_content <- readLines(file.path("_posts", out_file))
     content_text <- paste(rendered_content, collapse = "\n")
-    
-    # Replace DT tables with static HTML
-    processed_content <- render_dt_to_html(content_text)
     
     # Create Jekyll front matter
     jekyll_front_matter <- c(
@@ -149,10 +99,10 @@ if (length(rmd_files) > 0) {
     )
     
     # Fix image paths (replace images/ with /images/)
-    processed_content <- stringr::str_replace_all(processed_content, "!\\[([^\\]]*)\\]\\(images/([^)]+)\\)", "![\\1](/images/\\2)")
+    content_text <- stringr::str_replace_all(content_text, "!\\[([^\\]]*)\\]\\(images/([^)]+)\\)", "![\\1](/images/\\2)")
     
     # Write the final file with Jekyll front matter
-    writeLines(c(jekyll_front_matter, strsplit(processed_content, "\n")[[1]]), file.path("_posts", out_file))
+    writeLines(c(jekyll_front_matter, strsplit(content_text, "\n")[[1]]), file.path("_posts", out_file))
     
     cat("Rendered:", file.path("_posts", out_file), "\n")
     

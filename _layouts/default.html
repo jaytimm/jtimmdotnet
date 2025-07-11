@@ -20,6 +20,75 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
     
+    <!-- DT specific library -->
+    <script src="https://cdn.jsdelivr.net/npm/dt@1.13.7/dt.min.js"></script>
+    
+    <!-- Custom CSS for static tables -->
+    <style>
+        .datatables table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        .datatables th, .datatables td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .datatables th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .datatables tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .datatables tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+    
+    <!-- DT widget initialization -->
+    <script>
+        // DT widget specific initialization
+        if (typeof window.DT !== 'undefined') {
+            window.DT = window.DT || {};
+        }
+        
+        // Function to render DT tables as static HTML tables
+        function renderDTTable(widgetId, jsonData) {
+            try {
+                console.log('Rendering DT table for widget:', widgetId);
+                
+                const data = jsonData.x;
+                const container = data.container;
+                
+                // Create the table HTML
+                let tableHTML = container;
+                
+                // Add the data rows - data.data is an array of columns, each column is an array of values
+                const numRows = data.data[0].length;
+                const tbody = '<tbody>' + Array.from({length: numRows}, (_, rowIndex) => {
+                    return '<tr>' + data.data.map((col, colIndex) => {
+                        return '<td>' + col[rowIndex] + '</td>';
+                    }).join('') + '</tr>';
+                }).join('') + '</tbody>';
+                
+                tableHTML = tableHTML.replace('</table>', tbody + '</table>');
+                
+                // Insert the table into the widget container
+                const widgetElement = document.getElementById(widgetId);
+                if (widgetElement) {
+                    widgetElement.innerHTML = tableHTML;
+                    console.log('Static table inserted into widget container');
+                } else {
+                    console.error('Widget element not found:', widgetId);
+                }
+            } catch (e) {
+                console.error('Error rendering DT table:', e);
+            }
+        }
+    </script>
+    
     <!-- Plotly (for interactive plots) -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     
@@ -49,11 +118,39 @@
     <script>
         // Initialize htmlwidgets when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking libraries...');
+            console.log('HTMLWidgets available:', typeof HTMLWidgets !== 'undefined');
+            console.log('jQuery available:', typeof $ !== 'undefined');
+            console.log('DataTable available:', typeof $.fn.DataTable !== 'undefined');
+            
             // Wait longer for all libraries to load, then initialize htmlwidgets
             setTimeout(function() {
                 if (typeof HTMLWidgets !== 'undefined' && typeof $.fn.DataTable !== 'undefined') {
                     console.log('Initializing htmlwidgets...');
                     HTMLWidgets.staticRender();
+                    
+                    // Specifically initialize DT tables
+                    if (typeof $.fn.DataTable !== 'undefined') {
+                        console.log('Found', $('.datatables').length, 'DT tables');
+                        $('.datatables').each(function(index) {
+                            console.log('Processing DT table', index + 1);
+                            const widgetId = $(this).attr('id');
+                            const jsonScript = $(this).next('script[type="application/json"]');
+                            
+                            if (jsonScript.length > 0) {
+                                try {
+                                    const jsonData = JSON.parse(jsonScript.html());
+                                    console.log('Rendering DT table', index + 1, 'from JSON data...');
+                                    renderDTTable(widgetId, jsonData);
+                                    console.log('DT table', index + 1, 'rendered successfully');
+                                } catch (e) {
+                                    console.error('Error rendering DT table', index + 1, ':', e);
+                                }
+                            } else {
+                                console.log('No JSON data found for DT table', index + 1);
+                            }
+                        });
+                    }
                 } else {
                     console.log('Libraries not ready, retrying...');
                     // Retry after another delay
@@ -61,6 +158,24 @@
                         if (typeof HTMLWidgets !== 'undefined') {
                             console.log('Retrying htmlwidgets initialization...');
                             HTMLWidgets.staticRender();
+                            
+                            // Retry DT initialization
+                            if (typeof $.fn.DataTable !== 'undefined') {
+                                $('.datatables').each(function(index) {
+                                    const widgetId = $(this).attr('id');
+                                    const jsonScript = $(this).next('script[type="application/json"]');
+                                    
+                                    if (jsonScript.length > 0) {
+                                        try {
+                                            const jsonData = JSON.parse(jsonScript.html());
+                                            console.log('Retrying DT table', index + 1, 'from JSON data...');
+                                            renderDTTable(widgetId, jsonData);
+                                        } catch (e) {
+                                            console.error('Error retrying DT table', index + 1, ':', e);
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }, 500);
                 }
@@ -69,9 +184,28 @@
         
         // Also initialize when window loads (fallback)
         window.addEventListener('load', function() {
+            console.log('Window loaded, final initialization...');
             if (typeof HTMLWidgets !== 'undefined') {
                 console.log('Window load: Initializing htmlwidgets...');
                 HTMLWidgets.staticRender();
+                
+                // Initialize DT tables on window load
+                if (typeof $.fn.DataTable !== 'undefined') {
+                    $('.datatables').each(function(index) {
+                        const widgetId = $(this).attr('id');
+                        const jsonScript = $(this).next('script[type="application/json"]');
+                        
+                        if (jsonScript.length > 0) {
+                            try {
+                                const jsonData = JSON.parse(jsonScript.html());
+                                console.log('Window load: Rendering DT table', index + 1, 'from JSON data...');
+                                renderDTTable(widgetId, jsonData);
+                            } catch (e) {
+                                console.error('Error in window load DT table', index + 1, ':', e);
+                            }
+                        }
+                    });
+                }
             }
         });
     </script>
