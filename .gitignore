@@ -36,7 +36,7 @@ Thumbs.db
 personal_notes/
 
 # Ignore generated site output
-#/news/
+/news/
 /posts/
 /images/
 # news.html
