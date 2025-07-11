@@ -49,3 +49,14 @@ pre {
   overflow: auto;
   margin-bottom: 1em;
 }
+
+.content-wrapper {
+  max-width: 700px;
+  margin: auto;
+  padding: 1em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}

@@ -44,47 +44,25 @@ fill_template <- function(title, date, body) {
 txt$date[is.na(txt$date)] <- ""
 txt$h1_title[is.na(txt$h1_title)] <- txt$url[is.na(txt$h1_title)]
 
-# Pagination
-page_size <- 25
-n_pages <- ceiling(nrow(txt) / page_size)
+# No pagination: show all news on a single page
+page_txt <- txt
 
-for (i in seq_len(n_pages)) {
-  start <- (i - 1) * page_size + 1
-  end <- min(i * page_size, nrow(txt))
-  page_txt <- txt[start:end, ]
-  
-  # Build news list HTML
-  news_items <- paste0(
-    "<li>",
-    ifelse(page_txt$date != "", paste0("<span style='color:gray;font-size:90%'>", page_txt$date, "</span> - "), ""),
-    "<a href='", page_txt$url, "' target='_blank'>", page_txt$h1_title, "</a>",
-    "</li>"
-  )
-  news_list <- paste0("<ul>\n", paste(news_items, collapse = "\n"), "\n</ul>")
-  
-  # Pagination links
-  nav <- ""
-  if (n_pages > 1) {
-    nav <- "<div style='margin-top:1em;'>"
-    if (i > 1) {
-      prev <- paste0("page", i - 1, ".html")
-      nav <- paste0(nav, "<a href='", prev, "'>&laquo; Previous</a> ")
-    }
-    if (i < n_pages) {
-      next_page <- paste0("page", i + 1, ".html")
-      nav <- paste0(nav, "<a href='", next_page, "'>Next &raquo;</a>")
-    }
-    nav <- paste0(nav, "</div>")
-  }
-  
-  # Fill template
-  html <- fill_template(
-    title = "News",
-    date = format(Sys.Date()),
-    body = paste0("<h2>News</h2>", news_list, nav)
-  )
-  
-  # Write file
-  fname <- paste0("news/page", i, ".html")
-  writeLines(html, fname)
-} 
+# Build news list HTML
+news_items <- paste0(
+  "<li>",
+  ifelse(page_txt$date != "", paste0("<span style='color:gray;font-size:90%'>", page_txt$date, "</span> - "), ""),
+  "<a href='", page_txt$url, "' target='_blank'>", page_txt$h1_title, "</a>",
+  "</li>"
+)
+news_list <- paste0("<ul>\n", paste(news_items, collapse = "\n"), "\n</ul>")
+
+# Fill template
+html <- fill_template(
+  title = "News",
+  date = format(Sys.Date()),
+  body = paste0("<h2>News</h2>", news_list)
+)
+
+# Write file
+fname <- "news/index.html"
+writeLines(html, fname) 
