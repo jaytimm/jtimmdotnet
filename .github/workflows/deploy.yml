@@ -24,7 +24,7 @@ jobs:
 
       - name: Install R dependencies
         run: |
-          Rscript -e 'install.packages(c("rmarkdown", "stringr", "yaml", "textpress"))'
+          Rscript -e 'install.packages(c("rmarkdown", "stringr", "yaml", "textpress", "DT", "ggplot2", "knitr", "ellmer", "puremoe", "data.table", "dplyr", "tidyr"))'
 
       - name: Build site
         run: |
