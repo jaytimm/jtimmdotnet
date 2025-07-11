@@ -1,14 +1,20 @@
-# Standalone script: web search, scrape, and paginated news Rmd generation
-# Requires: textpress, stringr
-# setwd("/home/jtimm/Dropbox/GitHub/blog")
+#!/usr/bin/env Rscript
+# News aggregation script for Jekyll
+# Generates news posts in Jekyll format
+
 library(textpress)
 library(stringr)
+library(yaml)
 
-# Ensure news folder exists
-dir.create("news", showWarnings = FALSE)
+cat("Building news for Jekyll...\n")
+
+# Ensure news directory exists
+dir.create("_news", showWarnings = FALSE)
 
 # 1. Web search
 sterm <- 'AI and education'
+
+cat("Searching for news...\n")
 
 yresults <- textpress::web_search(search_term = sterm, 
                                   search_engine = "Yahoo News", 
@@ -38,19 +44,25 @@ news_items <- paste0(
   "[", txt$h1_title, "](", txt$url, ")"
 )
 
-# Compose Rmd content
-news_rmd <- c(
+# Create Jekyll news post
+today <- format(Sys.Date(), "%Y-%m-%d")
+news_filename <- paste0(str_replace_all(today, "-", ""), "-ai-education-news.md")
+news_filepath <- file.path("_news", news_filename)
+
+# Create Jekyll front matter for news
+news_front_matter <- c(
   "---",
-  "title: 'News'",
-  "output:",
-  "  html_document:",
-  "    template: ../assets/template.html",
-  "    css: ../assets/style.css",
+  "layout: news",
+  paste0("title: \"AI and Education News - ", today, "\""),
+  paste0("date: ", today),
   "---",
   "",
-  "## Latest News",
+  "## Latest AI and Education News",
   "",
   news_items
 )
 
-writeLines(news_rmd, "news/index.Rmd") 
+writeLines(news_front_matter, news_filepath)
+cat("Created news post:", news_filepath, "\n")
+
+cat("News build complete!\n") 

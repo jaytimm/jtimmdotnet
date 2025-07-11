@@ -1,0 +1,47 @@
+title: "Jason Timm"
+description: "Research assistant professor at UNM, linguist & data scientist. #rstats, NLP, LLMs, and American Politics."
+url: "https://jaytimm.github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: /posts/:title/
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /posts/:title/
+  news:
+    output: true
+    permalink: /news/:title/
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# R Markdown support
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Exclude from processing
+exclude:
+  - README.md
+  - build_site.R
+  - news-page-build.R
+  - render.R
+  - blog.Rproj
+  - _site/
+  - .Rhistory
+  - .RData
+
+# Include in processing
+include:
+  - _posts/
+  - _news/
+  - assets/
+  - images/ 

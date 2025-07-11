@@ -1,24 +1,145 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   line-height: 1.6;
-  max-width: 700px;
-  margin: auto;
-  padding: 1em;
-  background-color: #ffffff;
-  color: #333333;
+  color: #333;
+  background-color: #fafafa;
 }
 
-ul {
-  list-style-type: disc;
-  padding-left: 20px;
-  margin-top: 0;
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-li {
-  margin-bottom: 0.6em;
-  font-size: 16px;
+/* Header */
+.site-header {
+  padding: 2rem 0;
+  border-bottom: 1px solid #e1e1e1;
+  margin-bottom: 2rem;
 }
 
+.site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.site-title a {
+  color: #333;
+  text-decoration: none;
+}
+
+.site-title a:hover {
+  color: #1e90ff;
+}
+
+.site-nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.site-nav a {
+  color: #666;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.site-nav a:hover {
+  color: #1e90ff;
+}
+
+/* Main content */
+.site-main {
+  min-height: 60vh;
+}
+
+/* Posts */
+.post-header, .news-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.post-title, .news-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.post-date, .news-date {
+  color: #666;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.post-content, .news-content {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.post-content h1, .news-content h1 {
+  font-size: 1.8rem;
+  margin: 2rem 0 1rem 0;
+  color: #333;
+}
+
+.post-content h2, .news-content h2 {
+  font-size: 1.5rem;
+  margin: 1.5rem 0 0.5rem 0;
+  color: #444;
+}
+
+.post-content h3, .news-content h3 {
+  font-size: 1.3rem;
+  margin: 1.2rem 0 0.5rem 0;
+  color: #555;
+}
+
+.post-content p, .news-content p {
+  margin-bottom: 1rem;
+}
+
+.post-content ul, .news-content ul {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.post-content li, .news-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Code blocks */
+code, pre {
+  font-family: 'Roboto Mono', monospace;
+  background: #f5f5f5;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  border: 1px solid #e1e1e1;
+}
+
+pre {
+  padding: 1rem;
+  overflow: auto;
+  margin: 1rem 0;
+  border-radius: 5px;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Links */
 a {
   color: #1e90ff;
   text-decoration: none;
@@ -29,34 +150,79 @@ a:hover {
   text-decoration: underline;
 }
 
-.date {
-  color: #666666;
-  margin-right: 8px;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
-}
-
-code, pre {
-  font-family: 'Roboto Mono', monospace;
-  background: #f5f5f5;
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  border: none;
-}
-
-pre {
-  padding: 1em;
-  overflow: auto;
-  margin-bottom: 1em;
-}
-
-.content-wrapper {
-  max-width: 700px;
-  margin: auto;
-  padding: 1em;
-}
-
+/* Images */
 img {
   max-width: 100%;
   height: auto;
+  border-radius: 5px;
+  margin: 1rem 0;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e1e1e1;
+  text-align: center;
+  color: #666;
+}
+
+.site-footer p {
+  margin-bottom: 0.5rem;
+}
+
+/* Post/News lists */
+.post-list, .news-list {
+  list-style: none;
+}
+
+.post-list li, .news-list li {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.post-list a, .news-list a {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.post-list .date, .news-list .date {
+  color: #666;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* Back links */
+.post-footer, .news-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e1e1e1;
+}
+
+.post-footer a, .news-footer a {
+  color: #666;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .site-title {
+    font-size: 1.5rem;
+  }
+  
+  .post-title, .news-title {
+    font-size: 1.5rem;
+  }
+  
+  .site-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
