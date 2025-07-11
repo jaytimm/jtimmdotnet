@@ -1,45 +1,5 @@
-# RStudio Project files
-.Rproj.user/
-*.Rproj
-.Rhistory
-.RData
-.Ruserdata
-
-# Cache and temporary files
-cache/
-*.md5
-
-# R Markdown generated files
-*.knit.md
-*.utf8.md
-
-# Logs and temp files
-*.log
-*.out
-*.aux
-*.toc
-*.nav
-*.snm
-
-# Post-specific images (exclude generated images from tracking)
-posts/*/images/
-
-# Ignore Rmd source files in posts/
-posts/*.Rmd
-
-# Exception: Allow only the root index.html
-!index.html
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Git ignore for any personal files
-personal_notes/
-
-# Ignore generated site output
-# /posts/*.html
-# /news/*.html
-/images/
-# news.html
-
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor

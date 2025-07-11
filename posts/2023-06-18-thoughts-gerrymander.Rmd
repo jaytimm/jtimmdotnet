@@ -1,10 +1,10 @@
 ---
 title: "some quick thoughts on gerrymandering"
-date: 2024-06-08
+date: 2023-06-18
 output:
   html_document:
-    template: ../assets/template.html
-    css: ../assets/style.css
+    template: assets/template.html
+    css: assets/style.css
 ---
 
 > This post demonstrates a simple summary of the famous **Iris dataset** and a visualization.

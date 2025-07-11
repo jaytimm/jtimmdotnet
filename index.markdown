@@ -1,9 +1,6 @@
 ---
-title: 'Jason Timm'
-output:
-  html_document:
-    template: assets/simple_template.html
-    css: assets/style.css
+layout: default
+title: "Jason Timm"
 ---
 
 I am a research assistant professor at the University of New Mexico, a linguist & a data scientist. I like to talk #rstats, NLP, LLMs, and American Politics.  [GitHub](https://github.com/jaytimm) | [BlueSky](https://bsky.app/profile/jaytimm.bsky.social) | [Linkedin](https://www.linkedin.com/in/jaytimm/)
