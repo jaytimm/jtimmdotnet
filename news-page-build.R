@@ -29,15 +29,14 @@ urls <- unique(c(bingesults$raw_url, yresults$raw_url, ddgesults$raw_url))
 txt <- textpress::web_scrape_urls(x = urls, cores = 3)
 
 # 3. Paginated HTML news page generation
-# Read the new minimal template
-template <- readLines("assets/news_template.html")
+# Use the main site template for consistent styling
+template <- readLines("assets/template.html")
 
-# Helper to fill template
 fill_template <- function(title, date, body) {
   t <- template
-  t <- gsub("{{title}}", title, t, fixed=TRUE)
-  t <- gsub("{{date}}", date, t, fixed=TRUE)
-  t <- gsub("{{body}}", body, t, fixed=TRUE)
+  t <- gsub("\\$title\\$", title, t)
+  t <- gsub("\\$date\\$", date, t)
+  t <- gsub("\\$body\\$", body, t)
   paste(t, collapse = "\n")
 }
 
