@@ -1,0 +1,22 @@
+---
+title: "some quick thoughts on gerrymandering"
+date: 2024-06-08
+output: html_document
+---
+
+> This post demonstrates a simple summary of the famous **Iris dataset** and a visualization.
+
+
+### Summary of Data
+
+```{r summary-iris, echo=TRUE}
+summary(iris)
+```
+
+
+### else
+
+```{r}
+iris |> head() |> DT::datatable()
+```
+
