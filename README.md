@@ -1,6 +1,6 @@
 # Jason Timm's Blog
 
-A clean Jekyll blog for research, linguistics, data science, and American politics.
+A clean Jekyll blog for research, linguistics, data science, and American politics. ffs
 
 ## Structure
 - `_posts/` — Blog posts in Markdown format
