@@ -31,15 +31,10 @@ kramdown:
 # Exclude from processing
 exclude:
   - README.md
-  - build_site.R
-  - news-page-build.R
-  - render.R
   - blog.Rproj
   - _site/
   - .Rhistory
   - .RData
-  - jekyll_build.R
-  - build_jekyll.R
   - news_build.R
 
 # Include in processing
