@@ -1,6 +1,6 @@
 # Jason Timm's Blog
 
-A clean Jekyll blog for research, linguistics, data science, and American politics. ffs
+A clean Jekyll blog for research, linguistics, data science, and American politics. ffs. cursor is shite-
 
 ## Structure
 - `_posts/` — Blog posts in Markdown format
