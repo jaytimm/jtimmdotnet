@@ -56,13 +56,11 @@ news_front_matter <- c(
   paste0("title: \"AI and Education News - ", today, "\""),
   paste0("date: ", today),
   "---",
-  "",
-  "## Latest AI and Education News",
-  "",
-  news_items
+  ""
 )
 
-writeLines(news_front_matter, news_filepath)
+# Write only the front matter and news items, no header in the body
+writeLines(c(news_front_matter, news_items), news_filepath)
 cat("Created news post:", news_filepath, "\n")
 
 cat("News build complete!\n") 

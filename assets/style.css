@@ -5,11 +5,8 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #fafafa;
+body, h1, h2, h3, h4, h5, h6, .site-title, .site-nav, .site-footer, .post-title, .news-title, .post-content, .news-content, .post-list, .news-list, .post-date, .news-date, .post-footer, .news-footer {
+  font-family: 'Georgia', serif !important;
 }
 
 .container {
@@ -21,8 +18,12 @@ body {
 /* Header */
 .site-header {
   padding: 2rem 0;
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 2px solid #34495e;
   margin-bottom: 2rem;
+  background-color: #6c757d;
+  color: white;
+  margin: -20px -20px 2rem -20px;
+  padding: 2rem 20px;
 }
 
 .site-title {
@@ -32,12 +33,12 @@ body {
 }
 
 .site-title a {
-  color: #333;
+  color: white;
   text-decoration: none;
 }
 
 .site-title a:hover {
-  color: #1e90ff;
+  color: #ecf0f1;
 }
 
 .site-nav {
@@ -46,14 +47,16 @@ body {
 }
 
 .site-nav a {
-  color: #666;
+  color: #bdc3c7;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
+  padding: 0.5rem 1rem;
 }
 
 .site-nav a:hover {
-  color: #1e90ff;
+  color: white;
+  background-color: #5a6268;
 }
 
 /* Main content */
@@ -65,43 +68,47 @@ body {
 .post-header, .news-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 1px solid #ecf0f1;
 }
 
 .post-title, .news-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #2c3e50;
 }
 
 .post-date, .news-date {
-  color: #666;
-  font-family: 'Roboto Mono', monospace;
+  color: #7f8c8d;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
 }
 
 .post-content, .news-content {
   font-size: 1.1rem;
   line-height: 1.7;
+  color: #34495e;
 }
 
 .post-content h1, .news-content h1 {
   font-size: 1.8rem;
   margin: 2rem 0 1rem 0;
-  color: #333;
+  color: #2c3e50;
+  font-weight: 700;
 }
 
 .post-content h2, .news-content h2 {
   font-size: 1.5rem;
   margin: 1.5rem 0 0.5rem 0;
-  color: #444;
+  color: #34495e;
+  font-weight: 600;
 }
 
 .post-content h3, .news-content h3 {
   font-size: 1.3rem;
   margin: 1.2rem 0 0.5rem 0;
-  color: #555;
+  color: #34495e;
+  font-weight: 600;
 }
 
 .post-content p, .news-content p {
@@ -119,18 +126,19 @@ body {
 
 /* Code blocks */
 code, pre {
-  font-family: 'Roboto Mono', monospace;
-  background: #f5f5f5;
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
   padding: 0.2em 0.4em;
-  border-radius: 3px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #dee2e6;
+  font-size: 0.9rem;
 }
 
 pre {
   padding: 1rem;
   overflow: auto;
   margin: 1rem 0;
-  border-radius: 5px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
 }
 
 pre code {
@@ -141,12 +149,12 @@ pre code {
 
 /* Links */
 a {
-  color: #1e90ff;
+  color: #3498db;
   text-decoration: none;
 }
 
 a:hover {
-  color: #005fa3;
+  color: #2980b9;
   text-decoration: underline;
 }
 
@@ -154,17 +162,20 @@ a:hover {
 img {
   max-width: 100%;
   height: auto;
-  border-radius: 5px;
   margin: 1rem 0;
+  border: 1px solid #dee2e6;
 }
 
 /* Footer */
 .site-footer {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid #e1e1e1;
+  border-top: 1px solid #ecf0f1;
   text-align: center;
-  color: #666;
+  color: #7f8c8d;
+  background: #f8f9fa;
+  margin: 3rem -20px -20px -20px;
+  padding: 2rem 20px;
 }
 
 .site-footer p {
@@ -179,18 +190,18 @@ img {
 .post-list li, .news-list li {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #ecf0f1;
 }
 
 .post-list a, .news-list a {
   font-size: 1.2rem;
   font-weight: 500;
-  color: #333;
+  color: #2c3e50;
 }
 
 .post-list .date, .news-list .date {
-  color: #666;
-  font-family: 'Roboto Mono', monospace;
+  color: #7f8c8d;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   margin-top: 0.25rem;
 }
@@ -199,11 +210,11 @@ img {
 .post-footer, .news-footer {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #e1e1e1;
+  border-top: 1px solid #ecf0f1;
 }
 
 .post-footer a, .news-footer a {
-  color: #666;
+  color: #7f8c8d;
   font-weight: 500;
 }
 
@@ -225,4 +236,14 @@ img {
     flex-direction: column;
     gap: 0.5rem;
   }
-}
+  
+  .site-header {
+    margin: -15px -15px 2rem -15px;
+    padding: 1.5rem 15px;
+  }
+  
+  .site-footer {
+    margin: 3rem -15px -15px -15px;
+    padding: 1.5rem 15px;
+  }
+} 
