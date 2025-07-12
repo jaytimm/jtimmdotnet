@@ -18,17 +18,7 @@ date: 2025-07-11
 - [A week after layoffs linked to AI cost, Microsoft pledges $4B to AI education](https://tdn.com/news/state-regional/business/article_99264e63-11aa-4043-afbb-d818708d9e76.html)
 - 1927-09-18 - [Recent college graduates face a new obstacle in finding a job: AI](https://www.cbsnews.com/news/ai-jobs-unemployment-college-graduate/)
 - 2025-07-11 - [20 ‘Old Role/New Role’ Transitions For An AI-Dominated Work World](https://www.forbes.com/councils/forbestechcouncil/2025/07/11/20-old-rolenew-role-transitions-for-an-ai-dominated-work-world/)
-- ['Coding is Dead': University of Washington CS Program Rethinks Curriculum For the AI Era  (geekwire.com) 
-
-		
-		
-		
-		
-
-		
-		
-		
-			104](https://developers.slashdot.org/story/25/07/11/1418225/coding-is-dead-university-of-washington-cs-program-rethinks-curriculum-for-the-ai-era)
+- 2025-07-11 - ['Coding is Dead': University of Washington CS Program Rethinks Curriculum For the AI Era](https://developers.slashdot.org/story/25/07/11/1418225/coding-is-dead-university-of-washington-cs-program-rethinks-curriculum-for-the-ai-era)
 - 2025-07-10 - [Google announces latest AI American Infrastructure Academy cohort](https://techcrunch.com/2025/07/10/google-announces-latest-ai-american-infrastructure-acadmey-cohort/)
 - 2025-07-07 - [How Ivy League Schools Are Navigating AI In The Classroom](https://www.forbes.com/sites/christopherrim/2025/07/07/how-ivy-league-schools-are-navigating-ai-in-the-classroom/)
 - 2025-07-11 - [Datavault AI (NASDAQ: DVLT) Launches Biofuel Crop Optimization Project with Brookhaven Lab](https://www.digitaljournal.com/pr/news/investorbrandnetwork/datavault-ai-nasdaq-dvlt-launches-1361717779.html)
@@ -37,17 +27,7 @@ date: 2025-07-11
 - 2025-07-10 - [AI challenges and opportunities for relationship and family therapy examined in study](https://phys.org/news/2025-07-ai-opportunities-relationship-family-therapy.html)
 - 2025-07-11 - [UAE based 21-year old college dropout’s AI agent beats OpenAI and GenSpark](https://me.mashable.com/tech/58123/uae-based-21-year-old-college-dropouts-ai-agent-beats-openai-and-genspark)
 - 2025-07-11 - [Indosat, Cisco, Nvidia support new AI facility in Indonesia](https://www.rcrwireless.com/20250711/ai-infrastructure/indosat-nvidia-ai)
-- [Microsoft Pledges $4 Billion for AI Education Training Programs  (geekwire.com) 
-
-		
-		
-		
-		
-
-		
-		
-		
-			11](https://slashdot.org/story/25/07/09/176219/microsoft-pledges-4-billion-for-ai-education-training-programs)
+- 2025-07-09 - [Microsoft Pledges $4 Billion for AI Education Training Programs](https://slashdot.org/story/25/07/09/176219/microsoft-pledges-4-billion-for-ai-education-training-programs)
 - 2025-07-10 - [New AI-driven school in Folsom aims to transform education](https://www.kcra.com/article/ai-driven-school-folsom-education/65359290)
 - [Big AI makes another move into education](https://www.marketplace.org/story/2025/07/09/teachers-union-partners-with-tech-giants-to-train-ai-skills)
 - 2025-07-11 - [The Rise of Multimodal AI: Are These Models Truly Intelligent?](https://www.unite.ai/the-rise-of-multimodal-ai-are-these-models-truly-intelligent/)
