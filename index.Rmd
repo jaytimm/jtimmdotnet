@@ -1,5 +1,5 @@
 ---
-title: ''
+title: 'Jason Timm'
 output:
   html_document:
     css: assets/style.css
@@ -14,7 +14,5 @@ I am a research assistant professor at the University of New Mexico, a linguist 
 2023-06-18: [some quick thoughts on gerrymandering](2023-06-18-thoughts-gerrymander.html)
 
 2022-02-14: [sun, sky & grass](2022-02-14-sun-sky-grass.html)
-
-![Footer Image](assets/footer-image.png)
 
 Last updated: 2025-07-31 19:00:14

@@ -53,15 +53,16 @@ body {
 }
 
 .site-nav a {
-  color: #777;
+  color: #333;
   text-decoration: none;
   margin-right: 15px;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .site-nav a:hover,
 .site-nav a:focus {
-  color: #333;
+  color: #000;
   text-decoration: none;
 }
 
