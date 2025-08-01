@@ -4,3 +4,7 @@ _site
 .jekyll-metadata
 vendor
 .Rproj.user
+
+# R Markdown source files
+*.Rmd
+posts/
