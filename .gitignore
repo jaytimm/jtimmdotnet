@@ -1,10 +1,25 @@
-_site
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
-.Rproj.user
+# Ignore everything by default
+*
 
-# R Markdown source files
-*.Rmd
-posts/
+# Only track specific files and folders
+!.gitignore
+!*.html
+!assets/
+!data/
+!CNAME
+!feed.xml
+
+# R project files
+!blog.Rproj
+
+# Keep the automation system
+!other/automation/
+!other/gutenberg/
+!other/Q-researcher/
+
+# But ignore R history and other sensitive files
+*.Rhistory
+*.RData
+*.Ruserdata
+.env
+.Rprofile
