@@ -267,6 +267,8 @@ generate_news_html <- function(recommended_df, output_path = "~/Dropbox/GitHub/b
         
         <div class="post-content">
           <p>', news_summary, '</p>
+          <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+          
           ', 
           paste(
             lapply(seq_len(nrow(recommended_df)), function(i) {
