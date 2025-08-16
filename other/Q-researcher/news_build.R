@@ -41,13 +41,13 @@ research_queries <- news_query_generator_fn()
 # =============================================================================
 cat("Performing open web searches...\n")
 
-# Search for each query using DuckDuckGo with recent time filter
+# Search for each query using DuckDuckGo with recent time filter (last 5 days)
 open_search_results <- lapply(research_queries$query, function(query) {
   textpress::web_search(
     search_term = query,
     search_engine = "DuckDuckGo",
     num_pages = 2,
-    time_filter = "week"
+    time_filter = "5d"
   )
 })
 
