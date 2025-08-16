@@ -225,7 +225,7 @@ generate_news_html <- function(recommended_df, output_path = "~/Dropbox/GitHub/b
 </head>
 <body>
   <!-- Header -->
-  <header class="site-header" style="background-color: #fc8d62; border-bottom: 2px solid #e67e22;">
+  <header class="site-header" style="background-color: #fc8d62;">
     <div class="container">
       <nav class="site-nav">
         <a href="index.html">Home</a>
