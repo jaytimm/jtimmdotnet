@@ -1,7 +1,7 @@
 # Ignore everything by default
 *
 
-# Only track specific files and folders
+# Only track what the website needs to render
 !.gitignore
 !*.html
 !assets/
@@ -9,15 +9,10 @@
 !CNAME
 !feed.xml
 
-# R project files
-!blog.Rproj
-
-# Keep the automation system
-!other/automation/
-!other/gutenberg/
-!other/Q-researcher/
-
-# But ignore R history and other sensitive files
+# Ignore all R files and project files
+*.R
+*.Rmd
+*.Rproj
 *.Rhistory
 *.RData
 *.Ruserdata

@@ -563,50 +563,64 @@ Data</h1>
           <p>Committee membership information is not made available in
           csv – instead, this info is maintained on GitHub… collated
           here.</p>
-          <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(yaml)</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Step 1: Use GitHub API to get file list</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>api_url <span class="ot">&lt;-</span> <span class="st">&quot;https://api.github.com/repos/openstates/people/contents/data/nm/committees&quot;</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">GET</span>(api_url)</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">stop_for_status</span>(res)</span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co"># Step 2: Extract raw download URLs</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">content</span>(res)</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>yaml_urls <span class="ot">&lt;-</span> <span class="fu">vapply</span>(files, <span class="cf">function</span>(x) x<span class="sc">$</span>download_url, <span class="fu">character</span>(<span class="dv">1</span>))</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># Step 3: Read YAML content into R</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>yaml_objects <span class="ot">&lt;-</span> <span class="fu">lapply</span>(yaml_urls, <span class="cf">function</span>(url) {</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>  <span class="fu">stop_for_status</span>(r)</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  txt <span class="ot">&lt;-</span> <span class="fu">content</span>(r, <span class="at">as =</span> <span class="st">&quot;text&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">yaml.load</span>(txt)</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>})</span></code></pre></div>
-          <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Example: extract from one record</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>extract_committee_members <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(x<span class="sc">$</span>members)) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  </span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">committee_id =</span> x<span class="sc">$</span>id,</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">committee_name =</span> x<span class="sc">$</span>name,</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">committee_classification =</span> x<span class="sc">$</span>classification,</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">chamber =</span> x<span class="sc">$</span>chamber,</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="at">member_name =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>name, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">member_role =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>role, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">person_id =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>person_id, <span class="fu">character</span>(<span class="dv">1</span>))</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  )</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>}</span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co"># Apply across all objects</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>dt_members <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(</span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  <span class="fu">lapply</span>(yaml_objects, extract_committee_members),</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="at">use.names =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>)</span></code></pre></div>
-          <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>dt_members <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="co">#DT::datatable(rownames = F)</span></span></code></pre></div>
+          <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+          <pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+          <pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+          <pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+          <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">library</span>(yaml)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Step 1: Use GitHub API to get file list</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>api_url <span class="ot">&lt;-</span> <span class="st">&quot;https://api.github.com/repos/openstates/people/contents/data/nm/committees&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">GET</span>(api_url)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">stop_for_status</span>(res)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co"># Step 2: Extract raw download URLs</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">content</span>(res)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>yaml_urls <span class="ot">&lt;-</span> <span class="fu">vapply</span>(files, <span class="cf">function</span>(x) x<span class="sc">$</span>download_url, <span class="fu">character</span>(<span class="dv">1</span>))</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># Step 3: Read YAML content into R</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>yaml_objects <span class="ot">&lt;-</span> <span class="fu">lapply</span>(yaml_urls, <span class="cf">function</span>(url) {</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="fu">stop_for_status</span>(r)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  txt <span class="ot">&lt;-</span> <span class="fu">content</span>(r, <span class="at">as =</span> <span class="st">&quot;text&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">yaml.load</span>(txt)</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>})</span></code></pre></div>
+          <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code></pre></div>
+          <pre><code>## data.table 1.17.2 using 24 threads (see ?getDTthreads).  Latest news: r-datatable.com
+## 
+## Attaching package: &#39;data.table&#39;
+## 
+## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last</code></pre>
+          <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Example: extract from one record</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>extract_committee_members <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(x<span class="sc">$</span>members)) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  </span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="at">committee_id =</span> x<span class="sc">$</span>id,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="at">committee_name =</span> x<span class="sc">$</span>name,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="at">committee_classification =</span> x<span class="sc">$</span>classification,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">chamber =</span> x<span class="sc">$</span>chamber,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="at">member_name =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>name, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">member_role =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>role, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>    <span class="at">person_id =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>person_id, <span class="fu">character</span>(<span class="dv">1</span>))</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  )</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>}</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co"># Apply across all objects</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>dt_members <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="fu">lapply</span>(yaml_objects, extract_committee_members),</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="at">use.names =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>)</span></code></pre></div>
+          <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>dt_members <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="co">#DT::datatable(rownames = F)</span></span></code></pre></div>
           <table style="width:100%;">
           <colgroup>
           <col width="26%" />
