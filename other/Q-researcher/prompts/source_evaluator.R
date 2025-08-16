@@ -104,7 +104,7 @@ source_evaluator_fn <- function(retrieved_contexts,
                                  pretty = TRUE)
   
   ellmer::chat_openai(
-    model = "gpt-4o",
+    model = "gpt-4o-mini",
     system_prompt = injected_prompt
   )$extract_data(json_input, 
                  type = source_evaluator_schema)

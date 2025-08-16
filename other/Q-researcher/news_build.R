@@ -221,16 +221,10 @@ generate_news_html <- function(recommended_df, output_path = "~/Dropbox/GitHub/b
   
   # Generate summary from article titles
   cat("Generating news summary...\n")
-  titles <- recommended_df$h1_title
-  titles_text <- paste(titles, collapse = " | ")
-  
-  # Create summary prompt
-  summary_prompt <- paste0("Based on these AI/LLM news article titles, write exactly 3 sentences summarizing the main themes and trends. Be concise and insightful:\n\n", titles_text)
-  
-  # Generate summary from article titles
-  cat("Generating news summary...\n")
   article_titles <- recommended_df$h1_title
-  news_summary <- news_summarizer_fn(article_titles)
+  # Use LLM_MODEL if available, otherwise default to gpt-4o-mini
+  model_to_use <- if(exists("LLM_MODEL")) LLM_MODEL else "gpt-4o-mini"
+  news_summary <- news_summarizer_fn(article_titles, model_to_use)
   cat("News summary generated\n")
   
   # Generate HTML content
