@@ -1,0 +1,16 @@
+core_topics:
+  - Language models as simulators of human cognition, beliefs, and behavior
+  - Semantic modeling of sensory language, especially olfaction
+  - Procedural and survey language as structured reasoning environments for LLMs
+  - Human-aligned modeling of perception, reasoning, and representation
+  - Agent-based document workflows for deep research and ideation
+  - LLMs as meta-theorists: generating, evaluating, and simulating behavioral and cognitive models
+
+
+subthemes:
+  - LLMs for survey emulation, policy sentiment synthesis, and virtual demographics
+  - Zero-shot generalization in behavioral, perceptual, or procedural tasks
+  - Grounding sensory descriptors (especially olfaction) using language and perceptual embeddings
+  - Procedural texts (e.g., recipes, scientific methods) as a substrate for evaluating model reasoning
+  - Cognitive science as benchmark: tasks like bandits, memory, and inference for probing alignment
+  - Simulation of social and perceptual judgments via prompted personas or demographics

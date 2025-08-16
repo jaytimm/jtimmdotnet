@@ -1,0 +1,23 @@
+
+
+**Core Areas:**
+- Language models and AI agent systems
+- RAG pipelines and document-based reasoning
+- Multi-agent orchestration and planning
+- Tools for automating research workflows and ideation
+
+**Key Technologies/Tools:**
+- Open-source AI frameworks
+- Custom and agentic RAG systems
+- Evaluation techniques for retrieval and generation
+- Models for document parsing and multimodal input (e.g., PDF/image to text)
+
+**Tooling and Infrastructure Focus:**
+- Agent execution frameworks (ReAct, Plan-and-Execute, Self-Ask)
+- Embedding pipelines and dataset curation strategies
+- Indexing architectures: hybrid, dense + symbolic, metadata-aware
+- LangChain / LlamaIndex modular applications
+- Multi-hop planning, self-correction in agentic RAG
+- Auto-documentation agents: summarization, Q&A, synthesis loops
+- Prompt and context engineering
+ 

@@ -1,0 +1,27 @@
+
+LLMs – Unique Applications
+
+Argyle, L. P., Busby, E. C., Fulda, N., Gubler, J. R., Rytting, C., & Wingate, D. (2023). Out of one, many: Using language models to simulate human samples. Political Analysis, 31(3), 337–351.
+
+Binz, M., Akata, E., Bethge, M., Brändle, F., Callaway, F., Coda-Forno, J., ... & Schulz, E. (2025). A foundation model to predict and capture human cognition. Nature, 1–8.
+
+Jansen, B. J., Jung, S. G., & Salminen, J. (2023). Employing large language models in survey research. Natural Language Processing Journal, 4, 100020.
+
+Motoki, K., Low, J., & Velasco, C. (2025). Generative AI framework for sensory and consumer research.
+
+Wang, Q. J., & Pellegrino, R. (2025). Automating chemosensory creativity assessment with large language models. Food Quality and Preference, 105599.
+
+
+
+Olfactory Science
+
+Dhurandhar, A., Li, H., Cecchi, G. A., & Meyer, P. (2023). Expansive linguistic representations to predict interpretable odor mixture discriminability. Chemical Senses, 48, bjad018.
+
+Hazebroek, B. K., & Croijmans, I. (2023). Let’s talk over coffee: Exploring the effect of coffee flavour descriptions on consumer imagery and behaviour. Food Quality and Preference, 105, 104757.
+
+Iatropoulos, G., Herman, P., Lansner, A., Karlgren, J., Larsson, M., & Olofsson, J. K. (2018). The language of smell: Connecting linguistic and psychophysical properties of odor descriptors. Cognition, 178, 37–49.
+
+Lee, B. K., Mayhew, E. J., Sanchez-Lengeling, B., Wei, J. N., Qian, W. W., Little, K. A., ... & Wiltschko, A. B. (2023). A principal odor map unifies diverse tasks in olfactory perception. Science, 381(6661), 999–1006.
+
+Nozaki, Y., & Nakamoto, T. (2018). Predictive modeling for odor character of a chemical using machine learning combined with natural language processing. PloS One, 13(6), e0198475.
+
