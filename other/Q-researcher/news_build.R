@@ -17,10 +17,13 @@ library(xml2)
 library(rvest)
 library(stringr)
 
+# Global network timeout and UA where applicable
+options(timeout = 30)
 
 # Source helper functions and prompts
+source("~/Dropbox/GitHub/blog/other/config.R")
 source("~/Dropbox/GitHub/blog/other/Q-researcher/functions/utils.R")
-source("~/Dropbox/GitHub/blog/other/Q-researcher/functions/date-extract.R")
+# date-extract.R unused; removed
 
 # Load prompt functions from prompts directory
 prompt_files <- list.files(
@@ -43,12 +46,17 @@ cat("Performing open web searches...\n")
 
 # Search for each query using DuckDuckGo with recent time filter
 open_search_results <- lapply(research_queries$query, function(query) {
-  textpress::web_search(
-    search_term = query,
-    search_engine = "DuckDuckGo",
-    num_pages = 2,
-    time_filter = "week"
-  )
+  tryCatch({
+    textpress::web_search(
+      search_term = query,
+      search_engine = "DuckDuckGo",
+      num_pages = 2,
+      time_filter = "week"
+    )
+  }, error = function(e) {
+    cat("web_search failed for query:", query, "-", e$message, "\n")
+    return(NULL)
+  })
 })
 
 # Name results by query for easier tracking
@@ -56,16 +64,31 @@ names(open_search_results) <- research_queries$query
 
 # Combine all search results and remove duplicates
 open_search_combined <- open_search_results |> 
-  data.table::rbindlist(idcol = "search") |>
-  filter(!duplicated(raw_url))
+  purrr::compact() |>
+  (
+    function(x) {
+      if (length(x) == 0) return(data.table::data.table())
+      data.table::rbindlist(x, idcol = "search", fill = TRUE)
+    }
+  )() |>
+  dplyr::filter(!duplicated(raw_url))
 
 # Scrape content from search result URLs
 cat("Scraping content from search results...\n")
-open_search_content <- textpress::web_scrape_urls(
-  x = open_search_combined$raw_url, 
-  cores = 6
-) |>
-  mutate(date = as.Date(date))
+open_search_content <- tryCatch({
+  if (nrow(open_search_combined) == 0) {
+    data.frame(url = character(), h1_title = character(), date = as.Date(character()), text = character())
+  } else {
+    textpress::web_scrape_urls(
+      x = open_search_combined$raw_url, 
+      cores = 6
+    ) |>
+    dplyr::mutate(date = as.Date(date))
+  }
+}, error = function(e) {
+  cat("web_scrape_urls failed:", e$message, "\n")
+  data.frame(url = character(), h1_title = character(), date = as.Date(character()), text = character())
+})
 
 # =============================================================================
 # STEP 3: User-Defined Blogs Processing
@@ -89,16 +112,25 @@ rss_blogs <- user_defined_blogs |> filter(is_rss)
 cat("Processing non-RSS blogs...\n")
 
 # Extract URLs from non-RSS blogs
-non_rss_urls_list <- lapply(non_rss_blogs$url, qr_extract_blog_urls)
-non_rss_urls_combined <- data.table::rbindlist(non_rss_urls_list, fill = TRUE) |>
+non_rss_urls_list <- lapply(non_rss_blogs$url, function(u) tryCatch(qr_extract_blog_urls(u), error = function(e) { cat("qr_extract_blog_urls failed for", u, "-", e$message, "\n"); return(NULL) }))
+non_rss_urls_combined <- purrr::compact(non_rss_urls_list) |> data.table::rbindlist(fill = TRUE) |>
   qr_filter_non_content_urls()
 
 # Scrape content from non-RSS blog URLs
-non_rss_content <- textpress::web_scrape_urls(
-  x = non_rss_urls_combined$url, 
-  cores = 6
-) |>
-  mutate(date = as.Date(date))
+non_rss_content <- tryCatch({
+  if (nrow(non_rss_urls_combined) == 0) {
+    data.frame(url = character(), h1_title = character(), date = as.Date(character()), text = character())
+  } else {
+    textpress::web_scrape_urls(
+      x = non_rss_urls_combined$url, 
+      cores = 6
+    ) |>
+    dplyr::mutate(date = as.Date(date))
+  }
+}, error = function(e) {
+  cat("non_rss web_scrape_urls failed:", e$message, "\n")
+  data.frame(url = character(), h1_title = character(), date = as.Date(character()), text = character())
+})
 
 # =============================================================================
 # STEP 3B: Process RSS Blogs
@@ -106,8 +138,8 @@ non_rss_content <- textpress::web_scrape_urls(
 cat("Processing RSS blogs...\n")
 
 # Scrape RSS feeds
-rss_content_list <- lapply(rss_blogs$url, qr_scrape_rss)
-rss_content_combined <- data.table::rbindlist(rss_content_list, fill = TRUE) |>
+rss_content_list <- lapply(rss_blogs$url, function(u) tryCatch(qr_scrape_rss(u), error = function(e) { cat("qr_scrape_rss failed for", u, "-", e$message, "\n"); return(NULL) }))
+rss_content_combined <- purrr::compact(rss_content_list) |> data.table::rbindlist(fill = TRUE) |>
   mutate(
     # Extract structured text from XML content
     text = vapply(xml_txt, qr_extract_structured_text, character(1)),
@@ -150,20 +182,37 @@ evaluation_input <- recent_blogs |>
   distinct(text_id, .keep_all = TRUE)
 
 # Evaluate content using LLM
-evaluations <- helper_batch_llm_queries(
-  data = evaluation_input, 
-  prompt = source_evaluator2$system_prompt,
-  schema = source_evaluator$schema,
-  batch_size = 3,
-  model = 'gpt-4o-mini',
-  workers = 5
-)
+evaluations <- tryCatch({
+  if (nrow(evaluation_input) == 0) {
+    data.frame(text_id = character(), recommendation = character())
+  } else {
+    helper_batch_llm_queries(
+      data = evaluation_input, 
+      prompt = source_evaluator2$system_prompt,
+      schema = source_evaluator$schema,
+      batch_size = 3,
+      model = 'gpt-4o-mini',
+      workers = 5
+    )
+  }
+}, error = function(e) {
+  cat("helper_batch_llm_queries failed:", e$message, "\n")
+  data.frame(text_id = character(), recommendation = character())
+})
 
 # Filter for recommended content
 recommended_content <- evaluations |>
   filter(recommendation == 'include') |>
   rename(url = text_id) |>
   left_join(recent_blogs)
+
+# Drop rows with missing critical fields (url, title, date)
+recommended_content <- recommended_content |>
+  dplyr::filter(
+    !is.na(url) & url != "",
+    !is.na(h1_title) & h1_title != "",
+    !is.na(date)
+  )
 
 # =============================================================================
 # OUTPUT SUMMARY
@@ -222,9 +271,8 @@ generate_news_html <- function(recommended_df, output_path = "~/Dropbox/GitHub/b
   # Generate summary from article titles
   cat("Generating news summary...\n")
   article_titles <- recommended_df$h1_title
-  # Use LLM_MODEL if available, otherwise default to gpt-4o-mini
-  model_to_use <- if(exists("LLM_MODEL")) LLM_MODEL else "gpt-4o-mini"
-  news_summary <- news_summarizer_fn(article_titles, model_to_use)
+  # Use configured model
+  news_summary <- news_summarizer_fn(article_titles, BLOG_CONFIG$NEWS_MODEL)
   cat("News summary generated\n")
   
   # Generate HTML content
@@ -313,7 +361,9 @@ if (nrow(recommended_content) > 0) {
   html_file_path <- generate_news_html(recommended_content_sorted)
   cat("News HTML file created successfully!\n")
 } else {
-  cat("No recommended content to generate HTML from.\n")
+  cat("No recommended content to generate HTML from. Generating empty news.html.\n")
+  empty_df <- data.frame(h1_title = character(), url = character(), date = as.Date(character()))
+  generate_news_html(empty_df)
 }
 
 

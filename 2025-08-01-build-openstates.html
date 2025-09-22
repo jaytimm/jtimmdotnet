@@ -592,35 +592,33 @@ Data</h1>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">yaml.load</span>(txt)</span>
 <span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>})</span></code></pre></div>
           <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code></pre></div>
-          <pre><code>## data.table 1.17.2 using 24 threads (see ?getDTthreads).  Latest news: r-datatable.com
-## 
-## Attaching package: &#39;data.table&#39;
-## 
-## The following objects are masked from &#39;package:dplyr&#39;:
+          <pre><code>## 
+## Attaching package: &#39;data.table&#39;</code></pre>
+          <pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
 ## 
 ##     between, first, last</code></pre>
-          <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Example: extract from one record</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>extract_committee_members <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(x<span class="sc">$</span>members)) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  </span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="at">committee_id =</span> x<span class="sc">$</span>id,</span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="at">committee_name =</span> x<span class="sc">$</span>name,</span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="at">committee_classification =</span> x<span class="sc">$</span>classification,</span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">chamber =</span> x<span class="sc">$</span>chamber,</span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="at">member_name =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>name, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">member_role =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>role, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>    <span class="at">person_id =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>person_id, <span class="fu">character</span>(<span class="dv">1</span>))</span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  )</span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>}</span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co"># Apply across all objects</span></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>dt_members <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(</span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="fu">lapply</span>(yaml_objects, extract_committee_members),</span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="at">use.names =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">TRUE</span></span>
-<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>)</span></code></pre></div>
-          <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>dt_members <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="co">#DT::datatable(rownames = F)</span></span></code></pre></div>
+          <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Example: extract from one record</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>extract_committee_members <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(x<span class="sc">$</span>members)) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  </span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">committee_id =</span> x<span class="sc">$</span>id,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">committee_name =</span> x<span class="sc">$</span>name,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">committee_classification =</span> x<span class="sc">$</span>classification,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="at">chamber =</span> x<span class="sc">$</span>chamber,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    <span class="at">member_name =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>name, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    <span class="at">member_role =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>role, <span class="fu">character</span>(<span class="dv">1</span>)),</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>    <span class="at">person_id =</span> <span class="fu">vapply</span>(x<span class="sc">$</span>members, <span class="cf">function</span>(m) m<span class="sc">$</span>person_id, <span class="fu">character</span>(<span class="dv">1</span>))</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  )</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>}</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co"># Apply across all objects</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>dt_members <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  <span class="fu">lapply</span>(yaml_objects, extract_committee_members),</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>  <span class="at">use.names =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>)</span></code></pre></div>
+          <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>dt_members <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="co">#DT::datatable(rownames = F)</span></span></code></pre></div>
           <table style="width:100%;">
           <colgroup>
           <col width="26%" />
