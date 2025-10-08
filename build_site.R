@@ -179,7 +179,7 @@ render_rmd <- function(post_rmd) {
       toc = FALSE,
       toc_float = FALSE,
       theme = NULL,
-      highlight = "pygments"
+      highlight = "kate"
     ),
     output_file = paste0(file_prefix, ".html"),
     output_dir = ".",
@@ -223,7 +223,7 @@ if (file.exists("index.Rmd")) {
       toc = FALSE,
       toc_float = FALSE,
       theme = NULL,
-      highlight = "pygments"
+      highlight = "kate"
     ),
     output_file = "index.html",
     knit_root_dir = ".",
