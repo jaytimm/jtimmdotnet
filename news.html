@@ -30,119 +30,33 @@
         </header>
         
         <div class="post-content">
-          <p>New developments in <strong>multi-agent systems</strong> focus on the architectural strategies that enable effective collaboration. Building on yesterday's trends, experts highlight the necessity of robust orchestration methods to manage complex agent interactions and shared states. Emerging frameworks promise improved reliability and scalability, addressing the inherent challenges of agent coordination and failure management. (openai/gpt-4o-mini)</p>
+          <p>New developments in <strong>RAG</strong> chatbots highlight comprehensive guides for production-ready systems. Building on yesterday's trends, experts emphasize the integration of <strong>MCP</strong> within <strong>agentic AI</strong> frameworks for scalability. Emerging architectures, like Google Cloud’s advanced structures, are redefining enterprise <strong>AI</strong> capabilities. (openai/gpt-4o-mini)</p>
           <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
           
           
           <p>2025-11-16: <a href="https://thesequence.substack.com/p/the-sequence-radar-755-last-week" target="_blank">The Sequence Radar #755: Last Week in AI: Worlds Built, Models Refined, and Legends Move On</a> || thesequence.substack.com</p>
 
-          <p>2025-11-16: <a href="https://xix.ai/ainews/singlemodel-ai-architectural-design-drives-reliable-multiagent-orchestration.html" target="_blank">From Single AI to Multi-Agent Success: The Role of System Architecture
-                    
-                    
-                        
-                            
-                                
-                            
-                                
-                            November 16, 2025
-                        
-                        
-                            
-                                
-                            
-                                
-                            KevinGonzalez
-                        
-                        
-                            
-                                
-                            
-                                
-                            5
-                        
-                    
-                    
-                                            
-                    
-                    
-                        AI is evolving at a remarkable pace. The focus has shifted from creating a single, powerful model to harnessing the potential of multiple specialized AI agents working in harmony. Imagine a team of skilled professionals, each an expert in their domain—one handles data analysis, another interacts with customers, while a third oversees logistics. The real challenge, and the key to unlocking their full potential, is enabling seamless collaboration among them. This vision, discussed across the industry and made possible by modern platforms, is where true innovation lies.However, let's be honest: coordinating a group of independent, sometimes unpredictable, AI agents is a significant challenge. The difficulty isn't just in creating effective individual agents; it's the intricate orchestration in between that determines the system's success. When agents depend on each other, operate asynchronously, and risk independent failures, you're not merely coding—you're conducting a complex symphony. This is why solid architectural plans are essential from the outset, designed for both reliability and scalability.The Complex Challenge of Agent CollaborationWhy is orchestrating multi-agent systems so difficult? Consider these factors:Independence: Unlike standard program functions, agents often have their own internal processes, objectives, and states. They don't simply wait idly for commands.Complex Communication: It's not a simple conversation between two agents. Agent A might broadcast information that Agents C and D need, while Agent B waits for a cue from E before informing F.Shared Understanding (State): How do all agents agree on what's currently true? If Agent A updates a record, how can Agent B reliably and quickly learn about it? Outdated or conflicting data can severely disrupt operations.Inevitable Failures: Agents may crash, messages can get lost, or external services might time out. When one component fails, the entire system shouldn't halt or, worse, perform incorrectly.Consistency Challenges: Ensuring that a multi-step process involving several agents reaches a valid conclusion is complex, especially with distributed and asynchronous operations.In essence, the potential for complexity increases exponentially as you add more agents and interactions. Without a solid strategy, debugging becomes overwhelming, and the system can feel unstable.Choosing Your Orchestration StrategyDetermining how agents coordinate their efforts is one of the most critical architectural decisions. Here are a few common frameworks:The Conductor (Hierarchical Model): Similar to a traditional orchestra, a central orchestrator (the conductor) directs the flow, instructing specific agents (musicians) when to act and coordinating the overall performance.Advantages: Clear workflows, easy execution tracking, straightforward control; ideal for smaller or less dynamic systems.Drawbacks: The conductor can become a bottleneck or a single point of failure. This approach offers less flexibility for dynamic reactions or autonomous agent work.The Jazz Ensemble (Federated/Decentralized Model): Here, agents coordinate directly with each other based on shared signals or established rules, much like jazz musicians improvising around a common theme. Shared resources or event streams may exist, but there's no central manager dictating every action.Advantages: Resilience (if one agent fails, others can continue), scalability, adaptability to change, and potential for emergent behaviors.Considerations: Understanding the overall flow can be difficult, debugging is complex ("Why did that agent act at that moment?"), and maintaining global consistency requires careful design.Many real-world multi-agent systems (MAS) adopt a hybrid approach—perhaps a high-level orchestrator sets the stage, while groups of agents coordinate in a decentralized manner within that structure.Managing the Collective Intelligence (Shared State)For effective collaboration, agents often need a shared perspective on the world, or at least the aspects relevant to their tasks. This could include the current status of a customer order, a shared knowledge base, or collective progress toward a goal. Maintaining this "collective intelligence" consistently and accessibly across distributed agents is a major hurdle.Key architectural patterns include:The Central Library (Centralized Knowledge Base): A single, authoritative source (like a database or dedicated service) where all shared information resides. Agents read from and write to this central repository.Pro: Single source of truth, simplifying consistency enforcement.Con: Can become overwhelmed with requests, potentially slowing performance or creating a bottleneck. Requires high robustness and scalability.Distributed Notes (Distributed Cache): Agents maintain local copies of frequently needed information for faster access, supported by the central library.Pro: Faster data retrieval.Con: Ensuring local copies are current becomes a major architectural challenge, involving cache invalidation and consistency mechanisms.Broadcasting Updates (Message Passing): Instead of agents constantly querying the central library, the library (or other agents) announces changes via messages. Agents listen for relevant updates and adjust their local data accordingly.Pro: Decouples agents, supporting event-driven architectures.Con: Guaranteeing message delivery and proper handling adds complexity. What happens if a message is lost?The best choice depends on the balance between needing up-to-the-millisecond accuracy and achieving optimal performance.Planning for the Inevitable: Error Handling and RecoveryAgent failures are a matter of when, not if. Your architecture must anticipate and manage these occurrences.Key considerations include:Watchdogs (Supervision): Implementing components whose primary role is to monitor other agents. If an agent becomes unresponsive or behaves erratically, the watchdog can attempt a restart or alert the system.Smart Retries and Idempotency: If an agent's action fails, it should often retry. However, this only works if the action is idempotent—meaning performing it multiple times yields the same result as once (e.g., setting a value, not incrementing it). Non-idempotent actions can cause significant issues with retries.Cleaning Up (Compensation): If Agent A completes its task successfully, but Agent B (a subsequent step) fails, you may need to "undo" Agent A's work. Patterns like Sagas help manage these multi-step, compensable workflows.Tracking Progress (Workflow State): Maintaining a persistent log of the overall process helps. If the system fails mid-workflow, it can resume from the last known correct step instead of starting over.Containing Failures (Circuit Breakers and Bulkheads): These patterns prevent a failure in one agent or service from cascading and affecting others, thereby limiting the impact.Ensuring Accurate Task CompletionEven with reliable individual agents, you need confidence that the entire collaborative task finishes correctly and consistently.Strategies to consider:Near-Atomic Operations: While true ACID transactions are challenging with distributed agents, you can design workflows to behave as atomically as possible using patterns like Sagas.The Immutable Log (Event Sourcing): Record every significant action and state change as an immutable event in a log. This provides a complete history, simplifies state reconstruction, and aids in auditing and debugging.Achieving Consensus: For critical decisions, agents might need to agree before proceeding. This could involve simple voting or more complex distributed consensus algorithms for high-stakes coordination.Verifying Results (Validation): Incorporate steps into your workflow to check the output or state after an agent completes its task. If anomalies are detected, initiate a reconciliation or correction process.Essential Infrastructure ToolsA robust architecture relies on a strong foundation.The Post Office (Message Queues/Brokers like Kafka or RabbitMQ): Crucial for decoupling agents. They send messages to a queue; interested agents consume them. This enables asynchronous communication, handles traffic spikes, and is vital for resilient distributed systems.The Shared Filing Cabinet (Knowledge Stores/Databases): This is where your shared state resides. Select the appropriate type (relational, NoSQL, graph) based on your data structure and access patterns. This component must be highly performant and available.The X-Ray Machine (Observability Platforms): Comprehensive logging, metrics, and tracing are non-negotiable. Debugging distributed systems is notoriously difficult. The ability to observe every agent's actions, interactions, and timing is essential.The Directory (Agent Registry): How do agents discover each other or the services they require? A central registry helps manage this complexity.The Playground (Containerization and Orchestration like Kubernetes): This is how you reliably deploy, manage, and scale all those individual agent instances.How Do Agents Communicate? (Protocol Selection)The communication method between agents influences everything from performance to their level of coupling.Standard Phone Call (REST/HTTP): Simple, universally supported, and suitable for basic request/response interactions. However, it can be inefficient for high-volume traffic or complex data structures.Structured Conference Call (gRPC): Uses efficient data formats, supports various call types including streaming, and is type-safe. Excellent for performance but requires defining service contracts upfront.The Bulletin Board (Message Queues — Protocols like AMQP, MQTT): Agents publish messages to topics; others subscribe to topics of interest. This asynchronous approach is highly scalable and completely decouples senders from receivers.Direct Line (RPC — Less Common): Agents invoke functions directly on other agents. This is fast but creates tight coupling—agents must know exactly whom to call and their locations.Choose the protocol that best fits the interaction pattern. Is it a direct request? A broadcast event? A continuous data stream?Bringing It All TogetherBuilding reliable, scalable multi-agent systems isn't about finding a single perfect solution; it's about making informed architectural choices tailored to your specific requirements. Will you prioritize control with a hierarchical approach or resilience with a federated model? How will you manage the crucial shared state? What is your contingency plan for agent failures? Which infrastructure components are indispensable?The task is complex, undoubtedly. However, by concentrating on these architectural blueprints—orchestrating interactions, managing shared knowledge, planning for failures, ensuring consistency, and building on a solid infrastructure—you can manage the complexity and develop robust, intelligent systems that power the next generation of enterprise AI.Nikhil Gupta is the AI product management leader/staff product manager at Atlassian.                    
-                    
-                    
-                    
-                        
-                            
-                                0
-                            
-                            
-                                0
-                            
-                        
-                        
-                            
-                                
-                            
-                                
-                            
-                                
-                        
-                    
-                                        
-                        Related article
-                        
-                                                        
-                                
-                                Unexpected Psychological Impact: How AI Challenges Human Cognition
-                                The world is captivated by AI. Nearly one billion people now use OpenAI products, a milestone reached in just two years. It's the classic Silicon Valley formula: Build something amazing, make it affordable, get us hooked, and then figure out how to t
-                            
-                                                        
-                                
-                                Cyberpunk 2077 Coming to Mac on July 17
-                                Cyberpunk 2077 launches on macOS this week, arriving sooner than its initially scheduled early 2025 debut. The Cyberpunk 2077: Ultimate Edition becomes officially available on Apple silicon devices starting July 17th via Apple’s Mac App Store, Steam,
-                            
-                                                        
-                                
-                                Research Chiefs Call on Tech Sector to Track AI Reasoning Processes
-                                AI researchers from OpenAI, Google DeepMind, Anthropic, and a broad coalition of companies and nonprofit organizations are advocating for deeper exploration into monitoring the so-called thought processes of AI reasoning models, according to a positi
-                            
-                                                    
-                    
-                                        
-                        Comments (0)
-                        
-                            0/200
-                            
-                                
-                                   
-                                
-                                Submit</a> || xix.ai</p>
-
-          <p>2025-11-16: <a href="https://www.technoscriber.com/building-rag-pipelines-for-llms-a-complete-guide-to-retrieval-augmented-generation/" target="_blank">Building RAG Pipelines for LLMs: A Complete Guide to Retrieval-Augmented Generation</a> || technoscriber.com</p>
-
-          <p>2025-11-16: <a href="https://howtobuildtech.substack.com/p/how-to-build-tech-02-how-to-actually" target="_blank">[How to Build Tech #02] How To Actually Build RAG ( wit Implementation Code) and How it Actually Works</a> || howtobuildtech.substack.com</p>
+          <p>2025-11-16: <a href="https://stephenquirke.substack.com/p/building-a-production-ready-rag-chatbot" target="_blank">Building a Production-Ready RAG Chatbot: A Complete Guide</a> || stephenquirke.substack.com</p>
 
           <p>2025-11-15: <a href="https://huggingface.co/blog/SII-xrliu/heterogeneous-features" target="_blank">The Heterogeneous Feature of RoPE-based Attention in Long-Context LLMs</a> || huggingface.co</p>
 
-          <p>2025-11-15: <a href="https://blog.anyreach.ai/ai-digest-multi-agent-systems-advance-customer-experience/" target="_blank">[AI Digest] Multi-Agent Systems Advance Customer Experience</a> || blog.anyreach.ai</p>
+          <p>2025-11-15: <a href="https://dypsis.ai/insights/architecting-ai-agent-systems" target="_blank">Architecting AI Agent Systems: A Strategic Framework for Production Deployment</a> || dypsis.ai</p>
 
-          <p>2025-11-15: <a href="https://dev.to/kuldeep_paul/top-5-rag-evaluation-platforms-in-2025-2i0g" target="_blank">Top 5 RAG Evaluation Platforms in 2025</a> || dev.to</p>
+          <p>2025-11-15: <a href="https://pypi.org/project/agency-swarm/" target="_blank">🐝 Agency Swarm</a> || pypi.org</p>
 
-          <p>2025-11-15: <a href="https://dypsis.ai/insights/ai-coding-agents-structured-engineering" target="_blank">Rethinking AI Coding Agents: From Prompt Completion to Structured Engineering</a> || dypsis.ai</p>
+          <p>2025-11-15: <a href="https://insights.exa.ai/master-api-integration-with-lang-chain-a-step-by-step-guide/" target="_blank">Master API Integration with LangChain: A Step-by-Step Guide</a> || insights.exa.ai</p>
 
-          <p>2025-11-14: <a href="https://www.kiadev.net/news/2025-11-14-orchestrating-multi-agent-reasoning-spacy/" target="_blank">Orchestrating Multi-Agent Reasoning with spaCy: Planning, Reflection, Memory, and Knowledge Graphs</a> || kiadev.net</p>
+          <p>2025-11-14: <a href="https://www.blog.qualitypointtech.com/2025/11/self-rag-explained.html" target="_blank">QualityPoint Technologies (QPT)</a> || blog.qualitypointtech.com</p>
 
-          <p>2025-11-14: <a href="https://anuragsirish.substack.com/p/why-multi-agent-systems-are-hard" target="_blank">Ep. 6 - Why Multi-Agent Systems Are Hard (And How to Build Them Right)</a> || anuragsirish.substack.com</p>
-
-          <p>2025-11-14: <a href="https://mljourney.com/building-a-retrieval-augmented-generation-rag-pipeline-with-llm/" target="_blank">Building a Retrieval Augmented Generation (RAG) Pipeline with LLM</a> || mljourney.com</p>
+          <p>2025-11-14: <a href="https://heicodersacademy.com/blog/how-to-to-deploy-ai-agents-that-work-a-comprehensive-guide-to-rag-mcp/" target="_blank">How to To Deploy AI Agents That Work : A Comprehensive Guide to RAG & MCP</a> || heicodersacademy.com</p>
 
           <p>2025-11-14: <a href="https://inkeep.com/blog/agent-frameworks-platforms-overview" target="_blank">B2B AI Agents: No-Code vs Code Platforms (LangGraph, n8n, Inkeep & more)</a> || inkeep.com</p>
 
-          <p>2025-11-14: <a href="https://aiintegrationsforbiz.substack.com/p/beyond-rag-vs-cag-agentic-workflows" target="_blank">Beyond RAG vs CAG: Agentic Workflows Power the Intelligent Enterprise</a> || aiintegrationsforbiz.substack.com</p>
+          <p>2025-11-14: <a href="https://www.marktechpost.com/2025/11/14/how-to-design-an-advanced-multi-agent-reasoning-system-with-spacy-featuring-planning-reflection-memory-and-knowledge-graphs/" target="_blank">How to Design an Advanced Multi-Agent Reasoning System with spaCy Featuring Planning, Reflection, Memory, and Knowledge Graphs</a> || marktechpost.com</p>
 
-          <p>2025-11-14: <a href="https://papers.cool/arxiv/cs.IR" target="_blank">Information Retrieval</a> || papers.cool</p>
+          <p>2025-11-14: <a href="https://knowledge.businesscompassllc.com/building-scalable-ai-pipelines-on-aws-with-deepseek-r1-open-source-models/" target="_blank">Building Scalable AI Pipelines on AWS with DeepSeek R1 Open-Source Models</a> || knowledge.businesscompassllc.com</p>
 
-          <p>2025-11-14: <a href="https://www.infoq.com/articles/reducing-false-positives-retrieval-augmented-generation/" target="_blank">Reducing False Positives in Retrieval-Augmented Generation (RAG) Semantic Caching: a Banking Case Study</a> || infoq.com</p>
-
-          <p>2025-11-14: <a href="https://www.llamaindex.ai/blog/document-ai-the-next-evolution-of-intelligent-document-processing" target="_blank">Document AI: The Next Evolution of Intelligent Document Processing</a> || llamaindex.ai</p>
+          <p>2025-11-14: <a href="https://www.digitaldividedata.com/blog/building-multilingual-datasets-for-gen-ai" target="_blank">Challenges in Building Multilingual Datasets for Generative AI</a> || digitaldividedata.com</p>
 
           <p>2025-11-13: <a href="https://huggingface.co/blog/Photoroom/prx-part1-architectures" target="_blank">Text-to-image Architectural Experiments</a> || huggingface.co</p>
 
@@ -150,57 +64,53 @@
 
           <p>2025-11-13: <a href="https://thesequence.substack.com/p/the-sequence-opinion-754-generalist" target="_blank">The Sequence Opinion #754: Generalist vs. Specialist: Which School Will Win in Mathematical AI</a> || thesequence.substack.com</p>
 
-          <p>2025-11-13: <a href="https://cloud.google.com/blog/topics/startups/four-steps-for-startups-to-build-multi-agent-systems" target="_blank">Technical guide: Four steps for startups to build multi-agent systems</a> || cloud.google.com</p>
+          <p>2025-11-13: <a href="https://ideaforgestudios.com/2025/11/12/from-reasoning-to-execution-orchestrating-production-ready-agentic-ai-systems-with-n8n-and-model-context-protocol/" target="_blank">From Reasoning to Execution: Orchestrating Production-Ready Agentic AI systems with n8n and Model Context Protocol</a> || ideaforgestudios.com</p>
 
-          <p>2025-11-13: <a href="https://jkoder.com/implementing-retrieval-augmented-generation-rag-systems-for-document-querying-using-vector-databases-and-fastapi/" target="_blank">Implementing Retrieval-Augmented Generation (RAG) Systems for Document Querying Using Vector Databases and FastAPI</a> || jkoder.com</p>
-
-          <p>2025-11-13: <a href="https://mburaksayici.com/blog/2025/11/13/a-rag-boilerplate.html" target="_blank">Table of Contents</a> || mburaksayici.com</p>
-
-          <p>2025-11-13: <a href="https://jkoder.com/building-autonomous-ai-agents-with-langchain-python-and-openai-api-a-practical-guide/" target="_blank">Building Autonomous AI Agents with LangChain, Python, and OpenAI API: A Practical Guide</a> || jkoder.com</p>
-
-          <p>2025-11-13: <a href="https://www.rtinsights.com/hybrid-rag-the-key-to-successfully-converging-structure-and-semantics-in-ai/" target="_blank">Hybrid RAG: The Key to Successfully Converging Structure and Semantics in AI</a> || rtinsights.com</p>
-
-          <p>2025-11-13: <a href="https://www.getmaxim.ai/articles/complete-guide-to-rag-evaluation-metrics-methods-and-best-practices-for-2025/" target="_blank">Complete Guide to RAG Evaluation: Metrics, Methods, and Best Practices for 2025</a> || getmaxim.ai</p>
+          <p>2025-11-13: <a href="https://jamwithai.substack.com/p/agentic-rag-with-langgraph-and-telegram" target="_blank">BIG Announcement (Limited offer)</a> || jamwithai.substack.com</p>
 
           <p>2025-11-13: <a href="https://research.aimultiple.com/ai-agent-builders/" target="_blank">20+ AI Agent Builders:  Microsoft Copilot Studio, Beam AI & Vertex AI Builder</a> || research.aimultiple.com</p>
 
-          <p>2025-11-13: <a href="https://research.aimultiple.com/open-source-ai-agents/" target="_blank">Open source AI agent examples</a> || research.aimultiple.com</p>
+          <p>2025-11-13: <a href="https://ragaboutit.com/google-clouds-revolutionary-agentic-ai-framework-how-the-5-level-architecture-is-transforming-enterprise-rag-systems/" target="_blank">Google Cloud’s Revolutionary Agentic AI Framework: How the 5-Level Architecture Is Transforming Enterprise RAG Systems</a> || ragaboutit.com</p>
 
           <p>2025-11-13: <a href="https://github.com/modelscope/AgentEvolver" target="_blank">modelscope/AgentEvolver</a> || github.com</p>
 
-          <p>2025-11-13: <a href="https://www.akira.ai/blog/langsmith-and-agentops-with-ai-agents" target="_blank">LangSmith and AgentOps: Elevating AI Agents Observability</a> || akira.ai</p>
+          <p>2025-11-13: <a href="https://research.aimultiple.com/open-source-ai-agents/" target="_blank">Open source AI agent examples</a> || research.aimultiple.com</p>
 
-          <p>2025-11-13: <a href="https://research.aimultiple.com/agentic-ai-stack/" target="_blank">The 7 Layers of Agentic AI Stack</a> || research.aimultiple.com</p>
+          <p>2025-11-13: <a href="https://cloud.google.com/blog/topics/startups/four-steps-for-startups-to-build-multi-agent-systems" target="_blank">Technical guide: Four steps for startups to build multi-agent systems</a> || cloud.google.com</p>
 
-          <p>2025-11-13: <a href="https://www.comet.com/site/blog/ai-agents/" target="_blank">The Definitive Guide to Agentic AI: What AI Agents Actually Are and How to Build Them for Production</a> || comet.com</p>
+          <p>2025-11-13: <a href="https://jkoder.com/building-autonomous-ai-agents-with-langchain-python-and-openai-api-a-practical-guide/" target="_blank">Building Autonomous AI Agents with LangChain, Python, and OpenAI API: A Practical Guide</a> || jkoder.com</p>
 
-          <p>2025-11-13: <a href="https://www.infoworld.com/article/4089186/databricks-fires-back-at-snowflake-with-sql-based-ai-document-parsing.html" target="_blank">Databricks fires back at Snowflake with SQL-based AI document parsing</a> || infoworld.com</p>
+          <p>2025-11-13: <a href="https://theaishortcuts.substack.com/p/building-a-rag-system-with-langchain" target="_blank">Building a RAG System with LangChain 1.0</a> || theaishortcuts.substack.com</p>
 
-          <p>2025-11-13: <a href="https://pypi.org/project/paddleocr/" target="_blank">PaddleOCR</a> || pypi.org</p>
+          <p>2025-11-13: <a href="https://mljourney.com/agentic-ai-architecture-connecting-data-pipelines-and-models/" target="_blank">Agentic AI Architecture: Connecting Data Pipelines and Models</a> || mljourney.com</p>
+
+          <p>2025-11-13: <a href="https://www.microsoft.com/en-us/research/articles/docreward-advancing-professional-document-design-through-ai-evaluation/" target="_blank">DocReward: Advancing professional document design through AI evaluation</a> || microsoft.com</p>
 
           <p>2025-11-12: <a href="https://thesequence.substack.com/p/the-sequence-ai-of-the-week-753-inside" target="_blank">The Sequence AI of the Week #753: Inside Kimi K2 Thinking: The Architecture of Long-Horizon Reasoning</a> || thesequence.substack.com</p>
 
-          <p>2025-11-12: <a href="https://meisteritsystems.com/news/how-to-integrate-retrieval-augmented-generation-rag-into-your-application/" target="_blank">How to Integrate Retrieval-Augmented Generation (RAG) into Your Application?</a> || meisteritsystems.com</p>
+          <p>2025-11-12: <a href="https://www.netguru.com/blog/ai-agent-tech-stack" target="_blank">The AI Agent Tech Stack in 2025: What You Actually Need to Build & Scale</a> || netguru.com</p>
 
-          <p>2025-11-12: <a href="https://towardsai.net/p/machine-learning/rag-the-backbone-of-modern-ai-applications-what-why-how-and-the-latest-advancements" target="_blank">RAG: The Backbone of Modern AI Applications — What, Why, How, and the Latest Advancements</a> || towardsai.net</p>
-
-          <p>2025-11-12: <a href="https://research.aimultiple.com/rag-frameworks/" target="_blank">RAG Frameworks: LangChain vs LangGraph vs LlamaIndex vs Haystack vs DSPy</a> || research.aimultiple.com</p>
+          <p>2025-11-12: <a href="https://www.ai21.com/blog/structured-rag-enterprise-accuracy/" target="_blank">AI21 Maestro’s accuracy fix for RAG’s blind spots</a> || ai21.com</p>
 
           <p>2025-11-12: <a href="https://getstream.io/blog/multiagent-ai-frameworks/" target="_blank">Best 5 Frameworks To Build Multi-Agent AI Applications</a> || getstream.io</p>
 
-          <p>2025-11-12: <a href="https://learn.microsoft.com/en-us/samples/azure-samples/azure-search-openai-demo/azure-search-openai-demo/" target="_blank">RAG chat app with your data (Python)</a> || learn.microsoft.com</p>
+          <p>2025-11-12: <a href="https://mastra.ai/blog/patterns-book" target="_blank">Announcing our second book: Patterns for Building AI Agents</a> || mastra.ai</p>
 
-          <p>2025-11-12: <a href="https://testfort.com/blog/testing-rag-systems" target="_blank">Testing RAG Systems: A Practical Guide for Modern AI Applications</a> || testfort.com</p>
+          <p>2025-11-12: <a href="https://codeconductor.ai/blog/codeconductor-uses-langchain4j-build-enterprise-ai-apps/" target="_blank">How CodeConductor Uses LangChain4j to Build AI Apps for the Enterprise in 2025</a> || codeconductor.ai</p>
 
-          <p>2025-11-12: <a href="https://thirdeyedata.ai/top-18-tools-and-platforms-for-multimodal-ai-solutions-development-in-2025-26/" target="_blank">Top 18 Tools and Platforms for Multimodal AI Solutions Development in 2025–26</a> || thirdeyedata.ai</p>
+          <p>2025-11-12: <a href="https://blog.emb.global/step-by-step-guide-to-building-a-rag-pipeline-in-generative-ai/" target="_blank">Step-by-Step Guide to Building a RAG Pipeline in Generative AI</a> || blog.emb.global</p>
 
-          <p>2025-11-12: <a href="https://joshuaberkowitz.us/blog/github-repos-8/apple-embedding-atlas-making-sense-of-millions-through-interactive-visualization-1769" target="_blank">Apple Embedding Atlas: Making Sense of Millions Through Interactive Visualization</a> || joshuaberkowitz.us</p>
+          <p>2025-11-12: <a href="https://www.deepspeed.ai/tutorials/pipeline/" target="_blank">Pipeline Parallelism</a> || deepspeed.ai</p>
 
-          <p>2025-11-12: <a href="https://www.netguru.com/blog/ai-agent-tech-stack" target="_blank">The AI Agent Tech Stack in 2025: What You Actually Need to Build & Scale</a> || netguru.com</p>
+          <p>2025-11-12: <a href="https://www.designveloper.com/blog/what-is-prompt-engineering/" target="_blank">What Is Prompt Engineering? Key Techniques & Examples</a> || designveloper.com</p>
 
-          <p>2025-11-12: <a href="https://www.heliosz.ai/blog/ai-workflows-with-autonomous-agents/" target="_blank">Optimizing AI Workflows with Autonomous Agents- An Insightful Guide</a> || heliosz.ai</p>
+          <p>2025-11-12: <a href="https://blog.american-technology.net/ultimate-guide-to-prompt-engineering-bootcamp/" target="_blank">The Ultimate Guide to Prompt Engineering Bootcamp: A Guide to LLM Mastery</a> || blog.american-technology.net</p>
 
-          <p>2025-11-12: <a href="https://repositoryradar.substack.com/p/repository-radar-pr21" target="_blank">Repository Radar - PR#21</a> || repositoryradar.substack.com</p>
+          <p>2025-11-12: <a href="https://kanerika.com/blogs/prompt-engineering-tools/" target="_blank">30%</a> || kanerika.com</p>
+
+          <p>2025-11-12: <a href="https://www.allaboutai.com/ai-seo/prompt-engineering-for-content-creation/" target="_blank">Prompt Engineering for Content Creation: 9 Tips for Content Editors in 2025</a> || allaboutai.com</p>
+
+          <p>2025-11-12: <a href="https://www.cognitivetoday.com/2025/11/multimodal-ai-advancements-molmo/" target="_blank">Multimodal AI Advancements: Unlocking Perception with Molmo</a> || cognitivetoday.com</p>
         </div>
       </article>
     </div>
