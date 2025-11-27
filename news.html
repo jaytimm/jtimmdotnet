@@ -30,163 +30,71 @@
         </header>
         
         <div class="post-content">
-          <p>Emerging insights on **Autonomous Multi-Agent Systems** underscore their role in enhancing AI collaboration. **CBRE** leverages **Amazon Bedrock** to streamline property management processes, reflecting ongoing partnerships in AI. New guides to create local **PDF query tools** with **Langchain** emphasize privacy and cost-effectiveness for users. (openai/gpt-4o-mini)</p>
+          <p>New developments in **AI-driven cloud-native applications** persist, with enhanced capabilities in **Kubernetes** and **containerization**. **CBRE** powers unified property management using **Amazon Bedrock**, pushing digital assistance further. Emerging discussions on **Retrieval-Augmented Generation (RAG)** highlight its role in scalable AI agents, building on yesterday's trends. (openai/gpt-4o-mini)</p>
           <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
           
           
-          <p>2025-11-27: <a href="https://ainextgrowth.com/autonomous-multi-agent-systems-ai-collaboration-orchestration/" target="_blank">Autonomous Multi-Agent Systems: A New Era of AI Collaboration</a> || ainextgrowth.com</p>
+          <p>2025-11-27: <a href="https://www.ijscia.com/building-ai-driven-cloud-native-applications-with-kubernetes-and-containerization/" target="_blank">Building AI-Driven Cloud-Native Applications with Kubernetes and Containerization</a> || ijscia.com</p>
 
           <p>2025-11-27: <a href="https://aws.amazon.com/blogs/machine-learning/how-cbre-powers-unified-property-management-search-and-digital-assistant-using-amazon-bedrock/" target="_blank">How CBRE powers unified property management search and digital assistant using Amazon Bedrock</a> || aws.amazon.com</p>
-
-          <p>2025-11-27: <a href="https://xix.ai/ainews/build-free-local-llm-pdf-query-app-langchain.html" target="_blank">Create a Free Local PDF Query Tool Using Langchain and LLM
-                    
-                    
-                        
-                            
-                                
-                            
-                                
-                            November 27, 2025
-                        
-                        
-                            
-                                
-                            
-                                
-                            LawrenceScott
-                        
-                        
-                            
-                                
-                            
-                                
-                            6
-                        
-                    
-                    
-                                            
-                    
-                    
-                        In today's data-centric landscape, efficiently processing, summarizing, and querying PDF documents is an invaluable skill. This guide offers a comprehensive walkthrough for developing your own application to achieve this. By harnessing the capabilities of Large Language Models (LLMs) alongside tools like Langchain, Streamlit, and Ollama, you can build a solution that operates completely on your local machine. This ensures data privacy and removes any costs tied to cloud-based platforms. This method empowers you to manage document analysis privately and effectively from your own computer, unlocking new potential for research, business insights, and personal knowledge management.  Key PointsDevelop a local application for analyzing PDF documents.Utilize Langchain to manage interactions with Large Language Models.Implement Streamlit to create an intuitive user interface.Use Ollama to run LLMs directly on your local machine.Handle document summarization and querying while maintaining privacy.Apply 'stuffing' and 'map reduce' techniques for processing documents.Install and set up all required software dependencies.Adapt the application to meet your specific requirements.Conduct all document analysis locally to guarantee data security.Leverage an open-source, cost-free solution to minimize expenses.Introduction to Local LLM PDF AnalysisThe Power of Local Document Analysis In a time of growing focus on data security and cost management, performing document analysis locally presents considerable benefits. Unlike cloud-based alternatives, a local setup keeps your information securely contained within your own system, giving you full authority over your data. Running Large Language Models on your personal computer allows you to bypass ongoing fees from external providers, creating a financially viable option for sustained use. Integrating tools such as Langchain, Streamlit, and Ollama facilitates the development of a robust, adaptable, and confidential document analysis system. This strategy is especially advantageous for fields handling private information, including finance, healthcare, and legal services, where protecting data is a top priority.Why Build Your Own PDF Query App?Developing your own PDF query application delivers several core advantages. Primarily, it offers exceptional flexibility, enabling you to customize the app to your exact needs. You can specify query types, adjust the depth of summaries, and design the user interface to align with your specific processes. Secondly, it guarantees data confidentiality by storing your documents and their analysis within your local system. This is particularly vital when working with sensitive or proprietary information. Thirdly, it removes reliance on outside services, granting you total command over your data and lowering the threat of security incidents or service interruptions. Additionally, by using open-source software, you can avoid expensive monthly fees and support community-developed projects. This do-it-yourself method fosters self-reliance in document analysis, boosting your overall productivity and data protection. A feature like Open WebUI permits document uploads but processes them in segments.Core Technologies and ToolsLangchain: The Orchestration Engine Langchain is a robust framework created to streamline working with Large Language Models. It offers a collection of tools and structures that simplify building applications powered by LLMs. Using Langchain, you can efficiently handle prompts, processing chains, and automated agents, allowing you to construct sophisticated workflows for document handling, summarization, and questioning. Its modular architecture lets you combine various elements, like different LLMs, data inputs, and result formats, making it extremely versatile for diverse scenarios. Langchain's compatibility with local LLMs and its capacity to manage intricate queries make it a perfect foundation for a private and customizable document analysis tool. It includes helper functions for programmatically accessing and managing large language models. Langchain is offered in both Python and JavaScript for user flexibility.Streamlit: Building the User Interface Streamlit is an open-source Python package that enables the straightforward creation of custom web applications for machine learning and data science. It lets you develop interactive dashboards and user interfaces with very little coding, making it an excellent choice for demonstrating your document analysis application's features. Streamlit's intuitive API allows you to incorporate input controls, show outcomes, and generate charts with minimal code. Its smooth compatibility with Python and its feature to instantly refresh the app when code is modified make it a productive tool for fast development and launch. With Streamlit, you can design a clear interface that enables users to effortlessly upload files, input queries, and examine the analysis results. It is a Python library for constructing interactive data dashboards.Ollama: Serving LLMs Locally Ollama is a utility built to simplify running Large Language Models on your local computer. It makes downloading, setting up, and serving LLMs straightforward, allowing you to utilize their capabilities without depending on online services. Ollama works with a range of LLMs, such as Llama 2 and Mistral, and supplies a simple API for communicating with them. By employing Ollama, you can confirm that your document analysis application functions entirely on-premises, safeguarding your data and removing the requirement for an internet connection. Its effective management of system resources and ability to operate on standard hardware render it a budget-friendly choice for prolonged use. Ollama provides an API that is compatible with OpenAI's standards. Ollama enables models to be hosted for application integration.Step-by-Step Guide to Building Your PDF Query AppInstalling Ollama and Downloading an LLM The initial phase in creating your local PDF query application is to install Ollama, which will act as the core for operating Large Language Models on your device. Ollama streamlines the procedures of acquiring, configuring, and serving LLMs, facilitating an easy start with local document analysis. To install Ollama, go to the official Ollama website and get the correct version for your OS, like macOS or Linux. After downloading, adhere to the setup guidelines on the site. Once Ollama is installed, the subsequent step is to acquire an LLM. Ollama is compatible with various LLMs, including Llama 2 and Mistral. For this tutorial, we will use Mixtral, a high-performance Mixture of Experts model with publicly available weights from Mistral AI. The command is ollama pull mixtral. Please note that downloading the models may take some time.Installing Dependencies To build your document analysis application, you must install a number of dependencies. These consist of Langchain, Streamlit, PyPDF, and other auxiliary packages. The required dependencies are:LangchainStreamlitPyPDFOpenAI (required for Ollama integration)tiktokenpython-dotenvTo install these packages, use the pip package manager. Establish a new virtual environment to isolate your project's dependencies from your main Python installation. Utilizing a virtual environment assists in managing project-specific libraries and preventing clashes with other Python endeavors on your computer. Execute the installation script to get the dependencies.Frequently Asked Questions What is Langchain and how does it help in building a PDF query app?Langchain is a framework that makes it easier to work with Large Language Models. It supplies tools and structures for developing applications that use LLMs, including organizing prompts, processing sequences, and automated tools for document handling, summarization, and querying. Why should I choose to build a local PDF query app over using cloud-based services?Creating a local PDF query app provides superior data security, removes ongoing subscription fees, and grants you full autonomy over your information. It prevents reliance on external providers and decreases the likelihood of security issues, making it perfect for managing confidential data. Can I use different LLMs with this setup, or am I limited to Llama 2 and Mistral?Although this guide highlights Llama 2 and Mistral, Ollama supports a wide array of LLMs. You can experiment with other available models and incorporate them into your application depending on your particular needs and preferences.Related Questions How does the 'stuffing' method work in Langchain for document summarization?The 'stuffing' method works by placing all relevant text into the query's context, merging every document into a single prompt for the language model. It feeds the complete text directly into the LLM, which is appropriate for smaller documents that can entirely fit within the model's processing limit. The 'stuffing' technique works well with shorter texts. For more extensive documents, other models tend to be more efficient. What is the 'map reduce' method and how is it used for querying documents?The 'map reduce' method is a multi-stage process that examines each page individually to locate pertinent information. It entails breaking documents into sections, summarizing each part separately, and then merging these summaries for a conclusive output. Map Reduce is better suited for larger files or situations where certain document segments require more thorough investigation. To apply the map reduce method, begin by loading all documents and their pages. Next, you will retrieve the text content from these pages and execute your query.                    
-                    
-                    
-                    
-                        
-                            
-                                0
-                            
-                            
-                                0
-                            
-                        
-                        
-                            
-                                
-                            
-                                
-                            
-                                
-                        
-                    
-                                        
-                        Related article
-                        
-                                                        
-                                
-                                ComfyUI Inpainting: The Complete Guide
-                                ComfyUI provides sophisticated tools for image editing. This guide helps you master inpainting, a powerful technique for seamlessly editing and replacing image elements. Discover how to configure your workflow, apply advanced masking strategies, fix 
-                            
-                                                        
-                                
-                                Questioning the Reliability of AI's Chain-of-Thought Reasoning
-                                As artificial intelligence is increasingly deployed in critical areas such as healthcare and autonomous vehicles, the issue of trust becomes more urgent. A technique known as chain-of-thought (CoT) reasoning has emerged as a popular approach. It enab
-                            
-                                                        
-                                
-                                AI-Powered Comic Book Creation: A Step-by-Step Tutorial
-                                Creating comic books has never been more accessible than it is today, thanks to advancements in artificial intelligence. This guide offers a clear, step-by-step method for crafting compelling comic books using AI tools, with a special focus on platfo
-                            
-                                                    
-                    
-                                        
-                        Comments (0)
-                        
-                            0/200
-                            
-                                
-                                   
-                                
-                                Submit</a> || xix.ai</p>
 
           <p>2025-11-26: <a href="https://huggingface.co/blog/continuous_batching" target="_blank">Continuous batching</a> || huggingface.co</p>
 
           <p>2025-11-26: <a href="https://thesequence.substack.com/p/the-sequence-ai-of-the-week-761-olmo" target="_blank">The Sequence AI of the Week #761: Olmo 3 vs. The Black Box: What a Truly Inspectable LLM Looks Like</a> || thesequence.substack.com</p>
 
-          <p>2025-11-26: <a href="https://victorysquarepartners.com/rag-testing-with-deepeval/" target="_blank">RAG Testing with DeepEval: A Hands-On Guide to Reliable Retrieval-Augmented Generation</a> || victorysquarepartners.com</p>
-
           <p>2025-11-26: <a href="https://next.redhat.com/2025/11/26/tool-rag-the-next-breakthrough-in-scalable-ai-agents/" target="_blank">Tool RAG: The Next Breakthrough in Scalable AI Agents</a> || next.redhat.com</p>
 
-          <p>2025-11-26: <a href="https://aws.amazon.com/blogs/web3/building-personalized-web3-experiences-with-%E2%9D%9Cembeds-ai-recommendation-platform-on-aws/" target="_blank">Building Personalized Web3 Experiences with ❜embed’s AI Recommendation Platform on AWS</a> || aws.amazon.com</p>
+          <p>2025-11-26: <a href="https://bardai.ai/2025/11/26/develop-specialized-ai-agents-with-recent-nvidia-nemotron-vision-rag-and-guardrail-models/" target="_blank">Develop Specialized AI Agents with Recent NVIDIA Nemotron Vision, RAG, and Guardrail Models</a> || bardai.ai</p>
+
+          <p>2025-11-26: <a href="https://www.simbo.ai/blog/exploring-the-impact-of-ai-driven-multi-agent-orchestration-on-streamlining-complex-business-workflows-and-enhancing-operational-efficiency-182195/" target="_blank">Exploring the Impact of AI-Driven Multi-Agent Orchestration on Streamlining Complex Business Workflows and Enhancing Operational Efficiency</a> || simbo.ai</p>
+
+          <p>2025-11-26: <a href="https://www.deepspeed.ai/tutorials/pipeline/" target="_blank">Pipeline Parallelism</a> || deepspeed.ai</p>
+
+          <p>2025-11-26: <a href="https://beam.apache.org/documentation/ml/overview/" target="_blank">Get started with AI/ML pipelines</a> || beam.apache.org</p>
 
           <p>2025-11-25: <a href="https://huggingface.co/blog/flux-2" target="_blank">Welcome FLUX.2 - BFL’s new open image generation model 🤗</a> || huggingface.co</p>
 
           <p>2025-11-25: <a href="https://blog.langchain.com/using-skills-with-deep-agents/" target="_blank">Using skills with Deep Agents</a> || blog.langchain.com</p>
 
-          <p>2025-11-25: <a href="https://thesequence.substack.com/p/the-sequence-knowledge-760-everything" target="_blank">The Sequence Knowledge #760: Everything You Need to Know About Generative Synthesis in AI Models</a> || thesequence.substack.com</p>
+          <p>2025-11-25: <a href="https://contextual.ai/blog/an-agentic-alternative-to-graphrag" target="_blank">An Agentic Alternative to GraphRAG</a> || contextual.ai</p>
 
-          <p>2025-11-25: <a href="https://link.springer.com/subjects/multiagent-systems" target="_blank">Multiagent Systems</a> || link.springer.com</p>
+          <p>2025-11-25: <a href="https://www.min.io/learn/retrieval-augmented-generation" target="_blank">What Is Retrieval Augmented Generation (RAG) in Enterprise AI?</a> || min.io</p>
 
-          <p>2025-11-25: <a href="https://www.getmaxim.ai/articles/understanding-rag-pipelines-architecture-challenges-and-best-practices/" target="_blank">Understanding RAG Pipelines: Architecture, Challenges, and Best Practices</a> || getmaxim.ai</p>
-
-          <p>2025-11-25: <a href="https://blog.gaborkoos.com/posts/2025-11-25-The-Database-Zoo-Vector-Databases-and-High-Dimensional-Search/" target="_blank">The Database Zoo: Vector Databases and High-Dimensional Search</a> || blog.gaborkoos.com</p>
-
-          <p>2025-11-25: <a href="https://www.geeky-gadgets.com/deep-agents-langchain-langgraph/" target="_blank">Build Smarter Sub-Agents with Deep Agents : Plans, Delegates & Ships Results Locally</a> || geeky-gadgets.com</p>
-
-          <p>2025-11-25: <a href="https://evokehub.com/comparing-llamaindex-and-langchain-a-guide-for-ai-app-builders/" target="_blank">Comparing LlamaIndex and LangChain: A Guide for AI App Builders</a> || evokehub.com</p>
-
-          <p>2025-11-25: <a href="https://www.revverdocs.com/ai-document-analysis-at-scale-smart-prompts-for-client-management/" target="_blank">AI Document Analysis at Scale: Smart Prompts for Client Management</a> || revverdocs.com</p>
+          <p>2025-11-25: <a href="https://blogs.sas.com/content/sascom/2025/11/25/the-strategic-imperative-governance-for-retrieval-augmented-generation/" target="_blank">The strategic imperative: Governance for retrieval-augmented generation</a> || blogs.sas.com</p>
 
           <p>2025-11-25: <a href="https://dataforest.ai/blog/multi-agent-architecture-distributes" target="_blank">Multi-Agent Architecture Distributes Cognition Like a Computation</a> || dataforest.ai</p>
+
+          <p>2025-11-25: <a href="https://examples.tely.ai/best-practices-for-efficient-workflows-in-multi-agent-systems/" target="_blank">Best Practices for Efficient Workflows in Multi-Agent Systems</a> || examples.tely.ai</p>
+
+          <p>2025-11-25: <a href="https://www.dataquest.io/blog/introduction-to-vector-databases-using-chromadb/" target="_blank">Introduction to Vector Databases using ChromaDB</a> || dataquest.io</p>
 
           <p>2025-11-24: <a href="https://www.anthropic.com/news/claude-opus-4-5" target="_blank">Introducing Claude Opus 4.5</a> || anthropic.com</p>
 
           <p>2025-11-24: <a href="https://huggingface.co/blog/Tavily/tavily-deep-research" target="_blank">Building Deep Research: How we Achieved State of the Art</a> || huggingface.co</p>
 
-          <p>2025-11-24: <a href="https://bix-tech.com/hugging-face-for-enterprise-nlp-a-practical-guide-to-using-open-models-safely-and-at-scale/" target="_blank">Hugging Face for Enterprise NLP: A Practical Guide to Using Open Models Safely and at Scale</a> || bix-tech.com</p>
-
-          <p>2025-11-24: <a href="https://www.emergentmind.com/topics/multi-turn-retrieval-augmented-generation-rag" target="_blank">Multi-turn Retrieval-Augmented Generation</a> || emergentmind.com</p>
-
-          <p>2025-11-24: <a href="https://blog.csdn.net/qq_39749966/article/details/135139311" target="_blank">Technical Considerations for Complex RAG (Retrieval Augmented Generation)</a> || blog.csdn.net</p>
-
-          <p>2025-11-24: <a href="https://thecodebeast.com/prompt-engineering-in-2025-still-a-skill-or-just-a-tool/" target="_blank">Prompt Engineering in 2025: Still a Skill or Just a Tool?</a> || thecodebeast.com</p>
-
-          <p>2025-11-24: <a href="https://www.ibm.com/thought-leadership/institute-business-value/en-us/report/scale-agentic-ai" target="_blank">The essential guide to agentic AI</a> || ibm.com</p>
-
           <p>2025-11-24: <a href="https://developer.nvidia.com/blog/build-and-run-secure-data-driven-ai-agents/" target="_blank">Build and Run Secure, Data-Driven AI Agents</a> || developer.nvidia.com</p>
 
-          <p>2025-11-24: <a href="https://www.cloudtalk.io/blog/ai-call-summary-solutions/" target="_blank">Best AI Call Summarization Solutions for Business: Full Review for 2025</a> || cloudtalk.io</p>
+          <p>2025-11-24: <a href="https://www.getmaxim.ai/articles/a-complete-guide-to-tracing-and-evaluating-rag-pipelines/" target="_blank">Conclusion</a> || getmaxim.ai</p>
+
+          <p>2025-11-24: <a href="https://bardai.ai/2025/11/24/a-latest-standard-for-retrieval-evaluation/" target="_blank">A Latest Standard for Retrieval Evaluation</a> || bardai.ai</p>
+
+          <p>2025-11-24: <a href="https://www.blog.brightcoding.dev/2025/11/25/the-visual-ai-agent-revolution-how-no-code-platforms-are-democratizing-ai-development-2025-guide/" target="_blank">The Visual AI Agent Revolution: How No-Code Platforms Are Democratizing AI Development (2025 Guide)</a> || blog.brightcoding.dev</p>
+
+          <p>2025-11-24: <a href="https://www.financialcontent.com/article/newsfile-2025-11-24-felo-launches-livedoc-worlds-first-collaborative-ai-agent-workspace" target="_blank">Felo Launches LiveDoc: World's First Collaborative AI Agent Workspace</a> || financialcontent.com</p>
 
           <p>2025-11-23: <a href="https://thesequence.substack.com/p/the-sequence-radar" target="_blank">The Sequence Radar #759: Grok 4.1, Gemini 3 Pro and the Agentic Stack, Plus a Personal Note</a> || thesequence.substack.com</p>
 
-          <p>2025-11-23: <a href="https://blog.anyreach.ai/ai-digest-multi-agent-systems-advance-conversational-intelligence/" target="_blank">[AI Digest] Multi-Agent Systems Advance Conversational Intelligence</a> || blog.anyreach.ai</p>
+          <p>2025-11-23: <a href="https://bardai.ai/2025/11/23/construct-an-over-engineered-retrieval-system/" target="_blank">Construct an Over-Engineered Retrieval System</a> || bardai.ai</p>
 
-          <p>2025-11-23: <a href="https://dasroot.net/posts/2025/11/longrag-vs-self-rag-vs-graphrag/" target="_blank">Advanced RAG Variants: LongRAG, Self-RAG, and GraphRAG</a> || dasroot.net</p>
+          <p>2025-11-23: <a href="https://byteiota.com/langgraph-for-ai-agents-build-production-ready-workflows/" target="_blank">LangGraph for AI Agents: Build Production-Ready Workflows</a> || byteiota.com</p>
 
-          <p>2025-11-23: <a href="https://scipapermill.com/index.php/2025/11/23/prompt-engineerings-evolution-from-simple-cues-to-self-adaptive-agents-and-beyond/" target="_blank">Prompt Engineering’s Evolution: From Simple Cues to Self-Adaptive Agents and Beyond</a> || scipapermill.com</p>
+          <p>2025-11-22: <a href="https://www.emergentmind.com/topics/hybrid-retrieval-augmented-generation-rag" target="_blank">Hybrid Retrieval-Augmented Generation (RAG)</a> || emergentmind.com</p>
 
-          <p>2025-11-23: <a href="https://generactorai.com/blog/n8n/19916/n8n-langchain-integration-advanced-ai-workflows/" target="_blank">n8n LangChain Integration: Build Advanced AI Workflows Seamlessly</a> || generactorai.com</p>
+          <p>2025-11-22: <a href="https://johal.in/ray-data-gen-streaming-dataset-pipelines-2026/" target="_blank">Ray Data Gen: Streaming Dataset Pipelines 2026</a> || johal.in</p>
 
-          <p>2025-11-23: <a href="https://icaptur.ai/use-cases-for-ai-document-summarizer/" target="_blank">Top Use Cases for AI Document Summarizer Across Industries</a> || icaptur.ai</p>
+          <p>2025-11-22: <a href="https://aakashsharan.com/hybrid-retrieval/" target="_blank">Conclusion</a> || aakashsharan.com</p>
 
-          <p>2025-11-22: <a href="https://researchtrend.ai/papers/2511.18177" target="_blank">Rethinking Retrieval: From Traditional Retrieval Augmented Generation to Agentic and Non-Vector Reasoning Systems in the Financial Domain for Large Language Models</a> || researchtrend.ai</p>
-
-          <p>2025-11-22: <a href="https://www.mostlylucid.net/blog/en/rag-hybrid-search-and-indexing" target="_blank">Conclusion</a> || mostlylucid.net</p>
-
-          <p>2025-11-22: <a href="https://aheadofthecurveai.substack.com/p/intro-to-ai-agents-part-ii" target="_blank">Intro to AI Agents - Part II</a> || aheadofthecurveai.substack.com</p>
-
-          <p>2025-11-22: <a href="https://www.queryleaf.com/blog/2025/11/22/mongodb-atlas-vector-search-for-ai-and-embedding-similarity-building-intelligent-search-applications-with-sql-compatible-vector-operations/" target="_blank">MongoDB Atlas Vector Search for AI and Embedding Similarity: Building Intelligent Search Applications with SQL-Compatible Vector Operations</a> || queryleaf.com</p>
-
-          <p>2025-11-22: <a href="https://www.the-ai-corner.com/p/ai-agents-roadmap-2025-best-projects-rag-mcp-memory" target="_blank">The Ultimate AI Agent Project Roadmap for 2025</a> || the-ai-corner.com</p>
+          <p>2025-11-22: <a href="https://www.analyticsvidhya.com/blog/2025/11/what-is-rag-indexing/" target="_blank">What is RAG Indexing?</a> || analyticsvidhya.com</p>
         </div>
       </article>
     </div>
