@@ -9,13 +9,13 @@
 !CNAME
 !feed.xml
 
-# Track site/ directory (built output) - everything in it
-!site/
-!site/**
-
-# Ignore source content directory
+# Ignore source content directory (organized source files)
 content/
 content/**
+
+# Ignore site/ directory (old build location, no longer used)
+site/
+site/**
 
 # Ignore all R files and project files
 *.R

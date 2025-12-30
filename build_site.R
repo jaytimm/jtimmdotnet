@@ -38,9 +38,9 @@ generate_post_list <- function() {
         date <- metadata$date
         
         if (!is.null(title) && !is.null(date)) {
-          # Generate HTML filename with posts/ prefix for site structure
+          # Generate HTML filename (posts in root to maintain URLs)
           file_prefix <- tools::file_path_sans_ext(basename(rmd_file))
-          html_file <- paste0("posts/", file_prefix, ".html")
+          html_file <- paste0(file_prefix, ".html")
           
           post_data[[length(post_data) + 1]] <- list(
             date = date,
@@ -152,18 +152,12 @@ render_rmd <- function(post_rmd) {
   
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
   
-  # CSS path - use absolute path for pandoc, but it will be relative in final HTML
-  # Since output is in site/posts/, CSS should be ../assets/style.css in final HTML
-  # But for rendering, we need the actual file path
-  css_path <- normalizePath("site/assets/style.css", mustWork = TRUE)
+  # CSS path - use absolute path for pandoc
+  # Posts output to root, so CSS path is assets/style.css
+  css_path <- normalizePath("assets/style.css", mustWork = TRUE)
   
   # Render the R Markdown file
   cat("Processing:", post_rmd, "\n")
-  
-  # Ensure site/posts directory exists
-  if (!dir.exists("site/posts")) {
-    dir.create("site/posts", recursive = TRUE)
-  }
   
   rmarkdown::render(
     post_rmd,
@@ -175,7 +169,7 @@ render_rmd <- function(post_rmd) {
       highlight = "kate"
     ),
     output_file = paste0(file_prefix, ".html"),
-    output_dir = "site/posts",
+    output_dir = ".",  # Output to root to maintain URL structure
     knit_root_dir = getwd(),
     intermediates_dir = ".",
     clean = TRUE
@@ -184,24 +178,12 @@ render_rmd <- function(post_rmd) {
   cat("Rendering complete for:", post_rmd, "\n")
 }
 
-# Function to copy assets to site directory
+# Function to copy assets (no longer needed, assets stay in root)
+# Keeping function for potential future use but making it a no-op
 copy_assets <- function() {
-  cat("Copying assets to site directory...\n")
-  
-  # Remove existing assets first
-  if (dir.exists("site/assets")) {
-    unlink("site/assets", recursive = TRUE)
-  }
-  
-  # Copy assets directory using system command (more reliable for directories)
-  if (dir.exists("assets")) {
-    if (.Platform$OS.type == "windows") {
-      system(paste('xcopy /E /I /Y "assets" "site\\assets"'), show.output.on.console = FALSE)
-    } else {
-      system("cp -r assets site/assets")
-    }
-    cat("Assets copied to site/assets/\n")
-  }
+  # Assets stay in root directory - no copying needed
+  # This function kept for compatibility but does nothing
+  cat("Assets remain in root directory (no copying needed).\n")
 }
 
 # Main build process
@@ -234,33 +216,25 @@ index_rmd_path <- "content/pages/index.Rmd"
 if (file.exists(index_rmd_path)) {
   cat("Processing: index.Rmd\n")
   
-  # Ensure site directory exists
-  if (!dir.exists("site")) {
-    dir.create("site", recursive = TRUE)
-  }
-  
-  # Ensure CSS file exists (should be there from copy_assets, but double-check)
-  css_file <- file.path(getwd(), "site", "assets", "style.css")
-  if (!file.exists(css_file)) {
-    stop("CSS file not found: ", css_file, ". Make sure copy_assets() ran successfully.")
-  }
+  # CSS path for index (in root, so assets/style.css)
+  css_file <- normalizePath("assets/style.css", mustWork = TRUE)
   
   rmarkdown::render(
     index_rmd_path,
     output_format = custom_html_document(
-      css = normalizePath(css_file, mustWork = TRUE),  # Absolute path for rendering
+      css = css_file,  # Absolute path for rendering
       toc = FALSE,
       toc_float = FALSE,
       theme = NULL,
       highlight = "kate"
     ),
     output_file = "index.html",
-    output_dir = "site",
+    output_dir = ".",  # Output to root
     knit_root_dir = getwd(),
     intermediates_dir = ".",
     clean = TRUE
   )
-  cat("Index successfully generated in site/ directory.\n")
+  cat("Index successfully generated in root directory.\n")
 }
 
-cat("Blog build complete! Output in site/ directory.\n") 
+cat("Blog build complete! HTML files in root, sources organized in content/.\n") 
