@@ -8,7 +8,7 @@ library(yaml)
 
 # Function to automatically generate post list and update index.Rmd
 generate_post_list <- function() {
-  posts_dir <- "posts"
+  posts_dir <- "content/posts"
   if (!dir.exists(posts_dir)) {
     stop("Posts directory does not exist: ", posts_dir)
   }
@@ -38,9 +38,9 @@ generate_post_list <- function() {
         date <- metadata$date
         
         if (!is.null(title) && !is.null(date)) {
-          # Generate HTML filename
+          # Generate HTML filename with posts/ prefix for site structure
           file_prefix <- tools::file_path_sans_ext(basename(rmd_file))
-          html_file <- paste0(file_prefix, ".html")
+          html_file <- paste0("posts/", file_prefix, ".html")
           
           post_data[[length(post_data) + 1]] <- list(
             date = date,
@@ -77,9 +77,9 @@ generate_post_list <- function() {
 
 # Function to update index.Rmd with new post list
 update_index_rmd <- function() {
-  index_rmd_path <- "index.Rmd"
+  index_rmd_path <- "content/pages/index.Rmd"
   if (!file.exists(index_rmd_path)) {
-    stop("index.Rmd does not exist")
+    stop("index.Rmd does not exist at: ", index_rmd_path)
   }
   
   # Read the current index.Rmd
@@ -131,13 +131,15 @@ update_index_rmd <- function() {
 
 # Create custom output format with our template
 custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, highlight = "pygments", css = NULL, ...) {
+  # Template from assets (used during render, doesn't affect final HTML paths)
+  template_path <- normalizePath("assets/template.html", mustWork = TRUE)
   rmarkdown::html_document(
     toc = toc,
     toc_float = toc_float,
     theme = theme,
     highlight = highlight,
     css = css,
-    template = normalizePath("assets/template.html", mustWork = TRUE),
+    template = template_path,
     ...
   )
 }
@@ -150,27 +152,18 @@ render_rmd <- function(post_rmd) {
   
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
   
-  # Paths relative to the current (root) folder
-  # images_dir <- "images"
-  css_path <- normalizePath("assets/style.css", mustWork = TRUE)
-  
-  # Make sure the images folder exists
-  # if (!dir.exists(images_dir)) {
-  #   dir.create(images_dir, recursive = TRUE)
-  # }
-  # 
-  # # Clean up related images
-  # existing_images <- list.files(
-  #   images_dir,
-  #   pattern = paste0(file_prefix, ".*\\.png$"),
-  #   full.names = TRUE
-  # )
-  # if (length(existing_images) > 0) {
-  #   file.remove(existing_images)
-  # }
+  # CSS path - use absolute path for pandoc, but it will be relative in final HTML
+  # Since output is in site/posts/, CSS should be ../assets/style.css in final HTML
+  # But for rendering, we need the actual file path
+  css_path <- normalizePath("site/assets/style.css", mustWork = TRUE)
   
   # Render the R Markdown file
   cat("Processing:", post_rmd, "\n")
+  
+  # Ensure site/posts directory exists
+  if (!dir.exists("site/posts")) {
+    dir.create("site/posts", recursive = TRUE)
+  }
   
   rmarkdown::render(
     post_rmd,
@@ -182,8 +175,8 @@ render_rmd <- function(post_rmd) {
       highlight = "kate"
     ),
     output_file = paste0(file_prefix, ".html"),
-    output_dir = ".",
-    knit_root_dir = ".",
+    output_dir = "site/posts",
+    knit_root_dir = getwd(),
     intermediates_dir = ".",
     clean = TRUE
   )
@@ -191,15 +184,38 @@ render_rmd <- function(post_rmd) {
   cat("Rendering complete for:", post_rmd, "\n")
 }
 
+# Function to copy assets to site directory
+copy_assets <- function() {
+  cat("Copying assets to site directory...\n")
+  
+  # Remove existing assets first
+  if (dir.exists("site/assets")) {
+    unlink("site/assets", recursive = TRUE)
+  }
+  
+  # Copy assets directory using system command (more reliable for directories)
+  if (dir.exists("assets")) {
+    if (.Platform$OS.type == "windows") {
+      system(paste('xcopy /E /I /Y "assets" "site\\assets"'), show.output.on.console = FALSE)
+    } else {
+      system("cp -r assets site/assets")
+    }
+    cat("Assets copied to site/assets/\n")
+  }
+}
+
 # Main build process
 cat("Starting blog build process...\n")
+
+# Step 0: Copy assets to site directory
+copy_assets()
 
 # Step 1: Update index.Rmd with current post list
 cat("Updating post list in index.Rmd...\n")
 update_index_rmd()
 
-# Step 2: Get all R Markdown files in the posts directory and render them
-posts_dir <- "posts"
+# Step 2: Get all R Markdown files in content/posts and render them
+posts_dir <- "content/posts"
 if (dir.exists(posts_dir)) {
   rmd_files <- list.files(
     posts_dir,
@@ -214,23 +230,37 @@ if (dir.exists(posts_dir)) {
 }
 
 # Step 3: Render the index page
-if (file.exists("index.Rmd")) {
+index_rmd_path <- "content/pages/index.Rmd"
+if (file.exists(index_rmd_path)) {
   cat("Processing: index.Rmd\n")
+  
+  # Ensure site directory exists
+  if (!dir.exists("site")) {
+    dir.create("site", recursive = TRUE)
+  }
+  
+  # Ensure CSS file exists (should be there from copy_assets, but double-check)
+  css_file <- file.path(getwd(), "site", "assets", "style.css")
+  if (!file.exists(css_file)) {
+    stop("CSS file not found: ", css_file, ". Make sure copy_assets() ran successfully.")
+  }
+  
   rmarkdown::render(
-    "index.Rmd",
+    index_rmd_path,
     output_format = custom_html_document(
-      css = normalizePath("assets/style.css", mustWork = TRUE),
+      css = normalizePath(css_file, mustWork = TRUE),  # Absolute path for rendering
       toc = FALSE,
       toc_float = FALSE,
       theme = NULL,
       highlight = "kate"
     ),
     output_file = "index.html",
-    knit_root_dir = ".",
+    output_dir = "site",
+    knit_root_dir = getwd(),
     intermediates_dir = ".",
     clean = TRUE
   )
-  cat("Index successfully generated in the root directory.\n")
+  cat("Index successfully generated in site/ directory.\n")
 }
 
-cat("Blog build complete!\n") 
+cat("Blog build complete! Output in site/ directory.\n") 
