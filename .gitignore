@@ -4,6 +4,8 @@
 # Only track what the website needs to render
 !.gitignore
 !*.html
+!posts/
+!posts/**
 !assets/
 !data/
 !CNAME

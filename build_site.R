@@ -38,9 +38,9 @@ generate_post_list <- function() {
         date <- metadata$date
         
         if (!is.null(title) && !is.null(date)) {
-          # Generate HTML filename (posts in root to maintain URLs)
+          # Generate HTML filename with posts/ prefix for organized structure
           file_prefix <- tools::file_path_sans_ext(basename(rmd_file))
-          html_file <- paste0(file_prefix, ".html")
+          html_file <- paste0("posts/", file_prefix, ".html")
           
           post_data[[length(post_data) + 1]] <- list(
             date = date,
@@ -130,9 +130,13 @@ update_index_rmd <- function() {
 }
 
 # Create custom output format with our template
-custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, highlight = "pygments", css = NULL, ...) {
-  # Template from assets (used during render, doesn't affect final HTML paths)
-  template_path <- normalizePath("assets/template.html", mustWork = TRUE)
+custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, highlight = "pygments", css = NULL, template_type = "root", ...) {
+  # Choose template based on output location
+  if (template_type == "posts") {
+    template_path <- normalizePath("assets/template-posts.html", mustWork = TRUE)
+  } else {
+    template_path <- normalizePath("assets/template.html", mustWork = TRUE)
+  }
   rmarkdown::html_document(
     toc = toc,
     toc_float = toc_float,
@@ -152,12 +156,16 @@ render_rmd <- function(post_rmd) {
   
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
   
-  # CSS path - use absolute path for pandoc
-  # Posts output to root, so CSS path is assets/style.css
+  # CSS path - posts are in posts/ subdirectory, so CSS is ../assets/style.css
   css_path <- normalizePath("assets/style.css", mustWork = TRUE)
   
   # Render the R Markdown file
   cat("Processing:", post_rmd, "\n")
+  
+  # Ensure posts directory exists
+  if (!dir.exists("posts")) {
+    dir.create("posts", recursive = TRUE)
+  }
   
   rmarkdown::render(
     post_rmd,
@@ -166,10 +174,11 @@ render_rmd <- function(post_rmd) {
       toc = FALSE,
       toc_float = FALSE,
       theme = NULL,
-      highlight = "kate"
+      highlight = "kate",
+      template_type = "posts"  # Use posts template with ../ navigation
     ),
     output_file = paste0(file_prefix, ".html"),
-    output_dir = ".",  # Output to root to maintain URL structure
+    output_dir = "posts",  # Output to posts/ subdirectory
     knit_root_dir = getwd(),
     intermediates_dir = ".",
     clean = TRUE
