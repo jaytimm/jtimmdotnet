@@ -140,21 +140,46 @@ custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, h
   rmarkdown::html_document(
     toc = toc,
     toc_float = toc_float,
-    theme = theme,
+    theme = if(is.null(theme)) "default" else theme,  # Code folding requires a theme
     highlight = highlight,
     css = css,
     template = template_path,
+    code_folding = "hide",  # Add code folding - code blocks start collapsed
+    code_download = FALSE,
     ...
   )
 }
 
 # Function to render individual R Markdown posts
-render_rmd <- function(post_rmd) {
+render_rmd <- function(post_rmd, skip_if_not_modified_days = 7) {
   if (!file.exists(post_rmd)) {
     stop("File does not exist: ", post_rmd)
   }
   
+  # Set knitr options to hide code by default (overrides any per-file settings)
+  knitr::opts_chunk$set(echo = FALSE)
+  
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
+  output_file <- file.path("posts", paste0(file_prefix, ".html"))
+  
+  # Check if file has been modified in the last N days
+  file_mtime <- file.mtime(post_rmd)
+  cutoff_date <- Sys.time() - (skip_if_not_modified_days * 24 * 60 * 60)
+  
+  # If file hasn't been modified recently, check if output exists and is newer
+  if (file_mtime < cutoff_date) {
+    if (file.exists(output_file)) {
+      output_mtime <- file.mtime(output_file)
+      # If output is newer than source, skip rendering
+      if (output_mtime >= file_mtime) {
+        cat("Skipping (not modified in last ", skip_if_not_modified_days, " days): ", post_rmd, "\n")
+        return(invisible(NULL))
+      }
+    } else {
+      # Source is old but output doesn't exist, render it
+      cat("Output missing, rendering:", post_rmd, "\n")
+    }
+  }
   
   # CSS path - posts are in posts/ subdirectory, so CSS is ../assets/style.css
   css_path <- normalizePath("assets/style.css", mustWork = TRUE)
