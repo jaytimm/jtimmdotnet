@@ -620,19 +620,30 @@ Simulation</h1>
           <p>Required R libraries are loaded using pacman. Candidate
           questionnaire file locations are mapped to their GitHub
           URLs.</p>
-          <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ellmer, glue, purrr, jsonlite)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Base URL for candidate questionnaires on GitHub</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>QUESTIONNAIRE_BASE_URL <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/jaytimm/newmexico-political-data/main/data/abq_mayor_2025_questionnaires&quot;</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Candidate file mapping with GitHub URLs</span></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>CANDIDATE_FILES <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="st">&quot;Daniel Chavez&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Official.Daniel.Chavez.Response_250609.md&quot;</span>),</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="st">&quot;Darren White&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Official.White_.Darren.Response._250609.md&quot;</span>),</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="st">&quot;Mayling Armijo&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Armijo.Mayling.Response_250609.md&quot;</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  <span class="st">&quot;Eddie Varela&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Eddie-Varela-Mayoral-Candidate-Response.md&quot;</span>),</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="st">&quot;Louie Sanchez&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Sanchez.Louie_.Response_250609.md&quot;</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>)</span></code></pre></div>
+          <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;pacman&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    ellmer,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    glue,</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    purrr,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    jsonlite</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  )</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># Base URL for candidate questionnaires on GitHub</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>QUESTIONNAIRE_BASE_URL <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/jaytimm/newmexico-political-data/main/data/abq_mayor_2025_questionnaires&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co"># Candidate file mapping with GitHub URLs</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>CANDIDATE_FILES <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  <span class="st">&quot;Daniel Chavez&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Official.Daniel.Chavez.Response_250609.md&quot;</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="st">&quot;Darren White&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Official.White_.Darren.Response._250609.md&quot;</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="st">&quot;Mayling Armijo&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Armijo.Mayling.Response_250609.md&quot;</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="st">&quot;Eddie Varela&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Eddie-Varela-Mayoral-Candidate-Response.md&quot;</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="st">&quot;Louie Sanchez&quot;</span> <span class="ot">=</span> <span class="fu">paste0</span>(QUESTIONNAIRE_BASE_URL, <span class="st">&quot;/Sanchez.Louie_.Response_250609.md&quot;</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>)</span></code></pre></div>
           <hr />
           </div>
           <div id="candidate-questionnaires" class="section level2">
