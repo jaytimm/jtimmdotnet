@@ -146,6 +146,7 @@ custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, h
     template = template_path,
     code_folding = "hide",  # Add code folding - code blocks start collapsed
     code_download = FALSE,
+    self_contained = TRUE,  # Embed all assets - no _files/ folders
     ...
   )
 }
@@ -157,7 +158,7 @@ render_rmd <- function(post_rmd, skip_if_not_modified_days = 7) {
   }
   
   # Set knitr options to hide code by default (overrides any per-file settings)
-  knitr::opts_chunk$set(echo = FALSE)
+  knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
   
   file_prefix <- tools::file_path_sans_ext(basename(post_rmd))
   output_file <- file.path("posts", paste0(file_prefix, ".html"))
