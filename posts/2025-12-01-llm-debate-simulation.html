@@ -754,21 +754,28 @@ Simulation</h1>
 <span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>topic_list <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">seq_along</span>(debate_topics), <span class="fu">names</span>(debate_topics), <span class="at">sep =</span> <span class="st">&quot;. &quot;</span>, <span class="at">collapse =</span> <span class="st">&quot; (3-4 rounds each), &quot;</span>)</span>
 <span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>orchestrator_prompt <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="st">&quot;You are orchestrating a mayoral debate between: {paste(candidate_names, collapse=&#39;, &#39;)}. Use a mix of first names and full names when referencing candidates - don&#39;t always use first names.&quot;</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="st">&quot;You are orchestrating a mayoral debate between: {paste(candidate_names, collapse=&#39;, &#39;)}.&quot;</span>,</span>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
 <span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="st">&quot;Topics: {topic_list}&quot;</span>,</span>
 <span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
 <span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  <span class="st">&quot;Moderate naturally. Keep it casual and conversational. Ensure all candidates speak on each topic.&quot;</span>,</span>
 <span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="st">&quot;CRITICAL: Check the transcript carefully. If NO candidates have spoken yet on the current topic, ask a fresh opening question about the topic. Do NOT reference things candidates said if they haven&#39;t spoken yet on this topic. Only reference candidate statements that actually appear in the transcript for the current topic. Keep questions brief - one sentence only.&quot;</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>  <span class="st">&quot;Actions: &#39;ask_one&#39; = moderator asks a question. &#39;request_rebuttal&#39; = candidate responds directly to another candidate (no moderator statement).&quot;</span>,</span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  <span class="st">&quot;candidate = exact name. If request_rebuttal, set responding_to to the candidate being responded to.&quot;</span>,</span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>)</span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>orchestrator <span class="ot">&lt;-</span> <span class="fu">chat</span>(<span class="st">&quot;openai/gpt-4o-mini&quot;</span>, <span class="at">system_prompt =</span> orchestrator_prompt)</span></code></pre></div>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="st">&quot;CRITICAL RULES FOR MODERATOR QUESTIONS:&quot;</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="st">&quot;- When using action &#39;ask_one&#39;, you MUST ALWAYS include the candidate&#39;s name in your moderator_statement&quot;</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>  <span class="st">&quot;- VARY how you address candidates - use first names, last names, or full names. Mix it up!&quot;</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>  <span class="st">&quot;- Examples: &#39;Daniel, what are your thoughts...&#39; OR &#39;Chavez, how would you...&#39; OR &#39;Daniel Chavez, can you explain...&#39;&quot;</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  <span class="st">&quot;- The candidate field MUST match the candidate named in the moderator_statement (use exact full name in candidate field)&quot;</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>  <span class="st">&quot;- When transitioning to a new topic, start with a transition statement like &#39;Moving on to [topic name]...&#39; or &#39;Let&#39;s turn to [topic name]...&#39;&quot;</span>,</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>  <span class="st">&quot;CRITICAL: Check the transcript carefully. If NO candidates have spoken yet on the current topic, ask a fresh opening question about the topic. Do NOT reference things candidates said if they haven&#39;t spoken yet on this topic. Only reference candidate statements that actually appear in the transcript for the current topic. Keep questions brief - one sentence only.&quot;</span>,</span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="st">&quot;Actions: &#39;ask_one&#39; = moderator asks a question. &#39;request_rebuttal&#39; = candidate responds directly to another candidate (no moderator statement).&quot;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>  <span class="st">&quot;&quot;</span>,</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>  <span class="st">&quot;candidate = exact name. If request_rebuttal, set responding_to to the candidate being responded to.&quot;</span>,</span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>)</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>orchestrator <span class="ot">&lt;-</span> <span class="fu">chat</span>(<span class="st">&quot;openai/gpt-4o-mini&quot;</span>, <span class="at">system_prompt =</span> orchestrator_prompt)</span></code></pre></div>
           <hr />
           </div>
           </div>
@@ -897,113 +904,184 @@ Simulation</h1>
 <span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>  )</span>
 <span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>  transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> intro_text)))</span>
 <span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  </span>
-<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>  <span class="cf">while</span> (round <span class="sc">&lt;=</span> max_rounds) {</span>
-<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>    <span class="cf">if</span> (current_topic_idx <span class="sc">&lt;=</span> <span class="fu">length</span>(topic_keys) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(candidates_spoken[[current_topic_key]])) {</span>
-<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>      current_topic_idx <span class="ot">&lt;-</span> current_topic_idx <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>      <span class="cf">if</span> (current_topic_idx <span class="sc">&gt;</span> <span class="fu">length</span>(topic_keys)) <span class="cf">break</span></span>
-<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>      current_topic_key <span class="ot">&lt;-</span> topic_keys[current_topic_idx]</span>
-<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>    }</span>
-<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>    </span>
-<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a>    current_transcript <span class="ot">&lt;-</span> <span class="fu">tail_transcript</span>(transcript, <span class="at">n =</span> <span class="dv">5</span>)</span>
-<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>    remaining <span class="ot">&lt;-</span> <span class="fu">names</span>(candidates_spoken[[current_topic_key]])[<span class="sc">!</span>candidates_spoken[[current_topic_key]]]</span>
-<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a>    topic_status <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a>      <span class="st">&quot;CURRENT TOPIC: {toupper(topic_names[current_topic_idx])}. &quot;</span>,</span>
-<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a>      <span class="st">&quot;Remaining: {if(length(remaining)&gt;0) paste(remaining, collapse=&#39;, &#39;) else &#39;All have spoken&#39;}&quot;</span></span>
-<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>    )</span>
-<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>    </span>
-<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>    <span class="co"># Check if anyone has spoken on current topic</span></span>
-<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>    current_topic_entries <span class="ot">&lt;-</span> transcript[<span class="fu">which</span>(<span class="fu">sapply</span>(transcript, <span class="cf">function</span>(e) {</span>
-<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>      <span class="co"># Find when current topic started (after previous topic ended or debate started)</span></span>
-<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>      topic_start_idx <span class="ot">&lt;-</span> <span class="cf">if</span> (current_topic_idx <span class="sc">==</span> <span class="dv">1</span>) <span class="dv">1</span> <span class="cf">else</span> {</span>
-<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>        prev_topic_key <span class="ot">&lt;-</span> topic_keys[current_topic_idx <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a>        <span class="co"># Find last entry where all candidates spoke on previous topic</span></span>
-<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a>        last_prev_idx <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb9-49"><a href="#cb9-49" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(transcript)) {</span>
-<span id="cb9-50"><a href="#cb9-50" tabindex="-1"></a>          <span class="cf">if</span> (transcript[[i]]<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> </span>
-<span id="cb9-51"><a href="#cb9-51" tabindex="-1"></a>              <span class="fu">any</span>(<span class="fu">sapply</span>(candidate_names, <span class="cf">function</span>(n) transcript[[i]]<span class="sc">$</span>speaker <span class="sc">==</span> n))) {</span>
-<span id="cb9-52"><a href="#cb9-52" tabindex="-1"></a>            last_prev_idx <span class="ot">&lt;-</span> i</span>
-<span id="cb9-53"><a href="#cb9-53" tabindex="-1"></a>          }</span>
-<span id="cb9-54"><a href="#cb9-54" tabindex="-1"></a>        }</span>
-<span id="cb9-55"><a href="#cb9-55" tabindex="-1"></a>        last_prev_idx <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb9-56"><a href="#cb9-56" tabindex="-1"></a>      }</span>
-<span id="cb9-57"><a href="#cb9-57" tabindex="-1"></a>      <span class="co"># Check if this entry is after topic started</span></span>
-<span id="cb9-58"><a href="#cb9-58" tabindex="-1"></a>      entry_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">sapply</span>(<span class="fu">seq_along</span>(transcript), <span class="cf">function</span>(i) <span class="fu">identical</span>(transcript[[i]], e)))</span>
-<span id="cb9-59"><a href="#cb9-59" tabindex="-1"></a>      entry_idx <span class="sc">&gt;=</span> topic_start_idx</span>
-<span id="cb9-60"><a href="#cb9-60" tabindex="-1"></a>    }))]</span>
-<span id="cb9-61"><a href="#cb9-61" tabindex="-1"></a>    </span>
-<span id="cb9-62"><a href="#cb9-62" tabindex="-1"></a>    has_spoken_on_topic <span class="ot">&lt;-</span> <span class="fu">any</span>(<span class="fu">sapply</span>(current_topic_entries, <span class="cf">function</span>(e) </span>
-<span id="cb9-63"><a href="#cb9-63" tabindex="-1"></a>      e<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> e<span class="sc">$</span>speaker <span class="sc">%in%</span> candidate_names))</span>
-<span id="cb9-64"><a href="#cb9-64" tabindex="-1"></a>    </span>
-<span id="cb9-65"><a href="#cb9-65" tabindex="-1"></a>    <span class="cf">if</span> (has_spoken_on_topic) {</span>
-<span id="cb9-66"><a href="#cb9-66" tabindex="-1"></a>      orchestrator_input <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb9-67"><a href="#cb9-67" tabindex="-1"></a>        <span class="st">&quot;Current debate transcript:</span><span class="sc">\n\n</span><span class="st">{current_transcript}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-68"><a href="#cb9-68" tabindex="-1"></a>        <span class="st">&quot;{topic_status}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-69"><a href="#cb9-69" tabindex="-1"></a>        <span class="st">&quot;Candidates have already spoken on this topic. Reference relevant things they said in the transcript. Build on their statements, ask follow-ups about their proposals, or challenge their ideas. Output your command in the required format.&quot;</span></span>
-<span id="cb9-70"><a href="#cb9-70" tabindex="-1"></a>      )</span>
-<span id="cb9-71"><a href="#cb9-71" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb9-72"><a href="#cb9-72" tabindex="-1"></a>      orchestrator_input <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb9-73"><a href="#cb9-73" tabindex="-1"></a>        <span class="st">&quot;Current debate transcript:</span><span class="sc">\n\n</span><span class="st">{current_transcript}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-74"><a href="#cb9-74" tabindex="-1"></a>        <span class="st">&quot;{topic_status}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-75"><a href="#cb9-75" tabindex="-1"></a>        <span class="st">&quot;This is the FIRST question on this topic - no candidates have spoken yet. Ask a fresh opening question about {topic_names[current_topic_idx]}. Do NOT reference things candidates said (they haven&#39;t spoken on this topic yet). Output your command in the required format.&quot;</span></span>
-<span id="cb9-76"><a href="#cb9-76" tabindex="-1"></a>      )</span>
-<span id="cb9-77"><a href="#cb9-77" tabindex="-1"></a>    }</span>
-<span id="cb9-78"><a href="#cb9-78" tabindex="-1"></a>    </span>
-<span id="cb9-79"><a href="#cb9-79" tabindex="-1"></a>    command <span class="ot">&lt;-</span> <span class="fu">parse_orchestrator_command</span>(orchestrator, orchestrator_input)</span>
-<span id="cb9-80"><a href="#cb9-80" tabindex="-1"></a>    </span>
-<span id="cb9-81"><a href="#cb9-81" tabindex="-1"></a>    <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;end_debate&quot;</span>) <span class="cf">break</span></span>
-<span id="cb9-82"><a href="#cb9-82" tabindex="-1"></a>    </span>
-<span id="cb9-83"><a href="#cb9-83" tabindex="-1"></a>    target_name <span class="ot">&lt;-</span> command<span class="sc">$</span>candidate</span>
-<span id="cb9-84"><a href="#cb9-84" tabindex="-1"></a>    target_cand <span class="ot">&lt;-</span> candidate_lookup[[target_name]]</span>
-<span id="cb9-85"><a href="#cb9-85" tabindex="-1"></a>    </span>
-<span id="cb9-86"><a href="#cb9-86" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.null</span>(target_cand)) {</span>
-<span id="cb9-87"><a href="#cb9-87" tabindex="-1"></a>      remaining <span class="ot">&lt;-</span> <span class="fu">names</span>(candidates_spoken[[current_topic_key]])[<span class="sc">!</span>candidates_spoken[[current_topic_key]]]</span>
-<span id="cb9-88"><a href="#cb9-88" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">length</span>(remaining) <span class="sc">==</span> <span class="dv">0</span>) remaining <span class="ot">&lt;-</span> candidate_names</span>
-<span id="cb9-89"><a href="#cb9-89" tabindex="-1"></a>      target_name <span class="ot">&lt;-</span> <span class="fu">sample</span>(remaining, <span class="dv">1</span>)</span>
-<span id="cb9-90"><a href="#cb9-90" tabindex="-1"></a>      target_cand <span class="ot">&lt;-</span> candidate_lookup[[target_name]]</span>
-<span id="cb9-91"><a href="#cb9-91" tabindex="-1"></a>    }</span>
-<span id="cb9-92"><a href="#cb9-92" tabindex="-1"></a>    </span>
-<span id="cb9-93"><a href="#cb9-93" tabindex="-1"></a>    context <span class="ot">&lt;-</span> <span class="fu">format_transcript</span>(transcript)</span>
-<span id="cb9-94"><a href="#cb9-94" tabindex="-1"></a>    </span>
-<span id="cb9-95"><a href="#cb9-95" tabindex="-1"></a>    <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;request_rebuttal&quot;</span> <span class="sc">&amp;&amp;</span> <span class="fu">nchar</span>(command<span class="sc">$</span>responding_to) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb9-96"><a href="#cb9-96" tabindex="-1"></a>      responding_to_name <span class="ot">&lt;-</span> command<span class="sc">$</span>responding_to</span>
-<span id="cb9-97"><a href="#cb9-97" tabindex="-1"></a>      prompt_text <span class="ot">&lt;-</span> command<span class="sc">$</span>moderator_statement</span>
-<span id="cb9-98"><a href="#cb9-98" tabindex="-1"></a>      full_prompt <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb9-99"><a href="#cb9-99" tabindex="-1"></a>        <span class="st">&quot;Here is the complete debate transcript so far:</span><span class="sc">\n\n</span><span class="st">{context}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-100"><a href="#cb9-100" tabindex="-1"></a>        <span class="st">&quot;{prompt_text}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-101"><a href="#cb9-101" tabindex="-1"></a>        <span class="st">&quot;You are responding directly to {responding_to_name}. Be conversational and debate-like.&quot;</span>,</span>
-<span id="cb9-102"><a href="#cb9-102" tabindex="-1"></a>        <span class="st">&quot;CRITICAL: You can ONLY reference what other candidates have said in the transcript above.&quot;</span></span>
-<span id="cb9-103"><a href="#cb9-103" tabindex="-1"></a>      )</span>
-<span id="cb9-104"><a href="#cb9-104" tabindex="-1"></a>      response <span class="ot">&lt;-</span> target_cand<span class="sc">$</span>agent<span class="sc">$</span><span class="fu">chat</span>(full_prompt)</span>
-<span id="cb9-105"><a href="#cb9-105" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> target_name, <span class="at">text =</span> response)))</span>
-<span id="cb9-106"><a href="#cb9-106" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb9-107"><a href="#cb9-107" tabindex="-1"></a>      moderator_text <span class="ot">&lt;-</span> command<span class="sc">$</span>moderator_statement</span>
-<span id="cb9-108"><a href="#cb9-108" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> moderator_text)))</span>
-<span id="cb9-109"><a href="#cb9-109" tabindex="-1"></a>      full_prompt <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb9-110"><a href="#cb9-110" tabindex="-1"></a>        <span class="st">&quot;Here is the complete debate transcript so far:</span><span class="sc">\n\n</span><span class="st">{context}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-111"><a href="#cb9-111" tabindex="-1"></a>        <span class="st">&quot;MODERATOR: {moderator_text}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
-<span id="cb9-112"><a href="#cb9-112" tabindex="-1"></a>        <span class="st">&quot;CRITICAL: You can ONLY reference what other candidates have said in the transcript above. &quot;</span>,</span>
-<span id="cb9-113"><a href="#cb9-113" tabindex="-1"></a>        <span class="st">&quot;Engage with what other candidates have said - challenge their ideas, disagree with their proposals, or build on their statements. &quot;</span>,</span>
-<span id="cb9-114"><a href="#cb9-114" tabindex="-1"></a>        <span class="st">&quot;Do not reference ideas or positions that haven&#39;t been mentioned in this debate yet. &quot;</span>,</span>
-<span id="cb9-115"><a href="#cb9-115" tabindex="-1"></a>        <span class="st">&quot;Respond naturally based on the transcript and your own positions.&quot;</span></span>
-<span id="cb9-116"><a href="#cb9-116" tabindex="-1"></a>      )</span>
-<span id="cb9-117"><a href="#cb9-117" tabindex="-1"></a>      response <span class="ot">&lt;-</span> target_cand<span class="sc">$</span>agent<span class="sc">$</span><span class="fu">chat</span>(full_prompt)</span>
-<span id="cb9-118"><a href="#cb9-118" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> target_name, <span class="at">text =</span> response)))</span>
-<span id="cb9-119"><a href="#cb9-119" tabindex="-1"></a>    }</span>
-<span id="cb9-120"><a href="#cb9-120" tabindex="-1"></a>    </span>
-<span id="cb9-121"><a href="#cb9-121" tabindex="-1"></a>    candidates_spoken[[current_topic_key]][target_name] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb9-122"><a href="#cb9-122" tabindex="-1"></a>    </span>
-<span id="cb9-123"><a href="#cb9-123" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">map_lgl</span>(candidates_spoken, <span class="sc">~</span> <span class="fu">all</span>(.x)))) <span class="cf">break</span></span>
-<span id="cb9-124"><a href="#cb9-124" tabindex="-1"></a>    </span>
-<span id="cb9-125"><a href="#cb9-125" tabindex="-1"></a>    round <span class="ot">&lt;-</span> round <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb9-126"><a href="#cb9-126" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="fl">0.5</span>)</span>
-<span id="cb9-127"><a href="#cb9-127" tabindex="-1"></a>  }</span>
-<span id="cb9-128"><a href="#cb9-128" tabindex="-1"></a>  </span>
-<span id="cb9-129"><a href="#cb9-129" tabindex="-1"></a>  <span class="co"># Moderator closing statement</span></span>
-<span id="cb9-130"><a href="#cb9-130" tabindex="-1"></a>  closing_text <span class="ot">&lt;-</span> <span class="st">&quot;Thank you to all the candidates for participating in tonight&#39;s debate. We appreciate your time and perspectives on these critical issues facing Albuquerque.&quot;</span></span>
-<span id="cb9-131"><a href="#cb9-131" tabindex="-1"></a>  transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> closing_text)))</span>
-<span id="cb9-132"><a href="#cb9-132" tabindex="-1"></a>  </span>
-<span id="cb9-133"><a href="#cb9-133" tabindex="-1"></a>  <span class="fu">return</span>(transcript)</span>
-<span id="cb9-134"><a href="#cb9-134" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>  topic_transition_announced <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>  </span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>  <span class="cf">while</span> (round <span class="sc">&lt;=</span> max_rounds) {</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>    <span class="co"># Check if we need to transition to a new topic</span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>    <span class="cf">if</span> (current_topic_idx <span class="sc">&lt;=</span> <span class="fu">length</span>(topic_keys) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(candidates_spoken[[current_topic_key]])) {</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>      current_topic_idx <span class="ot">&lt;-</span> current_topic_idx <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>      <span class="cf">if</span> (current_topic_idx <span class="sc">&gt;</span> <span class="fu">length</span>(topic_keys)) <span class="cf">break</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a>      current_topic_key <span class="ot">&lt;-</span> topic_keys[current_topic_idx]</span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>      topic_transition_announced <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a>    }</span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a>    </span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a>    <span class="co"># Announce topic transition if this is the first question on a new topic</span></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span>topic_transition_announced <span class="sc">&amp;&amp;</span> current_topic_idx <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>      <span class="co"># Check if anyone has spoken on current topic yet</span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>      current_topic_entries <span class="ot">&lt;-</span> transcript[<span class="fu">which</span>(<span class="fu">sapply</span>(transcript, <span class="cf">function</span>(e) {</span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>        <span class="co"># Find when current topic started (after previous topic ended)</span></span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>        prev_topic_key <span class="ot">&lt;-</span> topic_keys[current_topic_idx <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>        last_prev_idx <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(transcript)) {</span>
+<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a>          <span class="cf">if</span> (transcript[[i]]<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> </span>
+<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a>              <span class="fu">any</span>(<span class="fu">sapply</span>(candidate_names, <span class="cf">function</span>(n) transcript[[i]]<span class="sc">$</span>speaker <span class="sc">==</span> n))) {</span>
+<span id="cb9-49"><a href="#cb9-49" tabindex="-1"></a>            last_prev_idx <span class="ot">&lt;-</span> i</span>
+<span id="cb9-50"><a href="#cb9-50" tabindex="-1"></a>          }</span>
+<span id="cb9-51"><a href="#cb9-51" tabindex="-1"></a>        }</span>
+<span id="cb9-52"><a href="#cb9-52" tabindex="-1"></a>        topic_start_idx <span class="ot">&lt;-</span> last_prev_idx <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb9-53"><a href="#cb9-53" tabindex="-1"></a>        entry_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">sapply</span>(<span class="fu">seq_along</span>(transcript), <span class="cf">function</span>(i) <span class="fu">identical</span>(transcript[[i]], e)))</span>
+<span id="cb9-54"><a href="#cb9-54" tabindex="-1"></a>        entry_idx <span class="sc">&gt;=</span> topic_start_idx</span>
+<span id="cb9-55"><a href="#cb9-55" tabindex="-1"></a>      }))]</span>
+<span id="cb9-56"><a href="#cb9-56" tabindex="-1"></a>      </span>
+<span id="cb9-57"><a href="#cb9-57" tabindex="-1"></a>      has_spoken_on_topic <span class="ot">&lt;-</span> <span class="fu">any</span>(<span class="fu">sapply</span>(current_topic_entries, <span class="cf">function</span>(e) </span>
+<span id="cb9-58"><a href="#cb9-58" tabindex="-1"></a>        e<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> e<span class="sc">$</span>speaker <span class="sc">%in%</span> candidate_names))</span>
+<span id="cb9-59"><a href="#cb9-59" tabindex="-1"></a>      </span>
+<span id="cb9-60"><a href="#cb9-60" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span>has_spoken_on_topic) {</span>
+<span id="cb9-61"><a href="#cb9-61" tabindex="-1"></a>        transition_text <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">&quot;Moving on to our next topic: {topic_names[current_topic_idx]}. Let&#39;s hear from the candidates on this issue.&quot;</span>)</span>
+<span id="cb9-62"><a href="#cb9-62" tabindex="-1"></a>        transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> transition_text)))</span>
+<span id="cb9-63"><a href="#cb9-63" tabindex="-1"></a>        topic_transition_announced <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb9-64"><a href="#cb9-64" tabindex="-1"></a>      }</span>
+<span id="cb9-65"><a href="#cb9-65" tabindex="-1"></a>    }</span>
+<span id="cb9-66"><a href="#cb9-66" tabindex="-1"></a>    </span>
+<span id="cb9-67"><a href="#cb9-67" tabindex="-1"></a>    current_transcript <span class="ot">&lt;-</span> <span class="fu">tail_transcript</span>(transcript, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb9-68"><a href="#cb9-68" tabindex="-1"></a>    remaining <span class="ot">&lt;-</span> <span class="fu">names</span>(candidates_spoken[[current_topic_key]])[<span class="sc">!</span>candidates_spoken[[current_topic_key]]]</span>
+<span id="cb9-69"><a href="#cb9-69" tabindex="-1"></a>    topic_status <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb9-70"><a href="#cb9-70" tabindex="-1"></a>      <span class="st">&quot;CURRENT TOPIC: {toupper(topic_names[current_topic_idx])}. &quot;</span>,</span>
+<span id="cb9-71"><a href="#cb9-71" tabindex="-1"></a>      <span class="st">&quot;Remaining: {if(length(remaining)&gt;0) paste(remaining, collapse=&#39;, &#39;) else &#39;All have spoken&#39;}&quot;</span></span>
+<span id="cb9-72"><a href="#cb9-72" tabindex="-1"></a>    )</span>
+<span id="cb9-73"><a href="#cb9-73" tabindex="-1"></a>    </span>
+<span id="cb9-74"><a href="#cb9-74" tabindex="-1"></a>    <span class="co"># Check if anyone has spoken on current topic</span></span>
+<span id="cb9-75"><a href="#cb9-75" tabindex="-1"></a>    current_topic_entries <span class="ot">&lt;-</span> transcript[<span class="fu">which</span>(<span class="fu">sapply</span>(transcript, <span class="cf">function</span>(e) {</span>
+<span id="cb9-76"><a href="#cb9-76" tabindex="-1"></a>      <span class="co"># Find when current topic started (after previous topic ended or debate started)</span></span>
+<span id="cb9-77"><a href="#cb9-77" tabindex="-1"></a>      topic_start_idx <span class="ot">&lt;-</span> <span class="cf">if</span> (current_topic_idx <span class="sc">==</span> <span class="dv">1</span>) <span class="dv">1</span> <span class="cf">else</span> {</span>
+<span id="cb9-78"><a href="#cb9-78" tabindex="-1"></a>        prev_topic_key <span class="ot">&lt;-</span> topic_keys[current_topic_idx <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb9-79"><a href="#cb9-79" tabindex="-1"></a>        <span class="co"># Find last entry where all candidates spoke on previous topic</span></span>
+<span id="cb9-80"><a href="#cb9-80" tabindex="-1"></a>        last_prev_idx <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb9-81"><a href="#cb9-81" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(transcript)) {</span>
+<span id="cb9-82"><a href="#cb9-82" tabindex="-1"></a>          <span class="cf">if</span> (transcript[[i]]<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> </span>
+<span id="cb9-83"><a href="#cb9-83" tabindex="-1"></a>              <span class="fu">any</span>(<span class="fu">sapply</span>(candidate_names, <span class="cf">function</span>(n) transcript[[i]]<span class="sc">$</span>speaker <span class="sc">==</span> n))) {</span>
+<span id="cb9-84"><a href="#cb9-84" tabindex="-1"></a>            last_prev_idx <span class="ot">&lt;-</span> i</span>
+<span id="cb9-85"><a href="#cb9-85" tabindex="-1"></a>          }</span>
+<span id="cb9-86"><a href="#cb9-86" tabindex="-1"></a>        }</span>
+<span id="cb9-87"><a href="#cb9-87" tabindex="-1"></a>        last_prev_idx <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb9-88"><a href="#cb9-88" tabindex="-1"></a>      }</span>
+<span id="cb9-89"><a href="#cb9-89" tabindex="-1"></a>      <span class="co"># Check if this entry is after topic started</span></span>
+<span id="cb9-90"><a href="#cb9-90" tabindex="-1"></a>      entry_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">sapply</span>(<span class="fu">seq_along</span>(transcript), <span class="cf">function</span>(i) <span class="fu">identical</span>(transcript[[i]], e)))</span>
+<span id="cb9-91"><a href="#cb9-91" tabindex="-1"></a>      entry_idx <span class="sc">&gt;=</span> topic_start_idx</span>
+<span id="cb9-92"><a href="#cb9-92" tabindex="-1"></a>    }))]</span>
+<span id="cb9-93"><a href="#cb9-93" tabindex="-1"></a>    </span>
+<span id="cb9-94"><a href="#cb9-94" tabindex="-1"></a>    has_spoken_on_topic <span class="ot">&lt;-</span> <span class="fu">any</span>(<span class="fu">sapply</span>(current_topic_entries, <span class="cf">function</span>(e) </span>
+<span id="cb9-95"><a href="#cb9-95" tabindex="-1"></a>      e<span class="sc">$</span>speaker <span class="sc">!=</span> <span class="st">&quot;MODERATOR&quot;</span> <span class="sc">&amp;&amp;</span> e<span class="sc">$</span>speaker <span class="sc">%in%</span> candidate_names))</span>
+<span id="cb9-96"><a href="#cb9-96" tabindex="-1"></a>    </span>
+<span id="cb9-97"><a href="#cb9-97" tabindex="-1"></a>    <span class="cf">if</span> (has_spoken_on_topic) {</span>
+<span id="cb9-98"><a href="#cb9-98" tabindex="-1"></a>      orchestrator_input <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb9-99"><a href="#cb9-99" tabindex="-1"></a>        <span class="st">&quot;Current debate transcript:</span><span class="sc">\n\n</span><span class="st">{current_transcript}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-100"><a href="#cb9-100" tabindex="-1"></a>        <span class="st">&quot;{topic_status}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-101"><a href="#cb9-101" tabindex="-1"></a>        <span class="st">&quot;Candidates have already spoken on this topic. Reference relevant things they said in the transcript. Build on their statements, ask follow-ups about their proposals, or challenge their ideas. Output your command in the required format.&quot;</span></span>
+<span id="cb9-102"><a href="#cb9-102" tabindex="-1"></a>      )</span>
+<span id="cb9-103"><a href="#cb9-103" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb9-104"><a href="#cb9-104" tabindex="-1"></a>      orchestrator_input <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb9-105"><a href="#cb9-105" tabindex="-1"></a>        <span class="st">&quot;Current debate transcript:</span><span class="sc">\n\n</span><span class="st">{current_transcript}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-106"><a href="#cb9-106" tabindex="-1"></a>        <span class="st">&quot;{topic_status}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-107"><a href="#cb9-107" tabindex="-1"></a>        <span class="st">&quot;This is the FIRST question on this topic - no candidates have spoken yet. Ask a fresh opening question about {topic_names[current_topic_idx]}. Do NOT reference things candidates said (they haven&#39;t spoken on this topic yet). Output your command in the required format.&quot;</span></span>
+<span id="cb9-108"><a href="#cb9-108" tabindex="-1"></a>      )</span>
+<span id="cb9-109"><a href="#cb9-109" tabindex="-1"></a>    }</span>
+<span id="cb9-110"><a href="#cb9-110" tabindex="-1"></a>    </span>
+<span id="cb9-111"><a href="#cb9-111" tabindex="-1"></a>    command <span class="ot">&lt;-</span> <span class="fu">parse_orchestrator_command</span>(orchestrator, orchestrator_input)</span>
+<span id="cb9-112"><a href="#cb9-112" tabindex="-1"></a>    </span>
+<span id="cb9-113"><a href="#cb9-113" tabindex="-1"></a>    <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;end_debate&quot;</span>) <span class="cf">break</span></span>
+<span id="cb9-114"><a href="#cb9-114" tabindex="-1"></a>    </span>
+<span id="cb9-115"><a href="#cb9-115" tabindex="-1"></a>    target_name <span class="ot">&lt;-</span> command<span class="sc">$</span>candidate</span>
+<span id="cb9-116"><a href="#cb9-116" tabindex="-1"></a>    target_cand <span class="ot">&lt;-</span> candidate_lookup[[target_name]]</span>
+<span id="cb9-117"><a href="#cb9-117" tabindex="-1"></a>    </span>
+<span id="cb9-118"><a href="#cb9-118" tabindex="-1"></a>    <span class="co"># Validate that moderator statement includes candidate name when asking a question</span></span>
+<span id="cb9-119"><a href="#cb9-119" tabindex="-1"></a>    <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;ask_one&quot;</span> <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(target_cand)) {</span>
+<span id="cb9-120"><a href="#cb9-120" tabindex="-1"></a>      moderator_text_lower <span class="ot">&lt;-</span> <span class="fu">tolower</span>(command<span class="sc">$</span>moderator_statement)</span>
+<span id="cb9-121"><a href="#cb9-121" tabindex="-1"></a>      target_name_lower <span class="ot">&lt;-</span> <span class="fu">tolower</span>(target_name)</span>
+<span id="cb9-122"><a href="#cb9-122" tabindex="-1"></a>      <span class="co"># Extract first and last name for flexible matching</span></span>
+<span id="cb9-123"><a href="#cb9-123" tabindex="-1"></a>      name_parts <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(target_name, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb9-124"><a href="#cb9-124" tabindex="-1"></a>      first_name <span class="ot">&lt;-</span> <span class="fu">tolower</span>(name_parts[<span class="dv">1</span>])</span>
+<span id="cb9-125"><a href="#cb9-125" tabindex="-1"></a>      last_name <span class="ot">&lt;-</span> <span class="fu">tolower</span>(name_parts[<span class="fu">length</span>(name_parts)])</span>
+<span id="cb9-126"><a href="#cb9-126" tabindex="-1"></a>      </span>
+<span id="cb9-127"><a href="#cb9-127" tabindex="-1"></a>      <span class="co"># Check if moderator statement contains any form of the candidate name</span></span>
+<span id="cb9-128"><a href="#cb9-128" tabindex="-1"></a>      has_name <span class="ot">&lt;-</span> <span class="fu">grepl</span>(target_name_lower, moderator_text_lower, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">||</span></span>
+<span id="cb9-129"><a href="#cb9-129" tabindex="-1"></a>                  <span class="fu">grepl</span>(first_name, moderator_text_lower, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">||</span></span>
+<span id="cb9-130"><a href="#cb9-130" tabindex="-1"></a>                  <span class="fu">grepl</span>(last_name, moderator_text_lower, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-131"><a href="#cb9-131" tabindex="-1"></a>      </span>
+<span id="cb9-132"><a href="#cb9-132" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span>has_name) {</span>
+<span id="cb9-133"><a href="#cb9-133" tabindex="-1"></a>        <span class="co"># If not, prepend a variation of the candidate name (mix it up)</span></span>
+<span id="cb9-134"><a href="#cb9-134" tabindex="-1"></a>        <span class="co"># Randomly choose first name, last name, or full name</span></span>
+<span id="cb9-135"><a href="#cb9-135" tabindex="-1"></a>        name_choice <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb9-136"><a href="#cb9-136" tabindex="-1"></a>        name_variation <span class="ot">&lt;-</span> <span class="cf">if</span> (name_choice <span class="sc">&lt;</span> <span class="fl">0.33</span>) {</span>
+<span id="cb9-137"><a href="#cb9-137" tabindex="-1"></a>          <span class="co"># Use first name with capital letter</span></span>
+<span id="cb9-138"><a href="#cb9-138" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="fu">toupper</span>(<span class="fu">substring</span>(first_name, <span class="dv">1</span>, <span class="dv">1</span>)), <span class="fu">substring</span>(first_name, <span class="dv">2</span>))</span>
+<span id="cb9-139"><a href="#cb9-139" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (name_choice <span class="sc">&lt;</span> <span class="fl">0.66</span>) {</span>
+<span id="cb9-140"><a href="#cb9-140" tabindex="-1"></a>          <span class="co"># Use last name with capital letter</span></span>
+<span id="cb9-141"><a href="#cb9-141" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="fu">toupper</span>(<span class="fu">substring</span>(last_name, <span class="dv">1</span>, <span class="dv">1</span>)), <span class="fu">substring</span>(last_name, <span class="dv">2</span>))</span>
+<span id="cb9-142"><a href="#cb9-142" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb9-143"><a href="#cb9-143" tabindex="-1"></a>          target_name</span>
+<span id="cb9-144"><a href="#cb9-144" tabindex="-1"></a>        }</span>
+<span id="cb9-145"><a href="#cb9-145" tabindex="-1"></a>        command<span class="sc">$</span>moderator_statement <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">&quot;{name_variation}, {command$moderator_statement}&quot;</span>)</span>
+<span id="cb9-146"><a href="#cb9-146" tabindex="-1"></a>      }</span>
+<span id="cb9-147"><a href="#cb9-147" tabindex="-1"></a>    }</span>
+<span id="cb9-148"><a href="#cb9-148" tabindex="-1"></a>    </span>
+<span id="cb9-149"><a href="#cb9-149" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.null</span>(target_cand)) {</span>
+<span id="cb9-150"><a href="#cb9-150" tabindex="-1"></a>      remaining <span class="ot">&lt;-</span> <span class="fu">names</span>(candidates_spoken[[current_topic_key]])[<span class="sc">!</span>candidates_spoken[[current_topic_key]]]</span>
+<span id="cb9-151"><a href="#cb9-151" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">length</span>(remaining) <span class="sc">==</span> <span class="dv">0</span>) remaining <span class="ot">&lt;-</span> candidate_names</span>
+<span id="cb9-152"><a href="#cb9-152" tabindex="-1"></a>      target_name <span class="ot">&lt;-</span> <span class="fu">sample</span>(remaining, <span class="dv">1</span>)</span>
+<span id="cb9-153"><a href="#cb9-153" tabindex="-1"></a>      target_cand <span class="ot">&lt;-</span> candidate_lookup[[target_name]]</span>
+<span id="cb9-154"><a href="#cb9-154" tabindex="-1"></a>      <span class="co"># Also update moderator statement if we had to pick a different candidate</span></span>
+<span id="cb9-155"><a href="#cb9-155" tabindex="-1"></a>      <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;ask_one&quot;</span>) {</span>
+<span id="cb9-156"><a href="#cb9-156" tabindex="-1"></a>        moderator_text_lower <span class="ot">&lt;-</span> <span class="fu">tolower</span>(command<span class="sc">$</span>moderator_statement)</span>
+<span id="cb9-157"><a href="#cb9-157" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">grepl</span>(<span class="fu">tolower</span>(target_name), moderator_text_lower, <span class="at">fixed =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb9-158"><a href="#cb9-158" tabindex="-1"></a>          command<span class="sc">$</span>moderator_statement <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">&quot;{target_name}, {command$moderator_statement}&quot;</span>)</span>
+<span id="cb9-159"><a href="#cb9-159" tabindex="-1"></a>        }</span>
+<span id="cb9-160"><a href="#cb9-160" tabindex="-1"></a>      }</span>
+<span id="cb9-161"><a href="#cb9-161" tabindex="-1"></a>    }</span>
+<span id="cb9-162"><a href="#cb9-162" tabindex="-1"></a>    </span>
+<span id="cb9-163"><a href="#cb9-163" tabindex="-1"></a>    context <span class="ot">&lt;-</span> <span class="fu">format_transcript</span>(transcript)</span>
+<span id="cb9-164"><a href="#cb9-164" tabindex="-1"></a>    </span>
+<span id="cb9-165"><a href="#cb9-165" tabindex="-1"></a>    <span class="cf">if</span> (command<span class="sc">$</span>action <span class="sc">==</span> <span class="st">&quot;request_rebuttal&quot;</span> <span class="sc">&amp;&amp;</span> <span class="fu">nchar</span>(command<span class="sc">$</span>responding_to) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb9-166"><a href="#cb9-166" tabindex="-1"></a>      responding_to_name <span class="ot">&lt;-</span> command<span class="sc">$</span>responding_to</span>
+<span id="cb9-167"><a href="#cb9-167" tabindex="-1"></a>      prompt_text <span class="ot">&lt;-</span> command<span class="sc">$</span>moderator_statement</span>
+<span id="cb9-168"><a href="#cb9-168" tabindex="-1"></a>      full_prompt <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb9-169"><a href="#cb9-169" tabindex="-1"></a>        <span class="st">&quot;Here is the complete debate transcript so far:</span><span class="sc">\n\n</span><span class="st">{context}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-170"><a href="#cb9-170" tabindex="-1"></a>        <span class="st">&quot;{prompt_text}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-171"><a href="#cb9-171" tabindex="-1"></a>        <span class="st">&quot;You are responding directly to {responding_to_name}. Be conversational and debate-like.&quot;</span>,</span>
+<span id="cb9-172"><a href="#cb9-172" tabindex="-1"></a>        <span class="st">&quot;CRITICAL: You can ONLY reference what other candidates have said in the transcript above.&quot;</span></span>
+<span id="cb9-173"><a href="#cb9-173" tabindex="-1"></a>      )</span>
+<span id="cb9-174"><a href="#cb9-174" tabindex="-1"></a>      response <span class="ot">&lt;-</span> target_cand<span class="sc">$</span>agent<span class="sc">$</span><span class="fu">chat</span>(full_prompt)</span>
+<span id="cb9-175"><a href="#cb9-175" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> target_name, <span class="at">text =</span> response)))</span>
+<span id="cb9-176"><a href="#cb9-176" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb9-177"><a href="#cb9-177" tabindex="-1"></a>      moderator_text <span class="ot">&lt;-</span> command<span class="sc">$</span>moderator_statement</span>
+<span id="cb9-178"><a href="#cb9-178" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> moderator_text)))</span>
+<span id="cb9-179"><a href="#cb9-179" tabindex="-1"></a>      full_prompt <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb9-180"><a href="#cb9-180" tabindex="-1"></a>        <span class="st">&quot;Here is the complete debate transcript so far:</span><span class="sc">\n\n</span><span class="st">{context}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-181"><a href="#cb9-181" tabindex="-1"></a>        <span class="st">&quot;MODERATOR: {moderator_text}</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-182"><a href="#cb9-182" tabindex="-1"></a>        <span class="st">&quot;The moderator has asked YOU ({target_name}) a question. You must respond directly to this question. &quot;</span>,</span>
+<span id="cb9-183"><a href="#cb9-183" tabindex="-1"></a>        <span class="st">&quot;CRITICAL: You can ONLY reference what other candidates have said in the transcript above. &quot;</span>,</span>
+<span id="cb9-184"><a href="#cb9-184" tabindex="-1"></a>        <span class="st">&quot;Engage with what other candidates have said - challenge their ideas, disagree with their proposals, or build on their statements. &quot;</span>,</span>
+<span id="cb9-185"><a href="#cb9-185" tabindex="-1"></a>        <span class="st">&quot;Do not reference ideas or positions that haven&#39;t been mentioned in this debate yet. &quot;</span>,</span>
+<span id="cb9-186"><a href="#cb9-186" tabindex="-1"></a>        <span class="st">&quot;Respond naturally based on the transcript and your own positions.&quot;</span></span>
+<span id="cb9-187"><a href="#cb9-187" tabindex="-1"></a>      )</span>
+<span id="cb9-188"><a href="#cb9-188" tabindex="-1"></a>      response <span class="ot">&lt;-</span> target_cand<span class="sc">$</span>agent<span class="sc">$</span><span class="fu">chat</span>(full_prompt)</span>
+<span id="cb9-189"><a href="#cb9-189" tabindex="-1"></a>      transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> target_name, <span class="at">text =</span> response)))</span>
+<span id="cb9-190"><a href="#cb9-190" tabindex="-1"></a>    }</span>
+<span id="cb9-191"><a href="#cb9-191" tabindex="-1"></a>    </span>
+<span id="cb9-192"><a href="#cb9-192" tabindex="-1"></a>    candidates_spoken[[current_topic_key]][target_name] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb9-193"><a href="#cb9-193" tabindex="-1"></a>    </span>
+<span id="cb9-194"><a href="#cb9-194" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">map_lgl</span>(candidates_spoken, <span class="sc">~</span> <span class="fu">all</span>(.x)))) <span class="cf">break</span></span>
+<span id="cb9-195"><a href="#cb9-195" tabindex="-1"></a>    </span>
+<span id="cb9-196"><a href="#cb9-196" tabindex="-1"></a>    round <span class="ot">&lt;-</span> round <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb9-197"><a href="#cb9-197" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="fl">0.5</span>)</span>
+<span id="cb9-198"><a href="#cb9-198" tabindex="-1"></a>  }</span>
+<span id="cb9-199"><a href="#cb9-199" tabindex="-1"></a>  </span>
+<span id="cb9-200"><a href="#cb9-200" tabindex="-1"></a>  <span class="co"># Moderator closing statement</span></span>
+<span id="cb9-201"><a href="#cb9-201" tabindex="-1"></a>  closing_text <span class="ot">&lt;-</span> <span class="st">&quot;Thank you to all the candidates for participating in tonight&#39;s debate. We appreciate your time and perspectives on these critical issues facing Albuquerque.&quot;</span></span>
+<span id="cb9-202"><a href="#cb9-202" tabindex="-1"></a>  transcript <span class="ot">&lt;-</span> <span class="fu">append</span>(transcript, <span class="fu">list</span>(<span class="fu">list</span>(<span class="at">speaker =</span> <span class="st">&quot;MODERATOR&quot;</span>, <span class="at">text =</span> closing_text)))</span>
+<span id="cb9-203"><a href="#cb9-203" tabindex="-1"></a>  </span>
+<span id="cb9-204"><a href="#cb9-204" tabindex="-1"></a>  <span class="fu">return</span>(transcript)</span>
+<span id="cb9-205"><a href="#cb9-205" tabindex="-1"></a>}</span></code></pre></div>
           <hr />
           </div>
           <div id="running-the-debate" class="section level2">
@@ -1033,256 +1111,224 @@ Simulation</h1>
           Let’s begin.
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>To kick things off, how do you
-          view the current state of homelessness in Albuquerque, and
-          what specific measures do you propose to address this issue?
+          <strong>MODERATOR:</strong><br>Daniel Chavez, what is your
+          plan to address homelessness in Albuquerque?
           </div>
           <div style="background-color: #ffe6e6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #B2A1A1;">
-          <p><strong>Daniel Chavez:</strong><br>The current state of
-          homelessness in Albuquerque is dire, and it’s clear that the
-          previous attempts just haven’t been effective. Many candidates
-          seem to throw around ideas without understanding the root
-          issues. For instance, simply adding more temporary shelters
-          hasn’t addressed the underlying problem—many people don’t have
-          stable support systems.</p>
-          I believe we need a more comprehensive approach with
-          <strong>Home Basis Centers</strong>, which will not only
-          provide shelter but also essential resources that help people
-          rebuild their lives. Others might focus on band-aid solutions,
-          but it’s time to look at long-term strategies like
-          <strong>decriminalizing sleep</strong> to offer dignity and
-          safety to the unhoused. We can’t just keep pushing the issue
-          away; we need to tackle it head-on with sustainable solutions
-          that actually work.
+          <strong>Daniel Chavez:</strong><br>Addressing homelessness in
+          Albuquerque requires concrete solutions.
+          <strong>Decriminalizing sleep</strong> is essential; we can’t
+          continue punishing those without a place to rest. Other
+          candidates may propose temporary shelters or piecemeal
+          solutions, but those have proven ineffective. We need a
+          comprehensive approach like <strong>Home Basis
+          Centers</strong>, which not only provide immediate shelter but
+          also help individuals build sustainable lives with facilities
+          like public restrooms and educational resources. It’s about
+          creating lasting stability, not just temporary fixes.
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Darren White, you’ve been
-          listening to Daniel Chavez’s proposals regarding Home Basis
-          Centers and decriminalizing sleep. What are your thoughts on
-          his approach and how would you address the systemic issues
-          surrounding homelessness in Albuquerque?
+          <strong>MODERATOR:</strong><br>Darren White, Daniel Chavez
+          mentioned the importance of decriminalizing sleep and
+          suggested comprehensive approaches like Home Basis Centers.
+          How do you view these proposals, and what would be your
+          approach to addressing homelessness?
           </div>
           <div style="background-color: #cce6ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #8EA1B2;">
-          <strong>Darren White:</strong><br>Daniel, your approach of
-          <strong>Home Basis Centers</strong> and
-          <strong>decriminalizing sleep</strong> demonstrates a
-          fundamental misunderstanding of the urgency of the situation.
-          We’ve poured nearly $300 million into homeless programs with
-          little to show for it. Your idea to add more temporary
-          shelters and provide a safety net without enforcing the laws
-          is reckless. Compassion doesn’t mean allowing chaos on our
-          streets. We need to enforce existing laws against illegal
-          encampments and ensure that people experiencing homelessness
-          who refuse help aren’t allowed to set up camp in public
-          spaces. It’s about restoring order, not enabling a cycle of
-          dependency.
+          <strong>Darren White:</strong><br>Decriminalizing sleep?
+          That’s a misguided approach that will only exacerbate the
+          chaos we’re already seeing in Albuquerque. We can’t just throw
+          our hands up and let people camp on our streets and parks.
+          Instead of vague ideas like <strong>Home Basis
+          Centers</strong>, I believe in concrete, actionable solutions
+          that empower individuals to make real changes, like enforcing
+          laws against illegal encampments. If people refuse help, they
+          cannot break the law or commandeer public spaces! We need
+          accountability, not romanticizing homelessness as a lifestyle
+          choice.
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Mayling Armijo, you’ve heard
-          the perspectives from both Daniel Chavez and Darren White.
-          What’s your view on the effectiveness of their strategies, and
-          what solutions do you think are crucial for addressing
+          <strong>MODERATOR:</strong><br>Mayling Armijo, Darren White
+          has strongly opposed the idea of decriminalizing sleep and
+          emphasized enforcing laws against illegal encampments. How do
+          you respond to his viewpoint, and what strategies do you
+          propose to address homelessness in Albuquerque?
+          </div>
+          <div style="background-color: #fff4e6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #B2AAA1;">
+          <strong>Mayling Armijo:</strong><br>Darren, saying that
+          <strong>decriminalizing sleep</strong> will exacerbate chaos
+          is simply ignoring the reality of homelessness. By
+          criminalizing something as basic as needing a place to rest,
+          we aren’t solving the problem; we’re pushing it further away
+          from public view. My approach recognizes that
+          <strong>expanding legal safe outdoor spaces</strong> and
+          addressing the unique needs of the homeless is crucial. We
+          need to provide resources, not punishment. Your idea of
+          enforcing laws against illegal encampments fails to address
+          the root causes; it’s not a solution but a band-aid on a
+          deeper wound. We need real, compassionate solutions that focus
+          on sustainability!
+          </div>
+          <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
+          <strong>MODERATOR:</strong><br>Eddie Varela, Mayling Armijo
+          challenged Darren White’s stance on decriminalizing sleep,
+          advocating for expanding legal safe outdoor spaces. What are
+          your thoughts on this approach, and how do you plan to tackle
           homelessness in Albuquerque?
           </div>
-          <div style="background-color: #fff4e6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #B2AAA1;">
-          <p><strong>Mayling Armijo:</strong><br>Darren, your approach
-          is misguided. Simply enforcing laws without addressing the
-          root causes of homelessness will only push people deeper into
-          crisis. We need to support <strong>expanding legal safe
-          outdoor spaces</strong> and focus on the unique needs of those
-          experiencing homelessness rather than treating them as a
-          nuisance.</p>
-          Daniel’s idea of <strong>Home Basis Centers</strong> is a step
-          in the right direction, but let’s not forget that temporary
-          solutions should be paired with comprehensive support
-          services. We must provide housing, healthcare, and job
-          assistance to create lasting change. We can’t just restore
-          order; we need to restore lives.
-          </div>
-          <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Eddie Varela, you’ve heard the
-          differing views from Daniel, Darren, and Mayling. What
-          solutions do you propose to effectively address the
-          homelessness crisis in Albuquerque, considering the
-          effectiveness of temporary shelters and legal safe outdoor
-          spaces?
-          </div>
           <div style="background-color: #f0e6ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A1B2;">
-          <p><strong>Eddie Varela:</strong><br>The proposals put forth
-          by Daniel and Mayling, such as <strong>Home Basis
-          Centers</strong> and <strong>expanding legal safe outdoor
-          spaces</strong>, seem to sidestep the urgent reality we’re
-          facing. While they focus on providing options, they ignore the
-          immediate need to address illegal encampments that are
-          creating chaos on our streets. Darren’s point about enforcing
-          existing laws resonates with my approach; we need a firm
-          stance against illegal encampments.</p>
-          However, let’s be clear: we can’t just enforce the law. That’s
-          why my strategy involves a detailed, humane plan that includes
-          armed security to engage the homeless community and facilitate
-          a path for compliance. It’s imperative we create
-          accountability while offering solutions for those in crisis,
-          rather than just setting up more temporary measures that don’t
-          tackle the core issue.
+          <strong>Eddie Varela:</strong><br>Expanding legal safe outdoor
+          spaces, like Mayling suggests, is just kicking the can down
+          the road. We’re dealing with a crisis, and
+          <strong>decriminalizing sleep</strong> will only allow illegal
+          encampments to mushroom even further—just look at the
+          frustration in our neighborhoods! I propose a humane but firm
+          approach. We need to engage with the homeless community to
+          understand their situations and provide real options, not just
+          create more spots for them to camp. Relying solely on
+          temporary fixes won’t bring stability or safety to our city!
+          It’s about accountability and offering viable solutions that
+          help everyone.
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Louie Sanchez, you’ve heard the
-          arguments around enforcement from Darren and Eddie, along with
-          the proposed solutions from Daniel and Mayling. What is your
-          take on how Albuquerque should tackle the homelessness issue?
+          <strong>MODERATOR:</strong><br>Louie Sanchez, Eddie Varela
+          criticized the idea of expanding legal safe outdoor spaces,
+          suggesting it only delays the issue. What is your perspective
+          on this debate, and what comprehensive solutions do you
+          propose to address homelessness in Albuquerque?
           </div>
           <div style="background-color: #e6ffe6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A1B2A1;">
-          <p><strong>Louie Sanchez:</strong><br>The idea of
-          <strong>decriminalizing sleep</strong> and adding more legal
-          safe outdoor spaces, as touted by Daniel and Mayling,
-          completely ignores the pressing reality we have on our
-          streets. We cannot normalize living in public spaces; it’s not
-          compassionate or sustainable. We have to act with urgency to
-          provide real, structured pathways to stability, not just
-          band-aid solutions.</p>
-          Darren and Eddie raise valid points about enforcement, but
-          simply enforcing existing laws without accountability and
-          support for individuals facing homelessness is not a solution.
-          We must have a strategy that includes access to comprehensive
-          support services like mental health treatment, job training,
-          and transitional housing. It’s essential that we establish
-          <strong>coordinated outreach and engagement</strong> efforts
-          to help those in need while also addressing illegal
-          encampments swiftly and compassionately. We can’t push people
-          further into despair while claiming to restore order; we need
-          a balanced approach that ensures safety and provides real
-          opportunities for individuals to rebuild their lives.
+          <strong>Louie Sanchez:</strong><br>Eddie, your stance on
+          expanding legal safe outdoor spaces being just “kicking the
+          can down the road” is missing the point. While those spaces
+          aren’t a silver bullet, they provide a critical step toward
+          helping the unhoused by connecting them with resources.
+          Instead of just pushing them away or criminalizing their need
+          for shelter, we should focus on real, <strong>results-driven
+          solutions</strong> that include <strong>transitional
+          housing</strong> with access to services. The fact that we
+          can’t just throw people out and hope for the best is something
+          we need to recognize. We have to invest in <strong>coordinated
+          outreach and engagement</strong> that connects individuals to
+          long-term solutions, rather than penalizing their existence on
+          the streets. Your proposals lack the compassion needed to
+          truly address this crisis.
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Moving on to our second topic,
-          Economic Development. What are your top priorities for
-          boosting economic growth in Albuquerque, and how do you plan
-          to create jobs for our residents?
+          <strong>MODERATOR:</strong><br>Moving on to our next topic:
+          Economic Development. Let’s hear from the candidates on this
+          issue.
+          </div>
+          <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
+          <strong>MODERATOR:</strong><br>Daniel Chavez, what specific
+          strategies do you propose to stimulate economic development in
+          Albuquerque?
           </div>
           <div style="background-color: #ffe6e6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #B2A1A1;">
-          <p><strong>Daniel Chavez:</strong><br>The focus on enforcement
-          by candidates like Darren and Eddie misses the mark when it
-          comes to real economic development, especially as it connects
-          to homelessness. Treating homelessness as a nuisance isn’t a
-          viable solution and only drives away potential business
-          development because it creates a negative perception of our
-          city’s safety and livability.</p>
-          If we truly want to boost economic growth, we need to be
-          business-friendly. My proposal to <strong>streamline
-          permits</strong> will help small businesses get up and running
-          without suffocating red tape. Adding more temporary solutions
-          to homelessness won’t cut it; we need to address the root
-          issues and create healthier economic conditions. If we’re not
-          investing in our community by providing <strong>Home Basis
-          Centers</strong> and decriminalizing sleep, we’re missing a
-          critical opportunity to enhance our workforce, making
-          Albuquerque a more attractive place for businesses to thrive.
-          It’s time for a real plan that encourages both recovery for
-          those experiencing homelessness and a robust economy for our
-          residents.
+          <p><strong>Daniel Chavez:</strong><br>To stimulate economic
+          development in Albuquerque, we absolutely must
+          <strong>streamline the permit process</strong>. Delays and red
+          tape are suffocating small businesses. While some candidates
+          are focused on vague ideas and enforcement measures, I know
+          firsthand as a small business owner that clarity and speed in
+          permits are critical.</p>
+          We need real partnerships with organizations like the chamber
+          of commerce to ensure our businesses can thrive—not just
+          survive in a chaotic environment. Other candidates complain
+          but fail to provide actionable solutions; we need to take
+          decisive steps that make it easier for businesses to open,
+          expand, and hire local workers. It’s time to put Albuquerque
+          back on the map as a business-friendly city!
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>What specific strategies do you
-          propose to foster economic growth in Albuquerque, and how will
-          they directly create jobs for our residents?
+          <strong>MODERATOR:</strong><br>Darren White, Daniel Chavez
+          emphasized the need to streamline the permit process for small
+          businesses. What are your thoughts on this approach, and what
+          additional strategies do you propose for economic development
+          in Albuquerque?
           </div>
           <div style="background-color: #cce6ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #8EA1B2;">
-          <p><strong>Darren White:</strong><br>Daniel, your belief that
-          <strong>streamlining permits</strong> and focusing on
-          homelessness solutions will automatically lead to economic
-          growth is naive. While it’s essential to make it easier for
-          businesses to operate, what good is that when our city is
-          drowning in chaos from illegal encampments and rampant
-          crime?</p>
-          You, Eddie, and Mayling want to push forward with temporary
-          measures like <strong>Home Basis Centers</strong> and
-          <strong>expanding legal safe outdoor spaces</strong>, but
-          those just enable lawlessness. We must prioritize restoring
-          order first—<strong>enforcing existing laws</strong> against
-          illegal encampments is critical. Once we create a safe
-          environment, only then can we attract businesses and support
-          job creation. We can’t ignore the link between public safety
-          and economic health; it’s foundational to bringing Albuquerque
-          back on track.
+          <strong>Darren White:</strong><br><strong>Streamlining the
+          permit process</strong> is crucial, and I couldn’t agree more
+          with Daniel—it’s one of the key hurdles small businesses face.
+          However, simply advocating for speed without addressing
+          accountability won’t cut it. We also need to fully implement
+          the One-Stop Shop to digitize the process, set clear
+          timelines, and create a <strong>Business Advocate at City
+          Hall</strong> to guide entrepreneurs through the system. Just
+          complaining about red tape isn’t enough; we must take real,
+          concrete steps that empower businesses to thrive and create
+          jobs, not just survive amidst chaos. Other candidates need to
+          recognize that a hands-off approach without structure won’t
+          help our local economy!
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Mayling Armijo, with your
-          perspective on economic growth, how do you plan to create jobs
-          for residents in Albuquerque, and what specific strategies
-          will you implement to foster that growth?
-          </div>
-          <div style="background-color: #f0e6ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A1B2;">
-          <p><strong>Eddie Varela:</strong><br>Darren’s assertion that
-          enforcing existing laws against illegal encampments alone will
-          restore order and attract businesses is flawed. While safety
-          is crucial, it’s not enough to simply crack down on the
-          visible symptoms of homelessness; we need effective,
-          compassionate solutions as well.</p>
-          Daniel’s focus on <strong>streamlining permits</strong> is a
-          step in the right direction, but it doesn’t address the larger
-          crisis. My approach prioritizes not only making the permit
-          process more efficient but also ensuring that we create a
-          business-friendly atmosphere that encourages development. This
-          is about fostering a balance—<strong>addressing illegal
-          encampments</strong> while also investing in our community—so
-          Albuquerque can thrive economically. We need to implement
-          strong systems that support businesses and provide pathways
-          for those in crisis, not just patchwork solutions that leave
-          the core issues unaddressed.
-          </div>
-          <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>What innovative strategies do
-          you propose to stimulate economic growth and job creation in
-          Albuquerque, particularly in light of current challenges?
+          <strong>MODERATOR:</strong><br>Mayling Armijo, both Daniel
+          Chavez and Darren White have discussed the importance of
+          streamlining the permit process for small businesses. What
+          additional strategies do you believe are essential for
+          fostering economic development in Albuquerque?
           </div>
           <div style="background-color: #fff4e6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #B2AAA1;">
-          <p><strong>Mayling Armijo:</strong><br>Darren, your insistence
-          that simply enforcing laws will restore order is
-          short-sighted. Yes, public safety is critical, but it has to
-          go hand-in-hand with real economic strategies.
-          <strong>Streamlining permits</strong> and creating a
-          supportive environment for businesses are essential steps, but
-          without addressing homelessness compassionately, we risk
-          pushing businesses away.</p>
-          Eddie, while you mention balancing enforcement with
-          development, your ideas still feel disjointed from the real
-          work we need to do. We should focus on <strong>expanding legal
-          safe outdoor spaces</strong> and providing
-          <strong>comprehensive support services</strong> so we can
-          integrate those in crisis into our workforce. If we want
-          Albuquerque to thrive, we can’t just look at the surface
-          symptoms; we need solutions that build a solid foundation for
-          economic growth while supporting those who need it most.
+          <p><strong>Mayling Armijo:</strong><br>Daniel and Darren both
+          emphasize the need to <strong>streamline the permit
+          process</strong>, which I agree is vital. However, simply
+          speeding up permits without considering the bigger picture
+          won’t be enough. We need to create a fully online,
+          user-friendly system that includes <strong>real-time
+          updates</strong> and dedicated support to help businesses
+          navigate the permitting maze.</p>
+          Moreover, businesses need tools and training; it’s not just
+          about cutting red tape. Empowering city staff to operate
+          efficiently is equally important. We can’t just implement a
+          <strong>Business Advocate at City Hall</strong>—we have to
+          ensure they have the authority and support to make a
+          difference. Let’s foster an environment where businesses can
+          not only survive but thrive. This requires a comprehensive
+          vision that goes beyond just streamlining permits!
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
-          <strong>MODERATOR:</strong><br>Louie Sanchez, what are your
-          top priorities for stimulating economic growth in Albuquerque,
-          and how do you plan to create jobs for our residents?
+          <strong>MODERATOR:</strong><br>Eddie Varela, Mayling Armijo
+          highlighted the importance of a comprehensive vision for
+          economic development. What are your thoughts on this approach,
+          and what specific initiatives do you propose to enhance the
+          economy in Albuquerque?
+          </div>
+          <div style="background-color: #f0e6ff; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A1B2;">
+          <strong>Eddie Varela:</strong><br>A comprehensive vision
+          sounds nice, Mayling, but we need to be pragmatic!
+          <strong>Streamlining the permit process</strong> is not just
+          critical; it’s a necessity right now. I appreciate the idea of
+          a user-friendly system, but without <strong>fast-tracking
+          permits</strong> and cutting down on the stifling red tape, we
+          will continue to see businesses frustrated and delayed. Time
+          is money, and the longer it takes to open a business, the more
+          potential jobs and economic growth we lose. We can’t just
+          focus on theories; we need actionable, immediate changes that
+          create a thriving environment for our local businesses!
+          </div>
+          <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
+          <strong>MODERATOR:</strong><br>Louie Sanchez, Eddie Varela
+          emphasized the urgent need for fast-tracking permits as
+          essential for economic development. What is your perspective
+          on this, and what additional strategies do you propose to
+          boost Albuquerque’s economy?
           </div>
           <div style="background-color: #e6ffe6; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A1B2A1;">
-          <p><strong>Louie Sanchez:</strong><br>Addressing the economic
-          growth in Albuquerque cannot be separated from the current
-          homelessness crisis. <strong>Darren’s approach</strong>
-          insisting solely on enforcement as a solution is overly
-          simplistic and will not attract businesses if our streets
-          remain chaotic. We must tackle the root issues with strategies
-          like <strong>streamlining permits</strong> to ease the burden
-          on small businesses and create a thriving economic
-          climate.</p>
-          Daniel, while your focus on <strong>Home Basis
-          Centers</strong> and <strong>decriminalizing sleep</strong>
-          might sound compassionate, it risks enabling a cycle of
-          dependency without addressing the immediate need for
-          accountability in our communities. My plan centers on creating
-          a <strong>unified business concierge team</strong> to assist
-          small businesses in navigating city services efficiently while
-          providing comprehensive support services to individuals
-          experiencing homelessness. We need to create a
-          balance—boosting our economy while ensuring that those in
-          crisis have pathways to stability, rather than just pushing
-          them into temporary shelters or encouraging them to live
-          outside. A robust economy is built on real solutions that
-          support all residents, not just a select few.
+          <strong>Louie Sanchez:</strong><br>Eddie, while I agree that
+          <strong>streamlining the permit process</strong> is critical,
+          your approach seems overly focused on speed without
+          considering the broader context. Speed without support will
+          leave businesses stranded in a chaotic landscape. We need to
+          implement a <strong>One-Stop Business Portal</strong> that not
+          only fast-tracks permits but also provides the necessary
+          resources, real-time updates, and guidance from experienced
+          staff. It’s not just about cutting red tape; it’s about
+          transforming how we interact with our entrepreneurs, ensuring
+          that they have a friend in city government. Proposing a
+          one-dimensional solution ignores the complexities of running a
+          business in Albuquerque. Let’s dig deeper and create a system
+          that truly empowers small businesses!
           </div>
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #A8A8A8;">
           <strong>MODERATOR:</strong><br>Thank you to all the candidates
