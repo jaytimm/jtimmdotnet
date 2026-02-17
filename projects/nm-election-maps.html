@@ -52,14 +52,14 @@
         }
         
         .map-layout .sidebar {
-            flex: 0 0 350px;
-            width: 350px;
+            flex: 0 0 280px;
+            width: 280px;
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
             background: #f8f9fa;
             border-right: 1px solid #dee2e6;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 2px 0 4px rgba(0,0,0,0.1);
         }
         
@@ -223,21 +223,75 @@
             color: #212529;
         }
 
-        /* Mobile: stack sidebar above map, sidebar scrollable with capped height */
+        .results-toggle-wrap {
+            margin-top: 16px;
+            margin-bottom: 20px;
+        }
+        .results-toggle-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #428bca;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .results-toggle-btn:hover {
+            color: #2a6496;
+            text-decoration: underline;
+            background: #fff;
+            border-color: #dee2e6;
+        }
+        .stats-collapsed {
+            display: none;
+        }
+        .stats-collapsed.stats-open {
+            display: block;
+        }
+        .map-title-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        /* Mobile / narrow: stack sidebar above map; share space so map always has room (fixes thin browser) */
         @media (max-width: 768px) {
+            body.map-page {
+                height: 100svh;
+                height: 100vh;
+            }
             .map-layout {
                 flex-direction: column;
+                min-height: 0;
             }
             .map-layout .sidebar {
-                flex: 0 0 auto;
+                flex: 0 1 auto;
                 width: 100%;
-                max-height: 45vh;
+                max-height: 34%;
                 min-height: 200px;
                 border-right: none;
                 border-bottom: 1px solid #dee2e6;
+                -webkit-overflow-scrolling: touch;
             }
             .map-layout .map-container {
-                min-height: 50vh;
+                flex: 1 1 0;
+                min-height: 0;
+                min-height: 340px;
+                touch-action: none;
             }
         }
         
@@ -260,10 +314,6 @@
       </div>
       <div class="map-layout">
         <div class="sidebar">
-            <div id="statusMessage" style="background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
-                Loading data...
-            </div>
-            
             <div class="control-group">
                 <label for="yearSelect">Election 1 year</label>
                 <select id="yearSelect">
@@ -278,8 +328,11 @@
                 </select>
             </div>
             
-            <div class="control-group" id="colorNoteGroup">
-                <span class="color-note" id="colorNote">D/R margins</span>
+            <div class="results-toggle-wrap">
+                <button type="button" class="results-toggle-btn" id="resultsToggle" aria-expanded="false">Results E1</button>
+                <div class="stats stats-collapsed" id="stats">
+                    <div class="loading">Select a race to view stats</div>
+                </div>
             </div>
             
             <div class="control-group" id="compareGroup" style="display: none;">
@@ -293,10 +346,6 @@
                 </select>
             </div>
             
-            <div class="stats" id="stats">
-                <div class="loading">Select a race to view stats</div>
-            </div>
-            
             <div class="legend" id="legend">
                 <h3>Distribution</h3>
                 <div class="loading">Select a race</div>
@@ -304,6 +353,7 @@
         </div>
         
         <div class="map-container">
+            <div id="mapTitle" class="map-title-overlay"></div>
             <div id="map"></div>
         </div>
       </div>
@@ -717,6 +767,8 @@
         
         // Update map with selected race
         function updateMap() {
+            const titleEl = document.getElementById('mapTitle');
+            if (titleEl) titleEl.textContent = '';
             const year = document.getElementById('yearSelect').value;
             const raceSelect = document.getElementById('raceSelect');
             const raceIndex = raceSelect.selectedIndex;
@@ -754,7 +806,6 @@
                     colorBy = 'dem_shift';
                 }
             }
-            document.getElementById('colorNote').textContent = colorBy === 'dem_shift' ? 'Dem deltas (E2−E1)' : 'D/R margins';
             
             if (!raceResults || raceResults.length === 0) {
                 console.warn('No results found for selected race');
@@ -847,11 +898,21 @@
             if (raceResults.length > 0) {
                 const tempGroup = L.geoJSON({ type: 'FeatureCollection', features: raceResults.map(r => r.feature) });
                 const bounds = tempGroup.getBounds();
-                if (bounds.isValid()) map.fitBounds(bounds, { maxZoom: 11, padding: [30, 30] });
+                if (bounds.isValid()) map.fitBounds(bounds, { maxZoom: 14, padding: [30, 30] });
             }
             
             // Update stats
             updateStats(raceResults, year, raceData.office, raceData.districtType, raceData.districtName, compareYear, compareRaceLabel, selectedRace ? selectedRace.textContent : '');
+            
+            // Update map title overlay
+            if (titleEl) {
+                const mainLabel = selectedRace ? selectedRace.textContent : '';
+                if (compareYear && compareRaceLabel) {
+                    titleEl.textContent = `${year} ${mainLabel} vs ${compareYear} ${compareRaceLabel}`;
+                } else {
+                    titleEl.textContent = `${year} · ${mainLabel}`;
+                }
+            }
             
             // Update legend
             updateLegend(colorBy, raceResults, compareYear, compareRaceLabel, selectedRace ? selectedRace.textContent : '');
@@ -912,7 +973,6 @@
                     <span class="stat-label">Precincts:</span>
                     <span class="stat-value">${raceResults.length}</span>
                 </div>
-                ${compareYear ? `<div class="stat-item"><span class="stat-label">Comparing:</span><span class="stat-value">E1: ${mainRaceLabel} (${year}) · E2: ${compareRaceLabel} (${compareYear})</span></div>` : ''}
             `;
         }
         
@@ -1066,18 +1126,10 @@
         // Initialize
         async function init() {
             initMap();
-            updateStatus('Initializing map...', 'info');
-            
             try {
-                updateStatus('Loading GeoJSON boundaries...', 'info');
                 await loadGeoJSON();
-                updateStatus('Loading election results...', 'info');
                 await Promise.all([loadResults(), loadStatewideResults()]);
-                
-                updateStatus('Merging data...', 'info');
                 mergeData();
-                
-                updateStatus('Populating dropdowns...', 'info');
                 populateYears();
                 populateRaces();
                 
@@ -1106,11 +1158,16 @@
                     updateUrl();
                     saveSelection();
                 });
-                updateStatus('Ready! Select a year and race to begin.', 'success');
+                document.getElementById('resultsToggle').addEventListener('click', () => {
+                    const stats = document.getElementById('stats');
+                    const btn = document.getElementById('resultsToggle');
+                    const isOpen = stats.classList.toggle('stats-open');
+                    btn.setAttribute('aria-expanded', isOpen);
+                    btn.textContent = isOpen ? 'Results E1 ▲' : 'Results E1';
+                });
                 console.log('Initialization complete!');
             } catch (error) {
                 console.error('Initialization error:', error);
-                updateStatus(`Error: ${error.message}. Make sure you're accessing via http://localhost:8000/index.html (not file://)`, 'error');
             }
         }
         
