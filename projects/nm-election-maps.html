@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Mexico Election Maps - Jason Timm</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        /* Map-page layout: header + main (sidebar+map) + footer, main fills remaining height */
+        body.map-page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .map-page-main {
+            flex: 1 1 0;
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .map-app-wrap {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 20px 15px 0 15px;
+            flex: 1 1 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .map-title-block {
+            flex: 0 0 auto;
+            padding-top: 0;
+            padding-bottom: 10px;
+        }
+        .map-title-block .post-title {
+            margin-bottom: 0;
+        }
+        .map-layout {
+            display: flex;
+            flex: 1 1 0;
+            min-height: 0;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .map-layout .sidebar {
+            flex: 0 0 350px;
+            width: 350px;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            padding: 20px;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+            font-size: 14px;
+        }
+        
+        .control-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .control-group select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        .color-note {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .stats {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            margin-top: 20px;
+        }
+        
+        .stats h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #212529;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #212529;
+            font-size: 14px;
+        }
+        
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            margin-top: 20px;
+        }
+        
+        .legend h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #212529;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .legend-label {
+            font-size: 13px;
+            color: #495057;
+        }
+        
+        .histogram {
+            width: 100%;
+            height: 56px;
+            display: block;
+        }
+        .histogram-caption {
+            display: block;
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .map-layout .map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .info-popup {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .info-popup h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #212529;
+        }
+        
+        .info-popup .popup-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .info-popup .popup-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-popup .popup-label {
+            color: #6c757d;
+        }
+        
+        .info-popup .popup-value {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        /* Mobile: stack sidebar above map, sidebar scrollable with capped height */
+        @media (max-width: 768px) {
+            .map-layout {
+                flex-direction: column;
+            }
+            .map-layout .sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                max-height: 45vh;
+                min-height: 200px;
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+            .map-layout .map-container {
+                min-height: 50vh;
+            }
+        }
+        
+    </style>
+</head>
+<body class="map-page">
+  <header class="site-header" style="background-color: #fc8d62;">
+    <div class="container">
+      <nav class="site-nav">
+        <a href="../index.html">Home</a>
+        <a href="../about.html">About</a>
+        <a href="index.html">Projects</a>
+      </nav>
+    </div>
+  </header>
+  <main class="map-page-main">
+    <div class="map-app-wrap">
+      <div class="map-title-block">
+        <h1 class="post-title">New Mexico Election Maps</h1>
+      </div>
+      <div class="map-layout">
+        <div class="sidebar">
+            <div id="statusMessage" style="background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
+                Loading data...
+            </div>
+            
+            <div class="control-group">
+                <label for="yearSelect">Election 1 year</label>
+                <select id="yearSelect">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="raceSelect">Election 1 race</label>
+                <select id="raceSelect">
+                    <option value="">Select a year first</option>
+                </select>
+            </div>
+            
+            <div class="control-group" id="colorNoteGroup">
+                <span class="color-note" id="colorNote">D/R margins</span>
+            </div>
+            
+            <div class="control-group" id="compareGroup" style="display: none;">
+                <label for="compareYearSelect">Election 2 year</label>
+                <select id="compareYearSelect">
+                    <option value="">Off</option>
+                </select>
+                <label for="compareRaceSelect" style="margin-top: 8px;">Election 2 race</label>
+                <select id="compareRaceSelect">
+                    <option value="">Same as E1</option>
+                </select>
+            </div>
+            
+            <div class="stats" id="stats">
+                <div class="loading">Select a race to view stats</div>
+            </div>
+            
+            <div class="legend" id="legend">
+                <h3>Distribution</h3>
+                <div class="loading">Select a race</div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 Jason Timm, M.A., Ph.D.</p>
+    </div>
+  </footer>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Data from this repo on GitHub (raw files)
+        const DATA_BASE_URL = 'https://raw.githubusercontent.com/jaytimm/newmexico-political-data/main';
+
+        // Global state
+        let map;
+        let precinctLayer;
+        let geoJsonData = null;
+        let resultsData = null;
+        let statewideResults = null;
+        let mergedData = null;
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([34.5, -106.0], 7);
+            L.control.zoom({ position: 'topright' }).addTo(map);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19
+            }).addTo(map);
+        }
+        
+        // URL state: ?year=2024&race=President of the United States|State|New Mexico (encode race for safety)
+        function getRaceKey(office, districtType, districtName) {
+            return encodeURIComponent([office, districtType, districtName].join('|'));
+        }
+        
+        function parseRaceKey(key) {
+            try {
+                const decoded = decodeURIComponent(key);
+                const parts = decoded.split('|');
+                return parts.length >= 3 ? { office: parts[0], districtType: parts[1], districtName: parts[2] } : null;
+            } catch (e) { return null; }
+        }
+        
+        function updateUrl() {
+            const year = document.getElementById('yearSelect').value;
+            const raceSelect = document.getElementById('raceSelect');
+            const idx = raceSelect.selectedIndex;
+            if (!year || idx <= 0) return;
+            const opt = raceSelect.options[idx];
+            const raceKey = getRaceKey(opt.dataset.office, opt.dataset.districtType, opt.dataset.districtName);
+            const compareYear = document.getElementById('compareYearSelect').value;
+            const compareRaceOpt = document.getElementById('compareRaceSelect').options[document.getElementById('compareRaceSelect').selectedIndex];
+            const compareRace = compareRaceOpt && compareRaceOpt.value ? compareRaceOpt.value : '';
+            const params = new URLSearchParams();
+            params.set('year', year);
+            params.set('race', raceKey);
+            if (compareYear) {
+                params.set('compare', compareYear);
+                if (compareRace) params.set('compareRace', compareRace);
+            }
+            const url = location.pathname + '?' + params.toString();
+            history.replaceState(null, '', url);
+        }
+        
+        function applyStateFromUrl() {
+            const params = new URLSearchParams(location.search);
+            const year = params.get('year');
+            const raceKey = params.get('race');
+            const compareYear = params.get('compare');
+            const compareRaceKey = params.get('compareRace');
+            if (!year || !raceKey) return false;
+            const yearSelect = document.getElementById('yearSelect');
+            const raceSelect = document.getElementById('raceSelect');
+            if (yearSelect.querySelector(`option[value="${year}"]`)) yearSelect.value = year;
+            populateRaces();
+            const race = parseRaceKey(raceKey);
+            if (race) {
+                for (let i = 0; i < raceSelect.options.length; i++) {
+                    const o = raceSelect.options[i];
+                    if (o.dataset.office === race.office && o.dataset.districtType === race.districtType && o.dataset.districtName === race.districtName) {
+                        raceSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            const compareYearSelect = document.getElementById('compareYearSelect');
+            if (compareYear && compareYearSelect.querySelector(`option[value="${compareYear}"]`)) {
+                compareYearSelect.value = compareYear;
+                populateCompareRaces();
+                const compareRaceSelect = document.getElementById('compareRaceSelect');
+                if (compareRaceKey) {
+                    for (let i = 0; i < compareRaceSelect.options.length; i++) {
+                        if (compareRaceSelect.options[i].value === compareRaceKey) {
+                            compareRaceSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        
+        const STORAGE_KEY = 'nm-election-map';
+        function saveSelection() {
+            const year = document.getElementById('yearSelect').value;
+            const raceSelect = document.getElementById('raceSelect');
+            const idx = raceSelect.selectedIndex;
+            if (!year || idx <= 0) return;
+            const opt = raceSelect.options[idx];
+            const raceKey = getRaceKey(opt.dataset.office, opt.dataset.districtType, opt.dataset.districtName);
+            const compareYear = document.getElementById('compareYearSelect').value;
+            const compareRaceSelect = document.getElementById('compareRaceSelect');
+            const compareRace = (compareRaceSelect.selectedIndex > 0 && compareRaceSelect.options[compareRaceSelect.selectedIndex]) ? compareRaceSelect.options[compareRaceSelect.selectedIndex].value : null;
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ year, race: raceKey, compareYear: compareYear || null, compareRace: compareRace || null }));
+            } catch (e) {}
+        }
+        
+        function restoreSelection() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                const s = JSON.parse(raw);
+                const yearSelect = document.getElementById('yearSelect');
+                if (!s.year || !yearSelect.querySelector(`option[value="${s.year}"]`)) return false;
+                yearSelect.value = s.year;
+                populateRaces();
+                const race = parseRaceKey(s.race);
+                if (race) {
+                    const raceSelect = document.getElementById('raceSelect');
+                    for (let i = 0; i < raceSelect.options.length; i++) {
+                        const o = raceSelect.options[i];
+                        if (o.dataset.office === race.office && o.dataset.districtType === race.districtType && o.dataset.districtName === race.districtName) {
+                            raceSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                const compareYearSelect = document.getElementById('compareYearSelect');
+                if (s.compareYear && compareYearSelect.querySelector(`option[value="${s.compareYear}"]`)) {
+                    compareYearSelect.value = s.compareYear;
+                    populateCompareRaces();
+                    const compareRaceSelect = document.getElementById('compareRaceSelect');
+                    if (s.compareRace) {
+                        for (let i = 0; i < compareRaceSelect.options.length; i++) {
+                            if (compareRaceSelect.options[i].value === s.compareRace) {
+                                compareRaceSelect.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                } else if (s.compare && compareYearSelect.querySelector(`option[value="${s.compare}"]`)) {
+                    compareYearSelect.value = s.compare;
+                    populateCompareRaces();
+                }
+                return true;
+            } catch (e) { return false; }
+        }
+        
+        // Load GeoJSON
+        async function loadGeoJSON() {
+            try {
+                const response = await fetch(DATA_BASE_URL + '/data/boundaries/nm_vtd_with_districts_2021.geojson');
+                geoJsonData = await response.json();
+                console.log('Loaded GeoJSON:', geoJsonData.features.length, 'features');
+                return geoJsonData;
+            } catch (error) {
+                console.error('Error loading GeoJSON:', error);
+                throw error;
+            }
+        }
+        
+        // Load and parse CSV
+        async function loadResults() {
+            return new Promise((resolve, reject) => {
+                Papa.parse(DATA_BASE_URL + '/data/elections/nm_precinct_results_2004-24.csv', {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        resultsData = results.data;
+                        console.log('Loaded results:', resultsData.length, 'rows');
+                        resolve(resultsData);
+                    },
+                    error: function(error) {
+                        console.error('Error loading CSV:', error);
+                        reject(error);
+                    }
+                });
+            });
+        }
+        
+        // Load statewide results for winner names
+        async function loadStatewideResults() {
+            return new Promise((resolve, reject) => {
+                Papa.parse(DATA_BASE_URL + '/data/elections/nm_election_results_2000-24.csv', {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        // Filter for winners - handle both string and boolean formats
+                        statewideResults = results.data.filter(r => {
+                            const isWinner = r.is_winner;
+                            return isWinner === 'TRUE' || isWinner === 'True' || isWinner === true || isWinner === 'true';
+                        });
+                        console.log('Loaded statewide results:', statewideResults.length, 'winners');
+                        resolve(statewideResults);
+                    },
+                    error: function(error) {
+                        console.error('Error loading statewide CSV:', error);
+                        // Don't reject - this is optional
+                        resolve([]);
+                    }
+                });
+            });
+        }
+        
+        // Merge GeoJSON with results
+        function mergeData() {
+            if (!geoJsonData || !resultsData) return null;
+            
+            // Create lookup map: COUNTY_NAM + VTD_NUM -> results
+            const resultsMap = new Map();
+            resultsData.forEach(row => {
+                if (row.COUNTY_NAM && row.VTD_NUM) {
+                    const key = `${row.COUNTY_NAM}|${String(row.VTD_NUM)}`;
+                    if (!resultsMap.has(key)) {
+                        resultsMap.set(key, []);
+                    }
+                    resultsMap.get(key).push(row);
+                }
+            });
+            
+            // Merge into GeoJSON features
+            const merged = {
+                ...geoJsonData,
+                features: geoJsonData.features.map(feature => {
+                    const props = feature.properties;
+                    const county = props.COUNTY_NAM;
+                    const vtd = String(props.VTD_NUM);
+                    const key = `${county}|${vtd}`;
+                    
+                    const results = resultsMap.get(key) || [];
+                    
+                    return {
+                        ...feature,
+                        properties: {
+                            ...props,
+                            results: results
+                        }
+                    };
+                })
+            };
+            
+            mergedData = merged;
+            console.log('Merged data:', merged.features.length, 'features');
+            return merged;
+        }
+        
+        // Get unique years from results (2022 and beyond only)
+        function getYears() {
+            if (!resultsData) return [];
+            const years = [...new Set(resultsData.map(r => r.election_date).filter(Boolean))];
+            return years.filter(y => parseInt(y, 10) >= 2022).sort((a, b) => b.localeCompare(a)); // Most recent first
+        }
+        
+        // Get races for a year
+        function getRaces(year) {
+            if (!resultsData || !year) return [];
+            const races = resultsData
+                .filter(r => r.election_date === year)
+                .map(r => ({
+                    office: r.office_name,
+                    district_type: r.district_type,
+                    district_name: r.district_name
+                }));
+            
+            // Unique races
+            const unique = [];
+            const seen = new Set();
+            races.forEach(r => {
+                const key = `${r.office}|${r.district_type}|${r.district_name}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    unique.push(r);
+                }
+            });
+            
+            // State Senate and State Representative last; others alphabetical
+            return unique.sort((a, b) => {
+                const aLast = (a.office === 'State Senate' || a.office === 'State Representative');
+                const bLast = (b.office === 'State Senate' || b.office === 'State Representative');
+                if (aLast && !bLast) return 1;
+                if (!aLast && bLast) return -1;
+                if (aLast && bLast) return a.office.localeCompare(b.office);
+                return a.office.localeCompare(b.office);
+            });
+        }
+        
+        // Get results for a specific race
+        function getRaceResults(year, office, districtType, districtName) {
+            if (!mergedData) return null;
+            
+            return mergedData.features.map(feature => {
+                const results = feature.properties.results || [];
+                const raceResult = results.find(r => 
+                    r.election_date === year &&
+                    r.office_name === office &&
+                    r.district_type === districtType &&
+                    r.district_name === districtName
+                );
+                
+                if (!raceResult) return null;
+                
+                const dem = parseFloat(raceResult.dem) || 0;
+                const rep = parseFloat(raceResult.rep) || 0;
+                const other = parseFloat(raceResult.other) || 0;
+                const total = parseFloat(raceResult.votes_cast) || 0;
+                
+                const demPct = total > 0 ? (dem / total) * 100 : 0;
+                const repPct = total > 0 ? (rep / total) * 100 : 0;
+                return {
+                    feature: feature,
+                    dem: dem,
+                    rep: rep,
+                    other: other,
+                    total: total,
+                    dem_pct: demPct,
+                    rep_pct: repPct,
+                    margin: dem - rep,
+                    margin_pct: demPct - repPct,
+                    winner: dem > rep ? 'Dem' : (rep > dem ? 'Rep' : 'Tie'),
+                    turnout: total
+                };
+            }).filter(Boolean);
+        }
+        
+        // Color functions
+        function getColor(value, colorBy, allValues) {
+            if (!allValues || allValues.length === 0) return '#cccccc';
+            
+            // Handle winner separately (string values)
+            if (colorBy === 'winner') {
+                const val = value[colorBy];
+                if (val === 'Dem') return '#1f77b4';
+                if (val === 'Rep') return '#d62728';
+                return '#cccccc';
+            }
+            
+            // Locked scales for percentage-based coloring
+            const val = value[colorBy];
+            if (val === null || val === undefined || isNaN(val)) return '#cccccc';
+            
+            if (colorBy === 'dem_pct') {
+                // Locked 0-50: 0=lightest, 50+=darkest blue
+                const clamped = Math.min(val, 50);
+                const normalized = clamped / 50;
+                return `rgb(${Math.round(31 + (255-31) * (1-normalized))}, ${Math.round(119 + (255-119) * (1-normalized))}, ${Math.round(180 + (255-180) * (1-normalized))})`;
+            }
+            
+            if (colorBy === 'rep_pct') {
+                // Locked 0-50: 0=lightest, 50+=darkest red
+                const clamped = Math.min(val, 50);
+                const normalized = clamped / 50;
+                return `rgb(${Math.round(214 + (255-214) * normalized)}, ${Math.round(39 + (255-39) * normalized)}, ${Math.round(40 + (255-40) * normalized)})`;
+            }
+            
+            if (colorBy === 'margin_pct') {
+                // Locked -50 to +50: -50=max red, 0=neutral, +50=max blue
+                const clamped = Math.max(-50, Math.min(50, val));
+                const normalized = (clamped + 50) / 100;
+                if (normalized < 0.5) {
+                    const intensity = normalized * 2;
+                    return `rgb(${Math.round(214 + (255-214) * intensity)}, ${Math.round(39 + (255-39) * intensity)}, ${Math.round(40 + (255-40) * intensity)})`;
+                } else {
+                    const intensity = (normalized - 0.5) * 2;
+                    return `rgb(${Math.round(31 + (255-31) * (1-intensity))}, ${Math.round(119 + (255-119) * (1-intensity))}, ${Math.round(180 + (255-180) * (1-intensity))})`;
+                }
+            }
+            
+            if (colorBy === 'dem_shift') {
+                const range = 15;
+                const clamped = Math.max(-range, Math.min(range, val));
+                const normalized = (clamped + range) / (2 * range);
+                if (normalized < 0.5) {
+                    const intensity = normalized * 2;
+                    return `rgb(${Math.round(214 + (255-214) * intensity)}, ${Math.round(39 + (255-39) * intensity)}, ${Math.round(40 + (255-40) * intensity)})`;
+                } else {
+                    const intensity = (normalized - 0.5) * 2;
+                    return `rgb(${Math.round(31 + (255-31) * (1-intensity))}, ${Math.round(119 + (255-119) * (1-intensity))}, ${Math.round(180 + (255-180) * (1-intensity))})`;
+                }
+            }
+            
+            // Turnout and others: use data range
+            const values = allValues.map(v => v[colorBy]).filter(v => !isNaN(v) && v !== null && v !== undefined);
+            if (values.length === 0) return '#cccccc';
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const range = max - min;
+            if (range === 0) return '#cccccc';
+            const normalized = (val - min) / range;
+            return `rgb(${Math.round(31 + (214-31) * normalized)}, ${Math.round(119 + (39-119) * normalized)}, ${Math.round(180 + (40-180) * normalized)})`;
+        }
+        
+        // Update map with selected race
+        function updateMap() {
+            const year = document.getElementById('yearSelect').value;
+            const raceSelect = document.getElementById('raceSelect');
+            const raceIndex = raceSelect.selectedIndex;
+            let colorBy = 'margin_pct';
+            const compareYear = document.getElementById('compareYearSelect').value;
+            const compareRaceSelect = document.getElementById('compareRaceSelect');
+            const compareRaceIdx = compareRaceSelect.selectedIndex;
+            
+            if (!year || raceIndex === 0 || !mergedData) return;
+            
+            const selectedRace = raceSelect.options[raceIndex];
+            const raceData = selectedRace.dataset;
+            
+            let raceResults = getRaceResults(year, raceData.office, raceData.districtType, raceData.districtName);
+            let compareRaceLabel = '';
+            
+            if (compareYear && raceResults) {
+                const sameRace = compareRaceIdx <= 0 || !compareRaceSelect.options[compareRaceIdx].value;
+                const co = sameRace ? raceData : compareRaceSelect.options[compareRaceIdx].dataset;
+                compareRaceLabel = sameRace ? selectedRace.textContent : compareRaceSelect.options[compareRaceIdx].textContent;
+                const otherResults = getRaceResults(compareYear, co.office, co.districtType, co.districtName);
+                if (otherResults) {
+                    const byKey = new Map();
+                    otherResults.forEach(r => {
+                        const k = `${r.feature.properties.COUNTY_NAM}|${r.feature.properties.VTD_NUM}`;
+                        byKey.set(k, r);
+                    });
+                    raceResults = raceResults.map(r => {
+                        const k = `${r.feature.properties.COUNTY_NAM}|${r.feature.properties.VTD_NUM}`;
+                        const o = byKey.get(k);
+                        const dem_shift = o ? (o.dem_pct - r.dem_pct) : null;
+                        const compare = o ? { dem: o.dem, rep: o.rep, dem_pct: o.dem_pct, rep_pct: o.rep_pct, margin_pct: o.margin_pct } : null;
+                        return { ...r, dem_shift, compare };
+                    }).filter(r => r.dem_shift != null);
+                    colorBy = 'dem_shift';
+                }
+            }
+            document.getElementById('colorNote').textContent = colorBy === 'dem_shift' ? 'Dem deltas (E2−E1)' : 'D/R margins';
+            
+            if (!raceResults || raceResults.length === 0) {
+                console.warn('No results found for selected race');
+                return;
+            }
+            
+            // Remove existing layer
+            if (precinctLayer) {
+                map.removeLayer(precinctLayer);
+            }
+            
+            // Create lookup for results
+            const resultsLookup = new Map();
+            raceResults.forEach(r => {
+                const key = `${r.feature.properties.COUNTY_NAM}|${r.feature.properties.VTD_NUM}`;
+                resultsLookup.set(key, r);
+            });
+            
+            // Style function
+            const style = (feature) => {
+                const key = `${feature.properties.COUNTY_NAM}|${feature.properties.VTD_NUM}`;
+                const result = resultsLookup.get(key);
+                
+                if (!result) {
+                    return {
+                        fillColor: '#e9ecef',
+                        fillOpacity: 0.3,
+                        color: '#adb5bd',
+                        weight: 0.5
+                    };
+                }
+                
+                return {
+                    fillColor: getColor(result, colorBy, raceResults),
+                    fillOpacity: 0.7,
+                    color: '#ffffff',
+                    weight: 0.5
+                };
+            };
+            
+            // Create layer
+            precinctLayer = L.geoJSON(mergedData, {
+                style: style,
+                onEachFeature: (feature, layer) => {
+                    const key = `${feature.properties.COUNTY_NAM}|${feature.properties.VTD_NUM}`;
+                    const result = resultsLookup.get(key);
+                    
+                    if (result) {
+                        const props = feature.properties;
+                        const distRows = [];
+                        if (props.state_representative_district) distRows.push(`<div class="popup-row"><span class="popup-label">State House:</span><span class="popup-value">District ${props.state_representative_district}</span></div>`);
+                        if (props.state_senate_district) distRows.push(`<div class="popup-row"><span class="popup-label">State Senate:</span><span class="popup-value">District ${props.state_senate_district}</span></div>`);
+                        if (props.congressional_district) distRows.push(`<div class="popup-row"><span class="popup-label">Congress:</span><span class="popup-value">District ${props.congressional_district}</span></div>`);
+                        const distBlock = distRows.length ? distRows.join('') : '';
+                        layer.bindPopup(() => {
+                            if (result.compare) {
+                                return `
+                                <div class="info-popup">
+                                    <h4>${props.COUNTY_NAM} - Precinct ${props.VTD_NUM}</h4>
+                                    ${distBlock}
+                                    <div class="popup-row" style="font-weight: 700;">Election 1 (${year}):</div>
+                                    <div class="popup-row"><span class="popup-label">Dem:</span><span class="popup-value">${result.dem_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row"><span class="popup-label">Rep:</span><span class="popup-value">${result.rep_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row"><span class="popup-label">Margin:</span><span class="popup-value">${(result.margin_pct >= 0 ? '+' : '')}${result.margin_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6; font-weight: 700;">Election 2 (${compareYear}):</div>
+                                    <div class="popup-row"><span class="popup-label">Dem:</span><span class="popup-value">${result.compare.dem_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row"><span class="popup-label">Rep:</span><span class="popup-value">${result.compare.rep_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row"><span class="popup-label">Margin:</span><span class="popup-value">${(result.compare.margin_pct >= 0 ? '+' : '')}${result.compare.margin_pct.toFixed(1)}%</span></div>
+                                    <div class="popup-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #dee2e6;"><span class="popup-label" style="font-weight: 700;">Delta (E2−E1):</span><span class="popup-value">${(result.dem_shift >= 0 ? '+' : '')}${result.dem_shift.toFixed(1)} pp</span></div>
+                                </div>`;
+                            }
+                            return `
+                                <div class="info-popup">
+                                    <h4>${props.COUNTY_NAM} - Precinct ${props.VTD_NUM}</h4>
+                                    ${distBlock}
+                                    <div class="popup-row"><span class="popup-label">Race:</span><span class="popup-value">${raceData.office}</span></div>
+                                    <div class="popup-row"><span class="popup-label">Year:</span><span class="popup-value">${year}</span></div>
+                                    <div class="popup-row"><span class="popup-label">Democratic:</span><span class="popup-value">${result.dem.toLocaleString()} (${result.dem_pct.toFixed(1)}%)</span></div>
+                                    <div class="popup-row"><span class="popup-label">Republican:</span><span class="popup-value">${result.rep.toLocaleString()} (${result.rep_pct.toFixed(1)}%)</span></div>
+                                    <div class="popup-row"><span class="popup-label">Other:</span><span class="popup-value">${result.other.toLocaleString()}</span></div>
+                                    <div class="popup-row"><span class="popup-label">Total:</span><span class="popup-value">${result.total.toLocaleString()}</span></div>
+                                    <div class="popup-row"><span class="popup-label">Winner:</span><span class="popup-value">${result.winner}</span></div>
+                                </div>`;
+                        });
+                    }
+                }
+            }).addTo(map);
+            
+            // Zoom to extent of displayed precincts (district or full state)
+            if (raceResults.length > 0) {
+                const tempGroup = L.geoJSON({ type: 'FeatureCollection', features: raceResults.map(r => r.feature) });
+                const bounds = tempGroup.getBounds();
+                if (bounds.isValid()) map.fitBounds(bounds, { maxZoom: 11, padding: [30, 30] });
+            }
+            
+            // Update stats
+            updateStats(raceResults, year, raceData.office, raceData.districtType, raceData.districtName, compareYear, compareRaceLabel, selectedRace ? selectedRace.textContent : '');
+            
+            // Update legend
+            updateLegend(colorBy, raceResults, compareYear, compareRaceLabel, selectedRace ? selectedRace.textContent : '');
+        }
+        
+        // Get winner name from statewide results
+        function getWinnerName(year, office, districtType, districtName) {
+            if (!statewideResults) return null;
+            
+            // Match by year, office, and district_name (statewide results don't have district_type)
+            const winner = statewideResults.find(r => 
+                r.election_date === year &&
+                r.office_name === office &&
+                r.district_name === districtName
+            );
+            
+            return winner ? winner.candidate_name : null;
+        }
+        
+        // Update statistics
+        function updateStats(raceResults, year, office, districtType, districtName, compareYear, compareRaceLabel, mainRaceLabel) {
+            if (!raceResults || raceResults.length === 0) return;
+            
+            const totalDem = raceResults.reduce((sum, r) => sum + r.dem, 0);
+            const totalRep = raceResults.reduce((sum, r) => sum + r.rep, 0);
+            const totalOther = raceResults.reduce((sum, r) => sum + r.other, 0);
+            const totalVotes = raceResults.reduce((sum, r) => sum + r.total, 0);
+            
+            const demPct = totalVotes > 0 ? (totalDem / totalVotes * 100) : 0;
+            const repPct = totalVotes > 0 ? (totalRep / totalVotes * 100) : 0;
+            
+            const winnerParty = totalDem > totalRep ? 'Democratic' : (totalRep > totalDem ? 'Republican' : 'Tie');
+            const winnerName = getWinnerName(year, office, districtType, districtName);
+            const winnerDisplay = winnerName ? `${winnerName} (${winnerParty})` : winnerParty;
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-item" style="border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-bottom: 10px;">
+                    <span class="stat-label" style="font-weight: 700; font-size: 15px;">Winner:</span>
+                    <span class="stat-value" style="font-weight: 700; font-size: 15px;">${winnerDisplay}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Votes:</span>
+                    <span class="stat-value">${totalVotes.toLocaleString()}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Democratic:</span>
+                    <span class="stat-value">${totalDem.toLocaleString()} (${demPct.toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Republican:</span>
+                    <span class="stat-value">${totalRep.toLocaleString()} (${repPct.toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Other:</span>
+                    <span class="stat-value">${totalOther.toLocaleString()}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Precincts:</span>
+                    <span class="stat-value">${raceResults.length}</span>
+                </div>
+                ${compareYear ? `<div class="stat-item"><span class="stat-label">Comparing:</span><span class="stat-value">E1: ${mainRaceLabel} (${year}) · E2: ${compareRaceLabel} (${compareYear})</span></div>` : ''}
+            `;
+        }
+        
+        // Update legend / histogram
+        function updateLegend(colorBy, raceResults, compareYear, compareRaceLabel, mainRaceLabel) {
+            const el = document.getElementById('legend');
+            if (!raceResults || raceResults.length === 0) {
+                el.innerHTML = '<h3>Distribution</h3><div class="loading">Select a race</div>';
+                return;
+            }
+            
+            const values = raceResults.map(r => r[colorBy]).filter(v => v !== undefined && v !== null && (typeof v !== 'number' || !isNaN(v)));
+            if (values.length === 0) {
+                el.innerHTML = '<h3>Distribution</h3><div class="loading">No data</div>';
+                return;
+            }
+            
+            const bins = 12;
+            let lo, hi, caption;
+            if (colorBy === 'dem_shift') {
+                lo = -15; hi = 15; caption = 'E2−E1';
+            } else {
+                lo = -50; hi = 50; caption = 'D/R margin −50% to +50%';
+            }
+            const step = (hi - lo) / bins;
+            const counts = new Array(bins).fill(0);
+            values.forEach(v => {
+                let i = Math.floor((v - lo) / step);
+                i = Math.max(0, Math.min(i, bins - 1));
+                counts[i]++;
+            });
+            const maxCount = Math.max(...counts, 1);
+            const w = 160; const h = 56; const pad = 2; const barGap = 1;
+            const barW = (w - pad * 2 - barGap * (bins - 1)) / bins;
+            
+            let bars = '';
+            for (let i = 0; i < bins; i++) {
+                const x = pad + i * (barW + barGap);
+                const barH = maxCount > 0 ? Math.max(2, (counts[i] / maxCount) * (h - 12)) : 0;
+                const y = h - 10 - barH;
+                const mid = lo + (i + 0.5) * step;
+                const fill = getColor({ [colorBy]: mid }, colorBy, raceResults);
+                bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${fill}" rx="1"/>`;
+            }
+            
+            el.innerHTML = `
+                <h3>Distribution</h3>
+                <svg class="histogram" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+                    ${bars}
+                    <line x1="${pad}" y1="${h - 10}" x2="${w - pad}" y2="${h - 10}" stroke="#adb5bd" stroke-width="1"/>
+                    <line x1="${pad + (w - 2*pad)/2}" y1="0" x2="${pad + (w - 2*pad)/2}" y2="${h - 10}" stroke="#6c757d" stroke-width="1" stroke-dasharray="2,2"/>
+                </svg>
+                <span class="histogram-caption">${caption}</span>
+            `;
+        }
+        
+        // Populate year dropdown
+        function populateYears() {
+            const years = getYears();
+            const select = document.getElementById('yearSelect');
+            select.innerHTML = '<option value="">Select Year</option>';
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                select.appendChild(option);
+            });
+        }
+        
+        // Populate race dropdown
+        function populateRaces() {
+            const year = document.getElementById('yearSelect').value;
+            const select = document.getElementById('raceSelect');
+            
+            if (!year) {
+                select.innerHTML = '<option value="">Select a year first</option>';
+                document.getElementById('compareGroup').style.display = 'none';
+                return;
+            }
+            
+            const races = getRaces(year);
+            select.innerHTML = '<option value="">Select Race</option>';
+            
+            races.forEach(race => {
+                const option = document.createElement('option');
+                const label = race.district_type === 'State' 
+                    ? race.office
+                    : `${race.office} - ${race.district_name}`;
+                option.textContent = label;
+                option.dataset.office = race.office;
+                option.dataset.districtType = race.district_type;
+                option.dataset.districtName = race.district_name;
+                select.appendChild(option);
+            });
+            
+            populateCompareYears();
+            document.getElementById('compareGroup').style.display = 'block';
+        }
+        
+        function populateCompareYears() {
+            const year = document.getElementById('yearSelect').value;
+            const select = document.getElementById('compareYearSelect');
+            const years = getYears();
+            select.innerHTML = '<option value="">Off</option>';
+            years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                select.appendChild(opt);
+            });
+            populateCompareRaces();
+        }
+        
+        function populateCompareRaces() {
+            const compareYear = document.getElementById('compareYearSelect').value;
+            const select = document.getElementById('compareRaceSelect');
+            select.innerHTML = '<option value="">Same as E1</option>';
+            if (!compareYear) return;
+            const races = getRaces(compareYear);
+            races.forEach(race => {
+                const option = document.createElement('option');
+                const label = race.district_type === 'State' ? race.office : `${race.office} - ${race.district_name}`;
+                option.textContent = label;
+                option.value = getRaceKey(race.office, race.district_type, race.district_name);
+                option.dataset.office = race.office;
+                option.dataset.districtType = race.district_type;
+                option.dataset.districtName = race.district_name;
+                select.appendChild(option);
+            });
+        }
+        
+        // Update status message
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('statusMessage');
+            if (!statusEl) return;
+            
+            const colors = {
+                info: { bg: '#d1ecf1', border: '#bee5eb', text: '#0c5460' },
+                success: { bg: '#d4edda', border: '#c3e6cb', text: '#155724' },
+                error: { bg: '#f8d7da', border: '#f5c6cb', text: '#721c24' },
+                warning: { bg: '#fff3cd', border: '#ffc107', text: '#856404' }
+            };
+            
+            const style = colors[type] || colors.info;
+            statusEl.style.background = style.bg;
+            statusEl.style.borderColor = style.border;
+            statusEl.style.color = style.text;
+            statusEl.textContent = message;
+        }
+        
+        // Initialize
+        async function init() {
+            initMap();
+            updateStatus('Initializing map...', 'info');
+            
+            try {
+                updateStatus('Loading GeoJSON boundaries...', 'info');
+                await loadGeoJSON();
+                updateStatus('Loading election results...', 'info');
+                await Promise.all([loadResults(), loadStatewideResults()]);
+                
+                updateStatus('Merging data...', 'info');
+                mergeData();
+                
+                updateStatus('Populating dropdowns...', 'info');
+                populateYears();
+                populateRaces();
+                
+                const applied = applyStateFromUrl() || restoreSelection();
+                if (applied) updateMap();
+                
+                document.getElementById('yearSelect').addEventListener('change', () => {
+                    populateRaces();
+                    updateMap();
+                    updateUrl();
+                    saveSelection();
+                });
+                document.getElementById('raceSelect').addEventListener('change', () => {
+                    updateMap();
+                    updateUrl();
+                    saveSelection();
+                });
+                document.getElementById('compareYearSelect').addEventListener('change', () => {
+                    populateCompareRaces();
+                    updateMap();
+                    updateUrl();
+                    saveSelection();
+                });
+                document.getElementById('compareRaceSelect').addEventListener('change', () => {
+                    updateMap();
+                    updateUrl();
+                    saveSelection();
+                });
+                updateStatus('Ready! Select a year and race to begin.', 'success');
+                console.log('Initialization complete!');
+            } catch (error) {
+                console.error('Initialization error:', error);
+                updateStatus(`Error: ${error.message}. Make sure you're accessing via http://localhost:8000/index.html (not file://)`, 'error');
+            }
+        }
+        
+        // Start when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
