@@ -13,11 +13,14 @@ body {
   padding: 0;
 }
 
-/* Container */
+/* Container - one rule, same at every viewport; !important beats Bootstrap on posts so no reflow on resize */
 .container {
-  max-width: 1170px;
-  margin: 0 auto;
-  padding: 0 15px;
+  max-width: 1170px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
 }
 
 /* Header */
@@ -337,12 +340,12 @@ li {
   border-color: #285e8e;
 }
 
-/* Responsive */
+/* Responsive - only padding and type scale change; container width stays 1170px so no shift */
 @media (max-width: 768px) {
   .container {
-    padding: 0 10px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
-  
   .post-title {
     font-size: 28px;
   }
