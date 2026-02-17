@@ -889,8 +889,9 @@
             const e2IsDistrict = e2Geo != null && e2Geo !== 'State';
             const geoKey = e2IsDistrict ? e1Geo + '|vs|' + e2Geo : e1Geo;
             const geographyChanged = lastRaceKey !== null && lastRaceKey !== geoKey;
+            const initialLoad = lastRaceKey === null;
             lastRaceKey = geoKey;
-            if (raceResults.length > 0 && geographyChanged) {
+            if (raceResults.length > 0 && (initialLoad || geographyChanged)) {
                 const tempGroup = L.geoJSON({ type: 'FeatureCollection', features: raceResults.map(r => r.feature) });
                 const bounds = tempGroup.getBounds();
                 if (bounds.isValid()) map.fitBounds(bounds, { maxZoom: 14, padding: [30, 30] });
