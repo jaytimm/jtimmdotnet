@@ -69,8 +69,8 @@ generate_post_list <- function() {
     )
   }
   
-  # Add last updated timestamp
-  post_list_md <- paste0(post_list_md, "Last updated: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+  # Add last updated timestamp (italic)
+  post_list_md <- paste0(post_list_md, "*Last updated: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "*")
   
   return(post_list_md)
 }

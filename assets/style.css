@@ -97,6 +97,14 @@ body {
   font-style: italic;
 }
 
+.post-last-updated {
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+
 .post-content {
   line-height: 1.7;
 }
