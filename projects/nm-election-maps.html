@@ -455,8 +455,6 @@
             const params = new URLSearchParams(location.search);
             const year = params.get('year');
             const raceKey = params.get('race');
-            const compareYear = params.get('compare');
-            const compareRaceKey = params.get('compareRace');
             if (!year || !raceKey) return false;
             const yearSelect = document.getElementById('yearSelect');
             const raceSelect = document.getElementById('raceSelect');
@@ -472,78 +470,26 @@
                     }
                 }
             }
-            const compareYearSelect = document.getElementById('compareYearSelect');
-            if (compareYear && compareYearSelect.querySelector(`option[value="${compareYear}"]`)) {
-                compareYearSelect.value = compareYear;
-                populateCompareRaces();
-                const compareRaceSelect = document.getElementById('compareRaceSelect');
-                if (compareRaceKey) {
-                    for (let i = 0; i < compareRaceSelect.options.length; i++) {
-                        if (compareRaceSelect.options[i].value === compareRaceKey) {
-                            compareRaceSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-            }
+            document.getElementById('compareYearSelect').value = '';
+            document.getElementById('compareRaceSelect').selectedIndex = 0;
             return true;
         }
         
-        const STORAGE_KEY = 'nm-election-map';
-        function saveSelection() {
-            const year = document.getElementById('yearSelect').value;
+        function applyDefaultSelection() {
+            const yearSelect = document.getElementById('yearSelect');
+            if (!yearSelect.querySelector('option[value="2024"]')) return;
+            yearSelect.value = '2024';
+            populateRaces();
             const raceSelect = document.getElementById('raceSelect');
-            const idx = raceSelect.selectedIndex;
-            if (!year || idx <= 0) return;
-            const opt = raceSelect.options[idx];
-            const raceKey = getRaceKey(opt.dataset.office, opt.dataset.districtType, opt.dataset.districtName);
-            const compareYear = document.getElementById('compareYearSelect').value;
-            const compareRaceSelect = document.getElementById('compareRaceSelect');
-            const compareRace = (compareRaceSelect.selectedIndex > 0 && compareRaceSelect.options[compareRaceSelect.selectedIndex]) ? compareRaceSelect.options[compareRaceSelect.selectedIndex].value : null;
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({ year, race: raceKey, compareYear: compareYear || null, compareRace: compareRace || null }));
-            } catch (e) {}
-        }
-        
-        function restoreSelection() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return false;
-                const s = JSON.parse(raw);
-                const yearSelect = document.getElementById('yearSelect');
-                if (!s.year || !yearSelect.querySelector(`option[value="${s.year}"]`)) return false;
-                yearSelect.value = s.year;
-                populateRaces();
-                const race = parseRaceKey(s.race);
-                if (race) {
-                    const raceSelect = document.getElementById('raceSelect');
-                    for (let i = 0; i < raceSelect.options.length; i++) {
-                        const o = raceSelect.options[i];
-                        if (o.dataset.office === race.office && o.dataset.districtType === race.districtType && o.dataset.districtName === race.districtName) {
-                            raceSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
+            for (let i = 1; i < raceSelect.options.length; i++) {
+                const o = raceSelect.options[i];
+                if (o.dataset.office === 'President of the United States') {
+                    raceSelect.selectedIndex = i;
+                    break;
                 }
-                const compareYearSelect = document.getElementById('compareYearSelect');
-                if (s.compareYear && compareYearSelect.querySelector(`option[value="${s.compareYear}"]`)) {
-                    compareYearSelect.value = s.compareYear;
-                    populateCompareRaces();
-                    const compareRaceSelect = document.getElementById('compareRaceSelect');
-                    if (s.compareRace) {
-                        for (let i = 0; i < compareRaceSelect.options.length; i++) {
-                            if (compareRaceSelect.options[i].value === s.compareRace) {
-                                compareRaceSelect.selectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
-                } else if (s.compare && compareYearSelect.querySelector(`option[value="${s.compare}"]`)) {
-                    compareYearSelect.value = s.compare;
-                    populateCompareRaces();
-                }
-                return true;
-            } catch (e) { return false; }
+            }
+            document.getElementById('compareYearSelect').value = '';
+            document.getElementById('compareRaceSelect').selectedIndex = 0;
         }
         
         // Load GeoJSON
@@ -1206,30 +1152,27 @@
                 populateYears();
                 populateRaces();
                 
-                const applied = applyStateFromUrl() || restoreSelection();
-                if (applied) updateMap();
+                if (!applyStateFromUrl()) applyDefaultSelection();
+                updateMap();
+                updateUrl();
                 
                 document.getElementById('yearSelect').addEventListener('change', () => {
                     populateRaces();
                     updateMap();
                     updateUrl();
-                    saveSelection();
                 });
                 document.getElementById('raceSelect').addEventListener('change', () => {
                     updateMap();
                     updateUrl();
-                    saveSelection();
                 });
                 document.getElementById('compareYearSelect').addEventListener('change', () => {
                     populateCompareRaces();
                     updateMap();
                     updateUrl();
-                    saveSelection();
                 });
                 document.getElementById('compareRaceSelect').addEventListener('change', () => {
                     updateMap();
                     updateUrl();
-                    saveSelection();
                 });
                 document.getElementById('resultsToggle').addEventListener('click', () => {
                     const stats = document.getElementById('stats');

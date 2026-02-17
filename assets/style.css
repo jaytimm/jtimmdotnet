@@ -17,7 +17,7 @@ body {
 .container {
   max-width: 1170px;
   margin: 0 auto;
-  padding: 0 24px 0 15px;
+  padding: 0 15px;
 }
 
 /* Header */
@@ -340,7 +340,7 @@ li {
 /* Responsive */
 @media (max-width: 768px) {
   .container {
-    padding: 0 14px 0 10px;
+    padding: 0 10px;
   }
   
   .post-title {
