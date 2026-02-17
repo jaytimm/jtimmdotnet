@@ -54,6 +54,7 @@
         .map-layout .sidebar {
             flex: 0 0 280px;
             width: 280px;
+            min-width: 0;
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
@@ -137,6 +138,9 @@
             border-radius: 6px;
             border: 1px solid #dee2e6;
             margin-top: 20px;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
         }
         
         .legend h3 {
@@ -149,9 +153,11 @@
             display: flex;
             align-items: center;
             margin-bottom: 8px;
+            min-width: 0;
         }
         
         .legend-color {
+            flex-shrink: 0;
             width: 24px;
             height: 24px;
             border: 1px solid #ccc;
@@ -162,11 +168,16 @@
         .legend-label {
             font-size: 13px;
             color: #495057;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .histogram {
             width: 100%;
-            height: 56px;
+            height: auto;
+            aspect-ratio: 160 / 56;
+            max-height: 80px;
             display: block;
         }
         .histogram-caption {
@@ -281,11 +292,20 @@
             .map-layout .sidebar {
                 flex: 0 1 auto;
                 width: 100%;
+                max-width: 100%;
                 max-height: 34%;
                 min-height: 200px;
+                min-width: 0;
                 border-right: none;
                 border-bottom: 1px solid #dee2e6;
                 -webkit-overflow-scrolling: touch;
+            }
+            .legend {
+                padding: 12px;
+                margin-top: 16px;
+            }
+            .histogram {
+                max-height: 64px;
             }
             .map-layout .map-container {
                 flex: 1 1 0;
@@ -315,14 +335,14 @@
       <div class="map-layout">
         <div class="sidebar">
             <div class="control-group">
-                <label for="yearSelect">Election 1 year</label>
+                <label for="yearSelect">Election 1 year (E1)</label>
                 <select id="yearSelect">
                     <option value="">Loading...</option>
                 </select>
             </div>
             
             <div class="control-group">
-                <label for="raceSelect">Election 1 race</label>
+                <label for="raceSelect">Election 1 race (E1)</label>
                 <select id="raceSelect">
                     <option value="">Select a year first</option>
                 </select>
@@ -336,14 +356,20 @@
             </div>
             
             <div class="control-group" id="compareGroup" style="display: none;">
-                <label for="compareYearSelect">Election 2 year</label>
+                <label for="compareYearSelect">Election 2 year (E2)</label>
                 <select id="compareYearSelect">
-                    <option value="">Off</option>
+                    <option value="">None</option>
                 </select>
-                <label for="compareRaceSelect" style="margin-top: 8px;">Election 2 race</label>
+                <label for="compareRaceSelect" style="margin-top: 8px;">Election 2 race (E2)</label>
                 <select id="compareRaceSelect">
                     <option value="">Same as E1</option>
                 </select>
+                <div class="results-toggle-wrap">
+                    <button type="button" class="results-toggle-btn" id="resultsToggleE2" aria-expanded="false">Results E2</button>
+                    <div class="stats stats-collapsed" id="statsE2">
+                        <div class="loading">Select E2 to view stats</div>
+                    </div>
+                </div>
             </div>
             
             <div class="legend" id="legend">
@@ -903,6 +929,14 @@
             
             // Update stats
             updateStats(raceResults, year, raceData.office, raceData.districtType, raceData.districtName, compareYear, compareRaceLabel, selectedRace ? selectedRace.textContent : '');
+            const statsE2El = document.getElementById('statsE2');
+            if (compareYear && raceResults.length && raceResults[0].compare) {
+                const sameRace = compareRaceIdx <= 0 || !compareRaceSelect.options[compareRaceIdx].value;
+                const co = sameRace ? raceData : compareRaceSelect.options[compareRaceIdx].dataset;
+                updateStatsE2(raceResults, compareYear, co.office, co.districtType, co.districtName);
+            } else {
+                statsE2El.innerHTML = '<div class="loading">Select E2 to view stats</div>';
+            }
             
             // Update map title overlay
             if (titleEl) {
@@ -968,6 +1002,45 @@
                 <div class="stat-item">
                     <span class="stat-label">Other:</span>
                     <span class="stat-value">${totalOther.toLocaleString()}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Precincts:</span>
+                    <span class="stat-value">${raceResults.length}</span>
+                </div>
+            `;
+        }
+        
+        // Update E2 statistics (when comparing)
+        function updateStatsE2(raceResults, compareYear, office, districtType, districtName) {
+            const statsEl = document.getElementById('statsE2');
+            if (!raceResults || raceResults.length === 0 || !raceResults[0].compare) {
+                statsEl.innerHTML = '<div class="loading">Select E2 to view stats</div>';
+                return;
+            }
+            const totalDem = raceResults.reduce((sum, r) => sum + (r.compare ? r.compare.dem : 0), 0);
+            const totalRep = raceResults.reduce((sum, r) => sum + (r.compare ? r.compare.rep : 0), 0);
+            const totalVotes = totalDem + totalRep;
+            const demPct = totalVotes > 0 ? (totalDem / totalVotes * 100) : 0;
+            const repPct = totalVotes > 0 ? (totalRep / totalVotes * 100) : 0;
+            const winnerParty = totalDem > totalRep ? 'Democratic' : (totalRep > totalDem ? 'Republican' : 'Tie');
+            const winnerName = getWinnerName(compareYear, office, districtType, districtName);
+            const winnerDisplay = winnerName ? `${winnerName} (${winnerParty})` : winnerParty;
+            statsEl.innerHTML = `
+                <div class="stat-item" style="border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-bottom: 10px;">
+                    <span class="stat-label" style="font-weight: 700; font-size: 15px;">Winner:</span>
+                    <span class="stat-value" style="font-weight: 700; font-size: 15px;">${winnerDisplay}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Votes (Dem+Rep):</span>
+                    <span class="stat-value">${totalVotes.toLocaleString()}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Democratic:</span>
+                    <span class="stat-value">${totalDem.toLocaleString()} (${demPct.toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Republican:</span>
+                    <span class="stat-value">${totalRep.toLocaleString()} (${repPct.toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Precincts:</span>
@@ -1076,7 +1149,7 @@
             const year = document.getElementById('yearSelect').value;
             const select = document.getElementById('compareYearSelect');
             const years = getYears();
-            select.innerHTML = '<option value="">Off</option>';
+            select.innerHTML = '<option value="">None</option>';
             years.forEach(y => {
                 const opt = document.createElement('option');
                 opt.value = y;
@@ -1164,6 +1237,13 @@
                     const isOpen = stats.classList.toggle('stats-open');
                     btn.setAttribute('aria-expanded', isOpen);
                     btn.textContent = isOpen ? 'Results E1 ▲' : 'Results E1';
+                });
+                document.getElementById('resultsToggleE2').addEventListener('click', () => {
+                    const stats = document.getElementById('statsE2');
+                    const btn = document.getElementById('resultsToggleE2');
+                    const isOpen = stats.classList.toggle('stats-open');
+                    btn.setAttribute('aria-expanded', isOpen);
+                    btn.textContent = isOpen ? 'Results E2 ▲' : 'Results E2';
                 });
                 console.log('Initialization complete!');
             } catch (error) {

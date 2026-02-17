@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jason Timm</title>
-  <link rel="stylesheet" href="assets/style.css">
     <style type="text/css">
 * {
 box-sizing: border-box;
@@ -17,6 +16,18 @@ color: #333;
 background-color: #fff;
 margin: 0;
 padding: 0;
+}
+
+/* Use .site-container for layout so Bootstrap never overrides width */
+.site-container {
+max-width: 1170px;
+margin: 0 auto;
+padding: 0 24px 0 15px;
+}
+.container {
+max-width: 1170px;
+margin: 0 auto;
+padding: 0 24px 0 15px;
 }
 
 .site-header {
@@ -59,7 +70,7 @@ text-decoration: none;
 }
 
 .site-main {
-padding: 28px 0 20px 0;
+padding: 20px 0;
 }
 .post {
 margin-bottom: 40px;
@@ -294,8 +305,9 @@ border-color: #285e8e;
 }
 
 @media (max-width: 768px) {
+.site-container,
 .container {
-padding: 0 10px;
+padding: 0 14px 0 10px;
 }
 .post-title {
 font-size: 28px;
@@ -580,7 +592,7 @@ window.initializeCodeFolding = function(show) {
 <body>
   <!-- Header -->
   <header class="site-header" style="background-color: #fc8d62;">
-    <div class="container">
+    <div class="site-container">
       <nav class="site-nav">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
@@ -591,7 +603,7 @@ window.initializeCodeFolding = function(show) {
 
   <!-- Main content -->
   <main class="site-main">
-    <div class="container">
+    <div class="site-container">
             <article class="post">
         <header class="post-header">
           <h1 class="post-title">Jason Timm</h1>
@@ -620,7 +632,7 @@ window.initializeCodeFolding = function(show) {
           with ACS Data Profile Tables</a></p>
           <p>2025-07-23: <a href="posts/2025-07-23-new-mexico-electoral-politics.html">Two
           Decades of New Mexico Electoral Politics</a></p>
-          <p>Last updated: 2026-02-16 18:17:31</p>
+          <p>Last updated: 2026-02-16 18:36:37</p>
           </div>
         </div>
       </article>
@@ -629,7 +641,7 @@ window.initializeCodeFolding = function(show) {
 
   <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
+    <div class="site-container">
       <p>© 2025 Jason Timm, M.A., Ph.D.</p>
     </div>
   </footer>
