@@ -77,6 +77,43 @@
         .sidebar-head a:hover {
             text-decoration: underline;
         }
+        .map-info-wrap {
+            margin-bottom: 16px;
+        }
+        .map-info-btn {
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #428bca;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .map-info-btn:hover {
+            color: #2a6496;
+            text-decoration: underline;
+        }
+        .map-info-panel {
+            margin-top: 8px;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #495057;
+        }
+        .map-info-panel.stats-open {
+            display: block;
+        }
+        .map-info-panel p {
+            margin: 0 0 8px 0;
+        }
+        .map-info-panel p:last-child {
+            margin-bottom: 0;
+        }
         .control-group {
             margin-bottom: 25px;
         }
@@ -348,6 +385,13 @@
       <div class="map-layout">
         <div class="sidebar">
             <p class="sidebar-head">Precinct-level · Source: <a href="https://github.com/jaytimm/newmexico-political-data" target="_blank" rel="noopener">newmexico-political-data</a></p>
+            <div class="map-info-wrap">
+                <button type="button" class="map-info-btn" id="mapInfoBtn" aria-expanded="false" title="What the map shows">ℹ️</button>
+                <div class="map-info-panel stats-collapsed" id="mapInfoPanel">
+                    <p><strong>E1 only</strong> (no E2 selected): map shows <strong>D/R margin</strong> for the chosen race — blue = Dem margin, red = Rep margin.</p>
+                    <p><strong>E2 selected</strong>: map shows <strong>E2−E1</strong> — change in Dem share (percentage points). Blue = Dem gained, red = Dem lost.</p>
+                </div>
+            </div>
             <div class="control-group">
                 <label for="yearSelect">Election 1 year (E1)</label>
                 <select id="yearSelect">
@@ -1211,6 +1255,12 @@
                     const isOpen = stats.classList.toggle('stats-open');
                     btn.setAttribute('aria-expanded', isOpen);
                     btn.textContent = isOpen ? 'Results E2 ▲' : 'Results E2';
+                });
+                document.getElementById('mapInfoBtn').addEventListener('click', () => {
+                    const panel = document.getElementById('mapInfoPanel');
+                    const btn = document.getElementById('mapInfoBtn');
+                    const isOpen = panel.classList.toggle('stats-open');
+                    btn.setAttribute('aria-expanded', isOpen);
                 });
                 console.log('Initialization complete!');
             } catch (error) {
