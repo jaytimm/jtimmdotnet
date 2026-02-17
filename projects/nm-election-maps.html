@@ -419,6 +419,7 @@
         let resultsData = null;
         let statewideResults = null;
         let mergedData = null;
+        let lastRaceKey = null;  // so we only fit bounds when geography (race) changes, not when only year changes
         
         // Initialize map
         function initMap() {
@@ -880,8 +881,16 @@
                 }
             }).addTo(map);
             
-            // Zoom to extent of displayed precincts (district or full state)
-            if (raceResults.length > 0) {
+            // Fit bounds only when spatial geography changes; statewide↔statewide (any combo) = same geo so no reset when zoomed in
+            const toGeoKey = (d) => (d.districtType === 'State' ? 'State' : [d.office, d.districtType, d.districtName].join('|'));
+            const e1Geo = toGeoKey(raceData);
+            const e2Opt = compareYear && compareRaceIdx > 0 && compareRaceSelect.options[compareRaceIdx].value ? compareRaceSelect.options[compareRaceIdx] : null;
+            const e2Geo = e2Opt ? toGeoKey(e2Opt.dataset) : null;
+            const e2IsDistrict = e2Geo != null && e2Geo !== 'State';
+            const geoKey = e2IsDistrict ? e1Geo + '|vs|' + e2Geo : e1Geo;
+            const geographyChanged = lastRaceKey !== null && lastRaceKey !== geoKey;
+            lastRaceKey = geoKey;
+            if (raceResults.length > 0 && geographyChanged) {
                 const tempGroup = L.geoJSON({ type: 'FeatureCollection', features: raceResults.map(r => r.feature) });
                 const bounds = tempGroup.getBounds();
                 if (bounds.isValid()) map.fitBounds(bounds, { maxZoom: 14, padding: [30, 30] });
