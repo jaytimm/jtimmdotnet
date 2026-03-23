@@ -4,188 +4,151 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Working with ACS Data Profile Tables</title>
-    <style type="text/css">
-* {
+    <style type="text/css">* {
 box-sizing: border-box;
 }
 body {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.42857143;
-color: #333;
+font-size: 16px;
+line-height: 1.7;
+color: #222;
 background-color: #fff;
 margin: 0;
 padding: 0;
 }
-
 .container {
-max-width: 1170px;
-margin: 0 auto;
-padding: 0 15px;
+max-width: 740px;
+width: 100%;
+margin-left: auto;
+margin-right: auto;
+padding-left: 20px;
+padding-right: 20px;
 }
 
 .site-header {
-background-color: #f8f8f8;
-border-color: #e7e7e7;
-border-bottom: 1px solid #e7e7e7;
-margin-bottom: 20px;
-padding: 20px 0;
-}
-.site-title {
-font-size: 32px;
-font-weight: 600;
-line-height: 20px;
-margin: 0;
-color: #2c3e50;
-}
-.site-title a {
-color: #2c3e50;
-text-decoration: none;
-}
-.site-title a:hover,
-.site-title a:focus {
-color: #1a252f;
-background-color: transparent;
-}
-.site-nav {
-margin-top: 10px;
+border-bottom: 1px solid #e0e0e0;
+padding: 18px 0;
+margin-bottom: 40px;
 }
 .site-nav a {
-color: #333;
+color: #222;
 text-decoration: none;
-margin-right: 15px;
-font-weight: 600;
-font-size: 16px;
+margin-right: 20px;
+font-size: 15px;
+font-weight: 500;
 }
-.site-nav a:hover,
-.site-nav a:focus {
+.site-nav a:hover {
 color: #000;
-text-decoration: none;
+text-decoration: underline;
 }
 
 .site-main {
-padding: 20px 0;
+padding-bottom: 60px;
 }
-.post {
-margin-bottom: 40px;
-}
+
 .post-header {
-margin-bottom: 20px;
+margin-bottom: 28px;
 }
 .post-title {
-font-size: 32px;
+font-size: 26px;
 font-weight: 600;
-color: #2c3e50;
-margin: 0 0 10px 0;
-padding-bottom: 10px;
-border-bottom: 2px solid #2c3e50;
+color: #111;
+margin: 0 0 8px 0;
+line-height: 1.3;
 }
 .post-date {
-color: #777;
+color: #888;
 font-size: 14px;
-font-style: italic;
 }
-.post-content {
-line-height: 1.7;
-}
+.post-content,
 .content {
-line-height: 1.7;
+line-height: 1.75;
 }
 
 h1, h2, h3, h4, h5, h6 {
 font-weight: 600;
-color: #2c3e50;
-margin-top: 20px;
-margin-bottom: 10px;
+color: #111;
+margin-top: 2em;
+margin-bottom: 0.5em;
+line-height: 1.3;
 }
-h1 { font-size: 32px; }
-h2 { font-size: 28px; }
-h3 { font-size: 24px; }
-h4 { font-size: 20px; }
-h5 { font-size: 18px; }
-h6 { font-size: 16px; }
+h1 { font-size: 26px; }
+h2 { font-size: 22px; }
+h3 { font-size: 19px; }
+h4 { font-size: 17px; }
+h5 { font-size: 16px; }
+h6 { font-size: 15px; }
 p {
-margin-bottom: 15px;
+margin-bottom: 1.1em;
 }
 a {
-color: #428bca;
+color: #0969da;
 text-decoration: none;
 }
 a:hover,
 a:focus {
-color: #2a6496;
 text-decoration: underline;
 }
 
-pre:not(.sourceCode) {
-background-color: #f5f5f5;
-border: 1px solid #ccc;
-border-radius: 4px;
-padding: 15px;
-margin-bottom: 20px;
-overflow-x: auto;
-}
-code:not(.sourceCode code) {
-background-color: #f5f5f5;
-border: 1px solid #ccc;
-border-radius: 3px;
-padding: 2px 4px;
+code {
+font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 font-size: 13px;
-}
-pre:not(.sourceCode) code {
-background-color: transparent;
-border: none;
-padding: 0;
+background-color: #f4f4f4;
+border-radius: 3px;
+padding: 1px 5px;
 }
 
 pre {
-background-color: #f6f8fa !important;
-border: 1px solid #e1e4e8 !important;
-border-radius: 6px !important;
-padding: 16px !important;
-margin-bottom: 20px !important;
-overflow-x: auto !important;
-font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-font-size: 13px !important;
-line-height: 1.45 !important;
+background-color: #f6f8fa;
+border: 1px solid #e1e4e8;
+border-radius: 5px;
+padding: 14px 16px;
+margin-bottom: 1.5em;
+overflow-x: auto;
+max-height: 480px;
+overflow-y: auto;
+font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+font-size: 13px;
+line-height: 1.5;
 }
 pre code {
-background-color: transparent !important;
-border: none !important;
-padding: 0 !important;
-font-size: inherit !important;
+background-color: transparent;
+border: none;
+padding: 0;
+font-size: inherit;
 }
 
-.fu { color: #6f42c1 !important; } 
-.st { color: #032f62 !important; } 
-.co { color: #6a737d !important; font-style: italic !important; } 
-.dv { color: #005cc5 !important; } 
-.at { color: #e36209 !important; } 
-.cn { color: #005cc5 !important; } 
-.kw { color: #d73a49 !important; font-weight: bold !important; } 
-.ot { color: #d73a49 !important; } 
-.sc { color: #005cc5 !important; } 
-.cf { color: #d73a49 !important; font-weight: bold !important; } 
-.dt { color: #d73a49 !important; } 
-.ch { color: #032f62 !important; } 
-.fl { color: #005cc5 !important; } 
-.im { color: #6f42c1 !important; } 
-.in { color: #6a737d !important; } 
-.pp { color: #6a737d !important; } 
-.re { color: #032f62 !important; } 
-.ss { color: #032f62 !important; } 
-.va { color: #e36209 !important; } 
-.vs { color: #032f62 !important; } 
-.wa { color: #6a737d !important; font-style: italic !important; } 
+.fu { color: #6f42c1; }
+.st { color: #032f62; }
+.co { color: #6a737d; font-style: italic; }
+.dv { color: #005cc5; }
+.at { color: #e36209; }
+.cn { color: #005cc5; }
+.kw { color: #d73a49; font-weight: bold; }
+.ot { color: #d73a49; }
+.sc { color: #005cc5; }
+.cf { color: #d73a49; font-weight: bold; }
+.dt { color: #d73a49; }
+.ch { color: #032f62; }
+.fl { color: #005cc5; }
+.im { color: #6f42c1; }
+.in { color: #6a737d; }
+.pp { color: #6a737d; }
+.re { color: #032f62; }
+.ss { color: #032f62; }
+.va { color: #e36209; }
+.vs { color: #032f62; }
+.wa { color: #6a737d; font-style: italic; }
 
 table {
 border-collapse: collapse;
 width: 100%;
-margin-bottom: 20px;
+margin-bottom: 1.5em;
+font-size: 15px;
 }
 th, td {
 border: 1px solid #ddd;
-padding: 8px 12px;
+padding: 7px 12px;
 text-align: left;
 }
 th {
@@ -193,102 +156,64 @@ background-color: #f8f8f8;
 font-weight: 600;
 }
 
+.tagline {
+color: #888;
+font-size: 17px;
+margin: 0 0 1.5em 0;
+}
+.section-label {
+font-size: 11px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+color: #aaa;
+margin: 0 0 1em 0;
+}
+hr {
+border: none;
+border-top: 1px solid #e0e0e0;
+margin: 2em 0;
+}
+
 blockquote {
-padding: 10px 20px;
-margin: 0 0 20px;
-font-size: 17.5px;
-border-left: 5px solid #eee;
+margin: 0 0 1.2em 0;
+padding: 0 0 0 16px;
+border-left: 3px solid #ccc;
+color: #555;
+font-style: italic;
 }
 blockquote p:last-child {
 margin-bottom: 0;
-}
-.alert {
-padding: 15px;
-margin-bottom: 20px;
-border: 1px solid transparent;
-border-radius: 4px;
-}
-.alert-info {
-color: #31708f;
-background-color: #d9edf7;
-border-color: #bce8f1;
-}
-.alert-success {
-color: #3c763d;
-background-color: #dff0d8;
-border-color: #d6e9c6;
-}
-.alert-warning {
-color: #8a6d3b;
-background-color: #fcf8e3;
-border-color: #faebcc;
-}
-.alert-danger {
-color: #a94442;
-background-color: #f2dede;
-border-color: #ebccd1;
-}
-
-.site-footer {
-background-color: #f8f8f8;
-border-top: 1px solid #e7e7e7;
-padding: 20px 0;
-margin-top: 40px;
-text-align: center;
-color: #777;
 }
 
 img {
 max-width: 100%;
 height: auto;
-margin: 20px 0;
+margin: 16px 0;
 }
 
 ul, ol {
-margin-bottom: 15px;
-padding-left: 20px;
+margin-bottom: 1em;
+padding-left: 22px;
 }
 li {
-margin-bottom: 5px;
+margin-bottom: 4px;
 }
 
-.btn {
-display: inline-block;
-padding: 6px 12px;
-margin-bottom: 0;
-font-size: 14px;
-font-weight: 400;
-line-height: 1.42857143;
-text-align: center;
-white-space: nowrap;
-vertical-align: middle;
-cursor: pointer;
-border: 1px solid transparent;
-border-radius: 4px;
-text-decoration: none;
-}
-.btn-primary {
-color: #fff;
-background-color: #428bca;
-border-color: #357ebd;
-}
-.btn-primary:hover {
-color: #fff;
-background-color: #3071a9;
-border-color: #285e8e;
+.site-footer {
+border-top: 1px solid #e0e0e0;
+padding: 20px 0;
+margin-top: 60px;
+color: #aaa;
+font-size: 13px;
 }
 
-@media (max-width: 768px) {
-.container {
-padding: 0 10px;
+@media (max-width: 600px) {
+body { font-size: 15px; }
+.post-title { font-size: 22px; }
+pre { max-height: 320px; }
 }
-.post-title {
-font-size: 28px;
-}
-.site-title {
-font-size: 26px;
-}
-} </style>
+</style>
     
   <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -483,83 +408,6 @@ window.buildTabsets = function(tocID) {
   });
 };
 
-</script>
-  <script>
-window.initializeCodeFolding = function(show) {
-
-  // handlers for show-all and hide all
-  $("#rmd-show-all-code").click(function() {
-    $('div.r-code-collapse').each(function() {
-      $(this).collapse('show');
-    });
-  });
-  $("#rmd-hide-all-code").click(function() {
-    $('div.r-code-collapse').each(function() {
-      $(this).collapse('hide');
-    });
-  });
-
-  // index for unique code element ids
-  var currentIndex = 1;
-
-  // select all R code blocks
-  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
-  rCodeBlocks.each(function() {
-    // skip if the block has fold-none class
-    if ($(this).hasClass('fold-none')) return;
-
-    // create a collapsable div to wrap the code in
-    var div = $('<div class="collapse r-code-collapse"></div>');
-    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
-    var id = 'rcode-643E0F36' + currentIndex++;
-    div.attr('id', id);
-    $(this).before(div);
-    $(this).detach().appendTo(div);
-
-    // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
-    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
-    showCodeButton.append(showCodeText);
-    showCodeButton
-        .attr('data-toggle', 'collapse')
-        .attr('data-bs-toggle', 'collapse') // BS5
-        .attr('data-target', '#' + id)
-        .attr('data-bs-target', '#' + id)   // BS5
-        .attr('aria-expanded', showThis)
-        .attr('aria-controls', id);
-
-    var buttonRow = $('<div class="row"></div>');
-    var buttonCol = $('<div class="col-md-12"></div>');
-
-    buttonCol.append(showCodeButton);
-    buttonRow.append(buttonCol);
-
-    div.before(buttonRow);
-
-    // show the div if necessary
-    if (showThis) div.collapse('show');
-
-    // update state of button on show/hide
-    //   * Change text
-    //   * add a class for intermediate states styling
-    div.on('hide.bs.collapse', function () {
-      showCodeText.text('Show');
-      showCodeButton.addClass('btn-collapsing');
-    });
-    div.on('hidden.bs.collapse', function () {
-      showCodeButton.removeClass('btn-collapsing');
-    });
-    div.on('show.bs.collapse', function () {
-      showCodeText.text('Hide');
-      showCodeButton.addClass('btn-expanding');
-    });
-    div.on('shown.bs.collapse', function () {
-      showCodeButton.removeClass('btn-expanding');
-    });
-
-  });
-
-}
 </script>
   <style type="text/css">@layer htmltools {
 .html-fill-container {
@@ -3061,20 +2909,286 @@ color: #333;
 </style>
   <script>!function o(u,a,l){function s(n,e){if(!a[n]){if(!u[n]){var t="function"==typeof require&&require;if(!e&&t)return t(n,!0);if(f)return f(n,!0);var r=new Error("Cannot find module '"+n+"'");throw r.code="MODULE_NOT_FOUND",r}var i=a[n]={exports:{}};u[n][0].call(i.exports,function(e){var t=u[n][1][e];return s(t||e)},i,i.exports,o,u,a,l)}return a[n].exports}for(var f="function"==typeof require&&require,e=0;e<l.length;e++)s(l[e]);return s}({1:[function(e,t,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}();var i=function(){function e(){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this._types={},this._seq=0}return r(e,[{key:"on",value:function(e,t){var n=this._types[e];n||(n=this._types[e]={});var r="sub"+this._seq++;return n[r]=t,r}},{key:"off",value:function(e,t){var n=this._types[e];if("function"==typeof t){for(var r in n)if(n.hasOwnProperty(r)&&n[r]===t)return delete n[r],r;return!1}if("string"==typeof t)return!(!n||!n[t])&&(delete n[t],t);throw new Error("Unexpected type for listener")}},{key:"trigger",value:function(e,t,n){var r=this._types[e];for(var i in r)r.hasOwnProperty(i)&&r[i].call(n,t)}}]),e}();n.default=i},{}],2:[function(e,t,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.FilterHandle=void 0;var r=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),i=l(e("./events")),o=l(e("./filterset")),u=l(e("./group")),a=function(e){{if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}}(e("./util"));function l(e){return e&&e.__esModule?e:{default:e}}var s=1;n.FilterHandle=function(){function n(e,t){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,n),this._eventRelay=new i.default,this._emitter=new a.SubscriptionTracker(this._eventRelay),this._group=null,this._filterSet=null,this._filterVar=null,this._varOnChangeSub=null,this._extraInfo=a.extend({sender:this},t),this._id="filter"+s++,this.setGroup(e)}return r(n,[{key:"setGroup",value:function(e){var t,n,r=this;if(this._group!==e&&((this._group||e)&&(this._filterVar&&(this._filterVar.off("change",this._varOnChangeSub),this.clear(),this._varOnChangeSub=null,this._filterVar=null,this._filterSet=null),this._group=e))){e=(0,u.default)(e),this._filterSet=(t=e.var("filterset"),(n=t.get())||(n=new o.default,t.set(n)),n),this._filterVar=(0,u.default)(e).var("filter");var i=this._filterVar.on("change",function(e){r._eventRelay.trigger("change",e,r)});this._varOnChangeSub=i}}},{key:"_mergeExtraInfo",value:function(e){return a.extend({},this._extraInfo?this._extraInfo:null,e||null)}},{key:"close",value:function(){this._emitter.removeAllListeners(),this.clear(),this.setGroup(null)}},{key:"clear",value:function(e){this._filterSet&&(this._filterSet.clear(this._id),this._onChange(e))}},{key:"set",value:function(e,t){this._filterSet&&(this._filterSet.update(this._id,e),this._onChange(t))}},{key:"on",value:function(e,t){return this._emitter.on(e,t)}},{key:"off",value:function(e,t){return this._emitter.off(e,t)}},{key:"_onChange",value:function(e){this._filterSet&&this._filterVar.set(this._filterSet.value,this._mergeExtraInfo(e))}},{key:"filteredKeys",get:function(){return this._filterSet?this._filterSet.value:null}}]),n}()},{"./events":1,"./filterset":3,"./group":4,"./util":11}],3:[function(e,t,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),a=e("./util");function l(e,t){return e===t?0:e<t?-1:t<e?1:void 0}var i=function(){function e(){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.reset()}return r(e,[{key:"reset",value:function(){this._handles={},this._keys={},this._value=null,this._activeHandles=0}},{key:"update",value:function(e,t){null!==t&&(t=t.slice(0)).sort(l);var n=(0,a.diffSortedLists)(this._handles[e],t),r=n.added,i=n.removed;this._handles[e]=t;for(var o=0;o<r.length;o++)this._keys[r[o]]=(this._keys[r[o]]||0)+1;for(var u=0;u<i.length;u++)this._keys[i[u]]--;this._updateValue(t)}},{key:"_updateValue",value:function(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:this._allKeys,t=Object.keys(this._handles).length;if(0===t)this._value=null;else{this._value=[];for(var n=0;n<e.length;n++){this._keys[e[n]]===t&&this._value.push(e[n])}}}},{key:"clear",value:function(e){if(void 0!==this._handles[e]){var t=this._handles[e];t||(t=[]);for(var n=0;n<t.length;n++)this._keys[t[n]]--;delete this._handles[e],this._updateValue()}}},{key:"value",get:function(){return this._value}},{key:"_allKeys",get:function(){var e=Object.keys(this._keys);return e.sort(l),e}}]),e}();n.default=i},{"./util":11}],4:[function(l,e,s){(function(e){"use strict";Object.defineProperty(s,"__esModule",{value:!0});var n=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};s.default=function e(t){{if(t&&"string"==typeof t)return u.hasOwnProperty(t)||(u[t]=new a(t)),u[t];if("object"===(void 0===t?"undefined":r(t))&&t._vars&&t.var)return t;if(Array.isArray(t)&&1==t.length&&"string"==typeof t[0])return e(t[0]);throw new Error("Invalid groupName argument")}};var t,i=l("./var"),o=(t=i)&&t.__esModule?t:{default:t};e.__crosstalk_groups=e.__crosstalk_groups||{};var u=e.__crosstalk_groups;var a=function(){function t(e){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,t),this.name=e,this._vars={}}return n(t,[{key:"var",value:function(e){if(!e||"string"!=typeof e)throw new Error("Invalid var name");return this._vars.hasOwnProperty(e)||(this._vars[e]=new o.default(this,e)),this._vars[e]}},{key:"has",value:function(e){if(!e||"string"!=typeof e)throw new Error("Invalid var name");return this._vars.hasOwnProperty(e)}}]),t}()}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./var":12}],5:[function(f,e,c){(function(e){"use strict";Object.defineProperty(c,"__esModule",{value:!0});var t,n=f("./group"),r=(t=n)&&t.__esModule?t:{default:t},i=f("./selection"),o=f("./filter"),u=f("./input");f("./input_selectize"),f("./input_checkboxgroup"),f("./input_slider");var a=(0,r.default)("default");function l(e){return a.var(e)}e.Shiny&&e.Shiny.addCustomMessageHandler("update-client-value",function(e){"string"==typeof e.group?(0,r.default)(e.group).var(e.name).set(e.value):l(e.name).set(e.value)});var s={group:r.default,var:l,has:function(e){return a.has(e)},SelectionHandle:i.SelectionHandle,FilterHandle:o.FilterHandle,bind:u.bind};c.default=s,e.crosstalk=s}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10}],6:[function(e,t,a){(function(t){"use strict";Object.defineProperty(a,"__esModule",{value:!0}),a.register=function(e){r[e.className]=e,t.document&&"complete"!==t.document.readyState?o(function(){n()}):t.document&&setTimeout(n,100)},a.bind=n;var o=t.jQuery,r={};function n(){Object.keys(r).forEach(function(e){var n=r[e];o("."+n.className).not(".crosstalk-input-bound").each(function(e,t){i(n,t)})})}function i(e,t){var n=o(t).find("script[type='application/json'][data-for='"+t.id.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g,"\\$1")+"']"),r=JSON.parse(n[0].innerText),i=e.factory(t,r);o(t).data("crosstalk-instance",i),o(t).addClass("crosstalk-input-bound")}if(t.Shiny){var e=new t.Shiny.InputBinding,u=t.jQuery;u.extend(e,{find:function(e){return u(e).find(".crosstalk-input")},initialize:function(e){var t,n;u(e).hasClass("crosstalk-input-bound")||(n=o(t=e),Object.keys(r).forEach(function(e){n.hasClass(e)&&!n.hasClass("crosstalk-input-bound")&&i(r[e],t)}))},getId:function(e){return e.id},getValue:function(e){},setValue:function(e,t){},receiveMessage:function(e,t){},subscribe:function(e,t){u(e).data("crosstalk-instance").resume()},unsubscribe:function(e){u(e).data("crosstalk-instance").suspend()}}),t.Shiny.inputBindings.register(e,"crosstalk.inputBinding")}}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{}],7:[function(r,e,t){(function(e){"use strict";var t=function(e){{if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}}(r("./input")),n=r("./filter");var a=e.jQuery;t.register({className:"crosstalk-input-checkboxgroup",factory:function(e,r){var i=new n.FilterHandle(r.group),o=void 0,u=a(e);return u.on("change","input[type='checkbox']",function(){var e=u.find("input[type='checkbox']:checked");if(0===e.length)o=null,i.clear();else{var t={};e.each(function(){r.map[this.value].forEach(function(e){t[e]=!0})});var n=Object.keys(t);n.sort(),o=n,i.set(n)}}),{suspend:function(){i.clear()},resume:function(){o&&i.set(o)}}}})}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./filter":2,"./input":6}],8:[function(r,e,t){(function(e){"use strict";var t=n(r("./input")),l=n(r("./util")),s=r("./filter");function n(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}var f=e.jQuery;t.register({className:"crosstalk-input-select",factory:function(e,n){var t=l.dataframeToD3(n.items),r={options:[{value:"",label:"(All)"}].concat(t),valueField:"value",labelField:"label",searchField:"label"},i=f(e).find("select")[0],o=f(i).selectize(r)[0].selectize,u=new s.FilterHandle(n.group),a=void 0;return o.on("change",function(){if(0===o.items.length)a=null,u.clear();else{var t={};o.items.forEach(function(e){n.map[e].forEach(function(e){t[e]=!0})});var e=Object.keys(t);e.sort(),a=e,u.set(e)}}),{suspend:function(){u.clear()},resume:function(){a&&u.set(a)}}}})}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./filter":2,"./input":6,"./util":11}],9:[function(n,e,t){(function(e){"use strict";var d=function(e,t){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return function(e,t){var n=[],r=!0,i=!1,o=void 0;try{for(var u,a=e[Symbol.iterator]();!(r=(u=a.next()).done)&&(n.push(u.value),!t||n.length!==t);r=!0);}catch(e){i=!0,o=e}finally{try{!r&&a.return&&a.return()}finally{if(i)throw o}}return n}(e,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")},t=function(e){{if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}}(n("./input")),a=n("./filter");var v=e.jQuery,p=e.strftime;function y(e,t){for(var n=e.toString();n.length<t;)n="0"+n;return n}t.register({className:"crosstalk-input-slider",factory:function(e,l){var s=new a.FilterHandle(l.group),t={},f=v(e).find("input"),n=f.data("data-type"),r=f.data("time-format"),i=f.data("round"),o=void 0;if("date"===n)o=p.utc(),t.prettify=function(e){return o(r,new Date(e))};else if("datetime"===n){var u=f.data("timezone");o=u?p.timezone(u):p,t.prettify=function(e){return o(r,new Date(e))}}else"number"===n&&void 0!==i&&(t.prettify=function(e){var t=Math.pow(10,i);return Math.round(e*t)/t});function c(){var e=f.data("ionRangeSlider").result,t=void 0,n=f.data("data-type");return t="date"===n?function(e){return(t=new Date(+e))instanceof Date?t.getUTCFullYear()+"-"+y(t.getUTCMonth()+1,2)+"-"+y(t.getUTCDate(),2):null;var t}:"datetime"===n?function(e){return+e/1e3}:function(e){return+e},"double"===f.data("ionRangeSlider").options.type?[t(e.from),t(e.to)]:t(e.from)}f.ionRangeSlider(t);var h=null;return f.on("change.crosstalkSliderInput",function(e){if(!f.data("updating")&&!f.data("animating")){for(var t=c(),n=d(t,2),r=n[0],i=n[1],o=[],u=0;u<l.values.length;u++){var a=l.values[u];r<=a&&a<=i&&o.push(l.keys[u])}o.sort(),s.set(o),h=o}}),{suspend:function(){s.clear()},resume:function(){h&&s.set(h)}}}})}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./filter":2,"./input":6}],10:[function(e,t,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.SelectionHandle=void 0;var r=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),i=a(e("./events")),o=a(e("./group")),u=function(e){{if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}}(e("./util"));function a(e){return e&&e.__esModule?e:{default:e}}n.SelectionHandle=function(){function n(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:null,t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:null;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,n),this._eventRelay=new i.default,this._emitter=new u.SubscriptionTracker(this._eventRelay),this._group=null,this._var=null,this._varOnChangeSub=null,this._extraInfo=u.extend({sender:this},t),this.setGroup(e)}return r(n,[{key:"setGroup",value:function(e){var t=this;if(this._group!==e&&(this._group||e)&&(this._var&&(this._var.off("change",this._varOnChangeSub),this._var=null,this._varOnChangeSub=null),this._group=e)){this._var=(0,o.default)(e).var("selection");var n=this._var.on("change",function(e){t._eventRelay.trigger("change",e,t)});this._varOnChangeSub=n}}},{key:"_mergeExtraInfo",value:function(e){return u.extend({},this._extraInfo?this._extraInfo:null,e||null)}},{key:"set",value:function(e,t){this._var&&this._var.set(e,this._mergeExtraInfo(t))}},{key:"clear",value:function(e){this._var&&this.set(void 0,this._mergeExtraInfo(e))}},{key:"on",value:function(e,t){return this._emitter.on(e,t)}},{key:"off",value:function(e,t){return this._emitter.off(e,t)}},{key:"close",value:function(){this._emitter.removeAllListeners(),this.setGroup(null)}},{key:"value",get:function(){return this._var?this._var.get():null}}]),n}()},{"./events":1,"./group":4,"./util":11}],11:[function(e,t,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};function u(e){for(var t=1;t<e.length;t++)if(e[t]<=e[t-1])throw new Error("List is not sorted or contains duplicate")}n.extend=function(e){for(var t=arguments.length,n=Array(1<t?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var i=0;i<n.length;i++){var o=n[i];if(null!=o)for(var u in o)o.hasOwnProperty(u)&&(e[u]=o[u])}return e},n.checkSorted=u,n.diffSortedLists=function(e,t){var n=0,r=0;e||(e=[]);t||(t=[]);var i=[],o=[];u(e),u(t);for(;n<e.length&&r<t.length;)e[n]===t[r]?(n++,r++):e[n]<t[r]?i.push(e[n++]):o.push(t[r++]);n<e.length&&(i=i.concat(e.slice(n)));r<t.length&&(o=o.concat(t.slice(r)));return{removed:i,added:o}},n.dataframeToD3=function(e){var t=[],n=void 0;for(var r in e){if(e.hasOwnProperty(r)&&t.push(r),"object"!==l(e[r])||void 0===e[r].length)throw new Error("All fields must be arrays");if(void 0!==n&&n!==e[r].length)throw new Error("All fields must be arrays of the same length");n=e[r].length}for(var i=[],o=void 0,u=0;u<n;u++){o={};for(var a=0;a<t.length;a++)o[t[a]]=e[t[a]][u];i.push(o)}return i};n.SubscriptionTracker=function(){function t(e){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,t),this._emitter=e,this._subs={}}return r(t,[{key:"on",value:function(e,t){var n=this._emitter.on(e,t);return this._subs[n]=e,n}},{key:"off",value:function(e,t){var n=this._emitter.off(e,t);return n&&delete this._subs[n],n}},{key:"removeAllListeners",value:function(){var t=this,n=this._subs;this._subs={},Object.keys(n).forEach(function(e){t._emitter.off(n[e],e)})}}]),t}()},{}],12:[function(a,e,l){(function(o){"use strict";Object.defineProperty(l,"__esModule",{value:!0});var e,u="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},t=function(){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}}(),n=a("./events"),i=(e=n)&&e.__esModule?e:{default:e};var r=function(){function r(e,t,n){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,r),this._group=e,this._name=t,this._value=n,this._events=new i.default}return t(r,[{key:"get",value:function(){return this._value}},{key:"set",value:function(e,t){if(this._value!==e){var n=this._value;this._value=e;var r={};if(t&&"object"===(void 0===t?"undefined":u(t)))for(var i in t)t.hasOwnProperty(i)&&(r[i]=t[i]);r.oldValue=n,r.value=e,this._events.trigger("change",r,this),o.Shiny&&o.Shiny.onInputChange&&o.Shiny.onInputChange(".clientValue-"+(null!==this._group.name?this._group.name+"-":"")+this._name,void 0===e?null:e)}}},{key:"on",value:function(e,t){return this._events.on(e,t)}},{key:"off",value:function(e,t){return this._events.off(e,t)}}]),r}();l.default=r}).call(this,"undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{})},{"./events":1}]},{},[5]);
 //# sourceMappingURL=crosstalk.min.js.map</script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>// GoatCounter: https://www.goatcounter.com
+// This file is released under the ISC license: https://opensource.org/licenses/ISC
+;(function() {
+	'use strict';
+
+	window.goatcounter = window.goatcounter || {}
+
+	// Load settings from data-goatcounter-settings.
+	var s = document.querySelector('script[data-goatcounter]')
+	if (s && s.dataset.goatcounterSettings) {
+		try         { var set = JSON.parse(s.dataset.goatcounterSettings) }
+		catch (err) { console.error('invalid JSON in data-goatcounter-settings: ' + err) }
+		for (var k in set)
+			if (['no_onload', 'no_events', 'allow_local', 'allow_frame', 'path', 'title', 'referrer', 'event'].indexOf(k) > -1)
+				window.goatcounter[k] = set[k]
+	}
+
+	var enc = encodeURIComponent
+
+	// Get all data we're going to send off to the counter endpoint.
+	window.goatcounter.get_data = function(vars) {
+		vars = vars || {}
+		var data = {
+			p: (vars.path     === undefined ? goatcounter.path     : vars.path),
+			r: (vars.referrer === undefined ? goatcounter.referrer : vars.referrer),
+			t: (vars.title    === undefined ? goatcounter.title    : vars.title),
+			e: !!(vars.event || goatcounter.event),
+			s: window.screen.width,
+			b: is_bot(),
+			q: location.search,
+		}
+
+		var rcb, pcb, tcb  // Save callbacks to apply later.
+		if (typeof(data.r) === 'function') rcb = data.r
+		if (typeof(data.t) === 'function') tcb = data.t
+		if (typeof(data.p) === 'function') pcb = data.p
+
+		if (is_empty(data.r)) data.r = document.referrer
+		if (is_empty(data.t)) data.t = document.title
+		if (is_empty(data.p)) data.p = get_path()
+
+		if (rcb) data.r = rcb(data.r)
+		if (tcb) data.t = tcb(data.t)
+		if (pcb) data.p = pcb(data.p)
+		return data
+	}
+
+	// Check if a value is "empty" for the purpose of get_data().
+	var is_empty = function(v) { return v === null || v === undefined || typeof(v) === 'function' }
+
+	// See if this looks like a bot; there is some additional filtering on the
+	// backend, but these properties can't be fetched from there.
+	var is_bot = function() {
+		// Headless browsers are probably a bot.
+		var w = window, d = document
+		if (w.callPhantom || w._phantom || w.phantom)
+			return 150
+		if (w.__nightmare)
+			return 151
+		if (d.__selenium_unwrapped || d.__webdriver_evaluate || d.__driver_evaluate)
+			return 152
+		if (navigator.webdriver)
+			return 153
+		return 0
+	}
+
+	// Object to urlencoded string, starting with a ?.
+	var urlencode = function(obj) {
+		var p = []
+		for (var k in obj)
+			if (obj[k] !== '' && obj[k] !== null && obj[k] !== undefined && obj[k] !== false)
+				p.push(enc(k) + '=' + enc(obj[k]))
+		return '?' + p.join('&')
+	}
+
+	// Show a warning in the console.
+	var warn = function(msg) {
+		if (console && 'warn' in console)
+			console.warn('goatcounter: ' + msg)
+	}
+
+	// Get the endpoint to send requests to.
+	var get_endpoint = function() {
+		var s = document.querySelector('script[data-goatcounter]')
+		return (s && s.dataset.goatcounter) ? s.dataset.goatcounter : goatcounter.endpoint
+	}
+
+	// Get current path.
+	var get_path = function() {
+		var loc = location,
+			c = document.querySelector('link[rel="canonical"][href]')
+		if (c) {  // May be relative or point to different domain.
+			var a = document.createElement('a')
+			a.href = c.href
+			if (a.hostname.replace(/^www\./, '') === location.hostname.replace(/^www\./, ''))
+				loc = a
+		}
+		return (loc.pathname + loc.search) || '/'
+	}
+
+	// Run function after DOM is loaded.
+	var on_load = function(f) {
+		if (document.body === null)
+			document.addEventListener('DOMContentLoaded', function() { f() }, false)
+		else
+			f()
+	}
+
+	// Filter some requests that we (probably) don't want to count.
+	window.goatcounter.filter = function() {
+		if ('visibilityState' in document && document.visibilityState === 'prerender')
+			return 'visibilityState'
+		if (!goatcounter.allow_frame && location !== parent.location)
+			return 'frame'
+		if (!goatcounter.allow_local && location.hostname.match(/(localhost$|^127\.|^10\.|^172\.(1[6-9]|2[0-9]|3[0-1])\.|^192\.168\.|^0\.0\.0\.0$)/))
+			return 'localhost'
+		if (!goatcounter.allow_local && location.protocol === 'file:')
+			return 'localfile'
+		if (localStorage && localStorage.getItem('skipgc') === 't')
+			return 'disabled with #toggle-goatcounter'
+		return false
+	}
+
+	// Get URL to send to GoatCounter.
+	window.goatcounter.url = function(vars) {
+		var data = window.goatcounter.get_data(vars || {})
+		if (data.p === null)  // null from user callback.
+			return
+		data.rnd = Math.random().toString(36).substr(2, 5)  // Browsers don't always listen to Cache-Control.
+
+		var endpoint = get_endpoint()
+		if (!endpoint)
+			return warn('no endpoint found')
+
+		return endpoint + urlencode(data)
+	}
+
+	// Count a hit.
+	window.goatcounter.count = function(vars) {
+		var f = goatcounter.filter()
+		if (f)
+			return warn('not counting because of: ' + f)
+		var url = goatcounter.url(vars)
+		if (!url)
+			return warn('not counting because path callback returned null')
+
+		if (!navigator || !navigator.sendBeacon || !navigator.sendBeacon(url)) {
+			// This mostly fails due to being blocked by CSP; try again with an
+			// image-based fallback.
+			var img = document.createElement('img')
+			img.src = url
+			img.style.position = 'absolute'  // Affect layout less.
+			img.style.bottom = '0px'
+			img.style.width = '1px'
+			img.style.height = '1px'
+			img.loading = 'eager'
+			img.setAttribute('alt', '')
+			img.setAttribute('aria-hidden', 'true')
+
+			var rm = function() { if (img && img.parentNode) img.parentNode.removeChild(img) }
+			img.addEventListener('load', rm, false)
+			document.body.appendChild(img)
+		}
+	}
+
+	// Get a query parameter.
+	window.goatcounter.get_query = function(name) {
+		var s = location.search.substr(1).split('&')
+		for (var i = 0; i < s.length; i++)
+			if (s[i].toLowerCase().indexOf(name.toLowerCase() + '=') === 0)
+				return s[i].substr(name.length + 1)
+	}
+
+	// Track click events.
+	window.goatcounter.bind_events = function() {
+		if (!document.querySelectorAll)  // Just in case someone uses an ancient browser.
+			return
+
+		var send = function(elem) {
+			return function() {
+				goatcounter.count({
+					event:    true,
+					path:     (elem.dataset.goatcounterClick || elem.name || elem.id || ''),
+					title:    (elem.dataset.goatcounterTitle || elem.title || (elem.innerHTML || '').substr(0, 200) || ''),
+					referrer: (elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || ''),
+				})
+			}
+		}
+
+		Array.prototype.slice.call(document.querySelectorAll("*[data-goatcounter-click]")).forEach(function(elem) {
+			if (elem.dataset.goatcounterBound)
+				return
+			var f = send(elem)
+			elem.addEventListener('click', f, false)
+			elem.addEventListener('auxclick', f, false)  // Middle click.
+			elem.dataset.goatcounterBound = 'true'
+		})
+	}
+
+	// Add a "visitor counter" frame or image.
+	window.goatcounter.visit_count = function(opt) {
+		on_load(function() {
+			opt        = opt        || {}
+			opt.type   = opt.type   || 'html'
+			opt.append = opt.append || 'body'
+			opt.path   = opt.path   || get_path()
+			opt.attr   = opt.attr   || {width: '200', height: (opt.no_branding ? '60' : '80')}
+
+			opt.attr['src'] = get_endpoint() + 'er/' + enc(opt.path) + '.' + enc(opt.type) + '?'
+			if (opt.no_branding) opt.attr['src'] += '&no_branding=1'
+			if (opt.style)       opt.attr['src'] += '&style=' + enc(opt.style)
+			if (opt.start)       opt.attr['src'] += '&start=' + enc(opt.start)
+			if (opt.end)         opt.attr['src'] += '&end='   + enc(opt.end)
+
+			var tag = {png: 'img', svg: 'img', html: 'iframe'}[opt.type]
+			if (!tag)
+				return warn('visit_count: unknown type: ' + opt.type)
+
+			if (opt.type === 'html') {
+				opt.attr['frameborder'] = '0'
+				opt.attr['scrolling']   = 'no'
+			}
+
+			var d = document.createElement(tag)
+			for (var k in opt.attr)
+				d.setAttribute(k, opt.attr[k])
+
+			var p = document.querySelector(opt.append)
+			if (!p)
+				return warn('visit_count: element to append to not found: ' + opt.append)
+			p.appendChild(d)
+		})
+	}
+
+	// Make it easy to skip your own views.
+	if (location.hash === '#toggle-goatcounter') {
+		if (localStorage.getItem('skipgc') === 't') {
+			localStorage.removeItem('skipgc', 't')
+			alert('GoatCounter tracking is now ENABLED in this browser.')
+		}
+		else {
+			localStorage.setItem('skipgc', 't')
+			alert('GoatCounter tracking is now DISABLED in this browser until ' + location + ' is loaded again.')
+		}
+	}
+
+	if (!goatcounter.no_onload)
+		on_load(function() {
+			// 1. Page is visible, count request.
+			// 2. Page is not yet visible; wait until it switches to 'visible' and count.
+			// See #487
+			if (!('visibilityState' in document) || document.visibilityState === 'visible')
+				goatcounter.count()
+			else {
+				var f = function(e) {
+					if (document.visibilityState !== 'visible')
+						return
+					document.removeEventListener('visibilitychange', f)
+					goatcounter.count()
+				}
+				document.addEventListener('visibilitychange', f)
+			}
+
+			if (!goatcounter.no_events)
+				goatcounter.bind_events()
+		})
+})();
+</script>
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header" style="background-color: #fc8d62;">
+  <header class="site-header">
     <div class="container">
       <nav class="site-nav">
-        <a href="../index.html">Home</a>
+        <a href="../index.html">Jason Timm</a>
         <a href="../about.html">About</a>
-        <a href="../projects/index.html">Projects</a>
       </nav>
     </div>
   </header>
 
-  <!-- Main content -->
   <main class="site-main">
     <div class="container">
             <article class="post">
@@ -3083,16 +3197,16 @@ color: #333;
 Tables</h1>
                     <div class="post-date">2025-08-10</div>
                   </header>
-        
         <div class="post-content">
           <div id="introduction" class="section level2">
           <h2>Introduction</h2>
-          <p>The American Community Survey (ACS) Data Profile tables
-          provide pre-calculated percentages and key
-          demographic/economic indicators that are commonly used in
-          analysis. This post demonstrates how to work with these tables
-          using the <code>tidycensus</code> package, focusing on pulling
-          data across multiple geographies efficiently.</p>
+          <p>The <strong>American Community Survey</strong> (ACS)
+          <strong>Data Profile tables</strong> provide pre-calculated
+          percentages and key demographic/economic indicators that are
+          commonly used in analysis. This post demonstrates how to work
+          with these tables using the <code>tidycensus</code> package,
+          focusing on pulling data across multiple geographies
+          efficiently.</p>
           <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;pacman&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span>
@@ -3110,8 +3224,8 @@ Tables</h1>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  )</span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>)</span></code></pre></div>
           </div>
-          <div id="setting-up-variable-mappings" class="section level2">
-          <h2>Setting up variable mappings</h2>
+          <div id="set-up-variable-mappings" class="section level2">
+          <h2>Set Up Variable Mappings</h2>
           <p>First, we’ll define a lookup table of useful variables from
           the Census Data Profile tables. These tables contain
           pre-calculated percentages and key demographic/economic
@@ -3178,7 +3292,9 @@ Tables</h1>
 <span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a>  ),</span>
 <span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
 <span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>)</span></code></pre></div>
-          <p>Here’s the full variable lookup table for reference:</p>
+          <p>Here’s the full variable lookup table for reference: all 21
+          variables span social characteristics, economic conditions,
+          housing tenure, age structure, and race/ethnicity.</p>
           <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  dp_vars_lookup,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
@@ -3189,16 +3305,17 @@ Tables</h1>
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">scrollX =</span> <span class="cn">TRUE</span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  )</span>
 <span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-e76cab19275609815c18" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-e76cab19275609815c18">{"x":{"filter":"none","vertical":false,"data":[["pct_bachelor_degree_plus_adults25plus","pct_high_school_graduate_adults25plus","pct_english_only_home_pop5plus","pct_spanish_home_pop5plus","pct_broadband_subscription_households","per_capita_income","median_household_income","pct_below_poverty_all_people","pct_unemployed_labor_force","pct_no_vehicle_households","pct_gov_employment_employed16plus","pct_snap_benefits_households","pct_owner_occupied_housing_units","pct_under_5_total_pop","pct_under_18_total_pop","pct_over_65_total_pop","pct_hispanic_any_race_total_pop","pct_white_non_hispanic_total_pop","pct_black_non_hispanic_total_pop","pct_asian_non_hispanic_total_pop","pct_native_american_non_hispanic_total_pop"],["Bachelor's+ %","HS Grad %","English Only %","Spanish Home %","Broadband %","Per Capita Income","Median HH Income","Poverty %","Unemployment %","No Vehicle %","Gov Employment %","SNAP Benefits %","Owner Occupied %","Under 5 %","Under 18 %","Over 65 %","Hispanic %","White NH %","Black NH %","Asian NH %","Native Am. NH %"],["DP02_0068P","DP02_0067P","DP02_0113P","DP02_0116P","DP02_0154P","DP03_0088","DP03_0062","DP03_0128P","DP03_0009P","DP03_0057P","DP03_0042P","DP03_0074P","DP04_0046P","DP05_0005P","DP05_0019P","DP05_0024P","DP05_0076P","DP05_0082P","DP05_0083P","DP05_0085P","DP05_0084P"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Variable Name<\/th>\n      <th>Short Label<\/th>\n      <th>Census Code<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"searching":false,"scrollX":true,"columnDefs":[{"name":"var_name","targets":0},{"name":"short_label","targets":1},{"name":"census_code","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-31e2c145c0310ae8dca1" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-31e2c145c0310ae8dca1">{"x":{"filter":"none","vertical":false,"data":[["pct_bachelor_degree_plus_adults25plus","pct_high_school_graduate_adults25plus","pct_english_only_home_pop5plus","pct_spanish_home_pop5plus","pct_broadband_subscription_households","per_capita_income","median_household_income","pct_below_poverty_all_people","pct_unemployed_labor_force","pct_no_vehicle_households","pct_gov_employment_employed16plus","pct_snap_benefits_households","pct_owner_occupied_housing_units","pct_under_5_total_pop","pct_under_18_total_pop","pct_over_65_total_pop","pct_hispanic_any_race_total_pop","pct_white_non_hispanic_total_pop","pct_black_non_hispanic_total_pop","pct_asian_non_hispanic_total_pop","pct_native_american_non_hispanic_total_pop"],["Bachelor's+ %","HS Grad %","English Only %","Spanish Home %","Broadband %","Per Capita Income","Median HH Income","Poverty %","Unemployment %","No Vehicle %","Gov Employment %","SNAP Benefits %","Owner Occupied %","Under 5 %","Under 18 %","Over 65 %","Hispanic %","White NH %","Black NH %","Asian NH %","Native Am. NH %"],["DP02_0068P","DP02_0067P","DP02_0113P","DP02_0116P","DP02_0154P","DP03_0088","DP03_0062","DP03_0128P","DP03_0009P","DP03_0057P","DP03_0042P","DP03_0074P","DP04_0046P","DP05_0005P","DP05_0019P","DP05_0024P","DP05_0076P","DP05_0082P","DP05_0083P","DP05_0085P","DP05_0084P"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Variable Name<\/th>\n      <th>Short Label<\/th>\n      <th>Census Code<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"searching":false,"scrollX":true,"columnDefs":[{"name":"var_name","targets":0},{"name":"short_label","targets":1},{"name":"census_code","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
           <hr />
           </div>
-          <div id="pulling-data-for-multiple-geographies" class="section level2">
-          <h2>Pulling data for multiple geographies</h2>
+          <div id="pull-data-for-multiple-geographies" class="section level2">
+          <h2>Pull Data for Multiple Geographies</h2>
           <p>We’ll create a function to pull data for multiple
-          geographies efficiently, then apply it to state, senate
-          districts, and house districts. The ACS 5-year estimates
-          provide the most reliable data for smaller geographies:</p>
+          <strong>geographies</strong> efficiently, then apply it to
+          state, senate districts, and house districts. The <strong>ACS
+          5-year estimates</strong> provide the most reliable data for
+          smaller geographies:</p>
           <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Create named vector for tidycensus (uses var_name as names)</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>dp_vars_expanded <span class="ot">&lt;-</span> <span class="fu">setNames</span>(dp_vars_lookup<span class="sc">$</span>census_code, dp_vars_lookup<span class="sc">$</span>var_name)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
@@ -3237,11 +3354,12 @@ Tables</h1>
 <span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>all_nm_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(nm_state, nm_senate, nm_house)</span></code></pre></div>
           <hr />
           </div>
-          <div id="exploring-the-data" class="section level2">
-          <h2>Exploring the data</h2>
+          <div id="explore-the-data" class="section level2">
+          <h2>Explore the Data</h2>
           <p>Let’s take a look at the data for one senate district to
-          see what we’ve pulled. The data includes estimates and margins
-          of error for each variable:</p>
+          see what we’ve pulled. The data includes
+          <strong>estimates</strong> and <strong>margins of
+          error</strong> for each variable:</p>
           <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Get the first senate district name</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>first_district <span class="ot">&lt;-</span> nm_senate<span class="sc">$</span>NAME[<span class="dv">1</span>]</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
@@ -3258,26 +3376,23 @@ Tables</h1>
 <span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="at">scrollX =</span> <span class="cn">TRUE</span></span>
 <span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  )</span>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-0da4a7f52a97dc0ed006" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-0da4a7f52a97dc0ed006">{"x":{"filter":"none","vertical":false,"caption":"<caption>ACS Data Profile variables for State Senate District 1 (2022); New Mexico<\/caption>","data":[["35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001"],["State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico"],["pct_high_school_graduate_adults25plus","pct_bachelor_degree_plus_adults25plus","pct_english_only_home_pop5plus","pct_spanish_home_pop5plus","pct_broadband_subscription_households","pct_unemployed_labor_force","pct_gov_employment_employed16plus","pct_no_vehicle_households","median_household_income","pct_snap_benefits_households","per_capita_income","pct_below_poverty_all_people","pct_owner_occupied_housing_units","pct_under_5_total_pop","pct_under_18_total_pop","pct_over_65_total_pop","pct_hispanic_any_race_total_pop","pct_white_non_hispanic_total_pop","pct_black_non_hispanic_total_pop","pct_native_american_non_hispanic_total_pop","pct_asian_non_hispanic_total_pop"],[89.3,19.3,72.7,10.4,76.59999999999999,7.7,27,17.6,58710,22.9,28134,22.6,60.6,6,27.4,15.1,21.3,37.6,0.7,34.3,1],[1.7,2.4,2.7,1.9,3.1,2.2,3,2.3,4457,3,2360,3.1,3.6,0.8,1.4,1.4,1.8,2.3,0.3,2.7,0.4]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>GEOID<\/th>\n      <th>NAME<\/th>\n      <th>variable<\/th>\n      <th>estimate<\/th>\n      <th>moe<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"searching":false,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[3,4]},{"name":"GEOID","targets":0},{"name":"NAME","targets":1},{"name":"variable","targets":2},{"name":"estimate","targets":3},{"name":"moe","targets":4}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-7f47144a99c8f7c850d3" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-7f47144a99c8f7c850d3">{"x":{"filter":"none","vertical":false,"caption":"<caption>ACS Data Profile variables for State Senate District 1 (2022); New Mexico<\/caption>","data":[["35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001","35001"],["State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico","State Senate District 1 (2022); New Mexico"],["pct_high_school_graduate_adults25plus","pct_bachelor_degree_plus_adults25plus","pct_english_only_home_pop5plus","pct_spanish_home_pop5plus","pct_broadband_subscription_households","pct_unemployed_labor_force","pct_gov_employment_employed16plus","pct_no_vehicle_households","median_household_income","pct_snap_benefits_households","per_capita_income","pct_below_poverty_all_people","pct_owner_occupied_housing_units","pct_under_5_total_pop","pct_under_18_total_pop","pct_over_65_total_pop","pct_hispanic_any_race_total_pop","pct_white_non_hispanic_total_pop","pct_black_non_hispanic_total_pop","pct_native_american_non_hispanic_total_pop","pct_asian_non_hispanic_total_pop"],[89.3,19.3,72.7,10.4,76.59999999999999,7.7,27,17.6,58710,22.9,28134,22.6,60.6,6,27.4,15.1,21.3,37.6,0.7,34.3,1],[1.7,2.4,2.7,1.9,3.1,2.2,3,2.3,4457,3,2360,3.1,3.6,0.8,1.4,1.4,1.8,2.3,0.3,2.7,0.4]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>GEOID<\/th>\n      <th>NAME<\/th>\n      <th>variable<\/th>\n      <th>estimate<\/th>\n      <th>moe<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"searching":false,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[3,4]},{"name":"GEOID","targets":0},{"name":"NAME","targets":1},{"name":"variable","targets":2},{"name":"estimate","targets":3},{"name":"moe","targets":4}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <hr />
           </div>
-          <div id="exploring-relationships" class="section level2">
-          <h2>Exploring relationships</h2>
-          <p>We can explore relationships between variables by creating
-          a pairs plot using the <code>GGally</code> package and New
-          Mexico Senate District data. The pairs plot shows:</p>
-          <ul>
-          <li><strong>Lower triangle</strong>: Scatter plots with loess
-          smoothing lines showing relationships between variable
-          pairs</li>
-          <li><strong>Diagonal</strong>: Density plots showing the
-          distribution of each variable</li>
-          <li><strong>Upper triangle</strong>: Correlation coefficients
-          between variable pairs</li>
-          </ul>
-          <p>First, we’ll join the lookup table to get short labels,
-          then pivot to wide format for visualization:</p>
+          <div id="explore-relationships" class="section level2">
+          <h2>Explore Relationships</h2>
+          <p>The pairs plot below shows pairwise relationships among six
+          key variables across all New Mexico Senate Districts. The
+          <strong>lower triangle</strong> shows scatter plots with a
+          loess curve, the <strong>diagonal</strong> shows each
+          variable’s density distribution, and the <strong>upper
+          triangle</strong> reports the <strong>Pearson correlation
+          coefficient</strong>. Values near ±1 indicate a strong
+          relationship; values near 0 indicate little linear
+          association.</p>
+          <p>First, we join the lookup table to get short labels, then
+          pivot to wide format for visualization:</p>
           <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Select key variables (using var_name since tidycensus returns names from the vector)</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>key_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pct_bachelor_degree_plus_adults25plus&quot;</span>, <span class="st">&quot;pct_snap_benefits_households&quot;</span>, </span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>              <span class="st">&quot;pct_below_poverty_all_people&quot;</span>, <span class="st">&quot;pct_unemployed_labor_force&quot;</span>,</span>
@@ -3309,29 +3424,30 @@ Tables</h1>
           </div>
           <div id="summary" class="section level2">
           <h2>Summary</h2>
-          <p>The <strong>Data Profile tables</strong> are particularly
-          useful because they contain many commonly-used demographic and
-          economic indicators already calculated as percentages, saving
-          you from having to compute them manually from detailed
-          tables.</p>
+          <p>Reach for the <strong>Data Profile tables</strong> when you
+          need a broad demographic snapshot quickly and do not want to
+          aggregate raw counts from the detailed Subject or Sequence
+          tables. Because the Census Bureau pre-computes the percentages
+          – poverty rates, educational attainment shares, homeownership
+          rates – <strong>you avoid a class of derivation errors and the
+          MOE arithmetic that comes with them.</strong> This workflow is
+          especially well suited for comparative questions: how do
+          legislative districts, counties, or places rank against each
+          other on a set of standard indicators? It also serves as a
+          fast first-pass before committing to a deeper pull from the
+          detailed <strong>B- or C-series tables</strong> when a
+          specific variable needs finer disaggregation than the Data
+          Profile provides.</p>
           </div>
         </div>
       </article>
           </div>
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <p>© 2025 Jason Timm, M.A., Ph.D.</p>
+      <p>© 2026 Jason Timm</p>
     </div>
   </footer>
-  <script>
-$(document).ready(function() {
-  if (window.initializeCodeFolding) {
-    window.initializeCodeFolding(false);  // false = start with code hidden
-  }
-});
-  </script>
 </body>
 </html>

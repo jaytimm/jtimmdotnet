@@ -61,14 +61,17 @@ generate_post_list <- function() {
   }
   
   # Generate the post list markdown
-  post_list_md <- "## Posts\n"
+  post_list_md <- "<p class=\"section-label\">Posts</p>\n"
   for (post in post_data) {
     post_list_md <- paste0(
       post_list_md,
       format(as.Date(post$date), "%Y-%m-%d"), ": [", post$title, "](", post$html_file, ")\n\n"
     )
   }
-  
+
+  # Add Projects section
+  post_list_md <- paste0(post_list_md, "---\n\n<p class=\"section-label\">Projects</p>\n\n[NM Election Explorer](projects/nm-election-maps.html) — interactive precinct-level map of New Mexico election results\n\n")
+
   # Add last updated timestamp (italic)
   post_list_md <- paste0(post_list_md, "*Last updated: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "*")
   
@@ -97,7 +100,7 @@ update_index_rmd <- function() {
   yaml_content <- paste(lines[1:yaml_end], collapse = "\n")
   
   # Find the start of the Posts section to preserve content in between
-  posts_section_start <- which(grepl("^## Posts", lines))
+  posts_section_start <- which(grepl("^<p class=\"section-label\">Posts</p>", lines))
   
   if (length(posts_section_start) > 0) {
     # Extract content between YAML and Posts section
@@ -144,7 +147,7 @@ custom_html_document <- function(toc = FALSE, toc_float = FALSE, theme = NULL, h
     highlight = highlight,
     css = css,
     template = template_path,
-    code_folding = "hide",  # Add code folding - code blocks start collapsed
+    code_folding = "none",
     code_download = FALSE,
     self_contained = TRUE,  # Embed all assets - no _files/ folders
     ...
