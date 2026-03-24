@@ -9,7 +9,7 @@
 !projects/
 !projects/**
 !assets/
-!data/
+data/
 !CNAME
 !feed.xml
 
