@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keep running — Jason Timm</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --surface2: #fafafa;
+      --border: #e0e0e0;
+      --text: #222;
+      --muted: #888;
+      --accent: #0066cc;
+      --accent-light: #e8f0fb;
+      --run: #e65100;
+      --run-light: #fff3e0;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .run-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 3rem;
+    }
+    .run-title-block {
+      padding: 1.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .run-title-block h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.3;
+    }
+    .run-meta { font-size: 13px; color: var(--muted); }
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .tile {
+      background: var(--surface);
+      border-radius: 4px;
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .tile .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .tile .value { font-size: 1.6rem; font-weight: 400; margin-top: 0.1rem; color: #111; font-variant-numeric: tabular-nums; }
+    .tile .sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+    section { margin-bottom: 2rem; }
+    section h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .chart-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .chart-tabs button {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      margin-bottom: -2px;
+      font-size: 0.82rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .chart-tabs button:hover { color: var(--text); }
+    .chart-tabs button.active {
+      color: #111;
+      border-bottom-color: #111;
+      font-weight: 600;
+    }
+    .chart-panel { display: none; }
+    .chart-panel.active { display: block; }
+    .chart-wrap {
+      background: var(--surface);
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      height: 280px;
+      box-shadow: var(--shadow-sm);
+    }
+    .chart-wrap.tall { height: 320px; }
+    .scatter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .scatter-grid .chart-wrap { height: 260px; margin-bottom: 0; }
+    .cal-months {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .cal-month-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .cal-head {
+      background: #f5f5f5;
+      text-align: center;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      padding: 0.3rem 0;
+    }
+    .cal-cell {
+      min-height: 1.9rem;
+      background: var(--surface);
+      padding: 3px 4px;
+      font-size: 0.7rem;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .cal-cell.out { opacity: 0.25; }
+    .cal-cell.run { cursor: pointer; }
+    .cal-cell.run:hover { filter: brightness(0.95); }
+    .cal-cell.run.selected { outline: 2px solid #111; outline-offset: -2px; }
+    .cal-cell .num { font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text); }
+    .cal-cell.run .num { font-weight: 700; }
+    .cal-cell .mi { font-size: 0.55rem; color: var(--muted); margin-top: 1px; font-variant-numeric: tabular-nums; }
+    .detail {
+      margin-top: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border-radius: 4px;
+      border-left: 3px solid #111;
+      box-shadow: var(--shadow-sm);
+      display: none;
+    }
+    .detail.visible { display: block; }
+    .detail dl {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.3rem 1.25rem;
+      margin: 0;
+      font-size: 0.85rem;
+    }
+    .detail dt { color: var(--muted); margin: 0; }
+    .detail dd { margin: 0; font-variant-numeric: tabular-nums; }
+    .table-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .table-tools label { font-size: 0.85rem; color: var(--muted); }
+    .table-tools select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.5rem;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-variant-numeric: tabular-nums;
+      background: var(--surface);
+    }
+    th, td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--surface2);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    th:hover { color: var(--text); }
+    tbody tr:last-child td { border-bottom: none; }
+    tr.run-row { cursor: pointer; }
+    tr.run-row:hover { background: #f5f5f5; }
+    tr.run-row.selected { background: var(--accent-light); }
+    .chart-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0 0 0.75rem;
+      max-width: 40rem;
+      line-height: 1.6;
+    }
+    .latest-panel {
+      background: var(--surface);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .latest-panel h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .latest-panel .raw { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.75rem; }
+    .latest-metrics { display: grid; }
+    .latest-row {
+      display: grid;
+      grid-template-columns: 8rem 1fr;
+      gap: 0.75rem;
+      align-items: baseline;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .latest-row:last-child { border-bottom: none; }
+    .latest-row .metric { color: var(--muted); font-size: 0.8rem; }
+    .latest-row .value { font-weight: 500; font-variant-numeric: tabular-nums; }
+    .latest-row .pct { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="site-nav">
+        <a href="../index.html">Jason Timm</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="run-wrap">
+    <div class="run-title-block">
+      <h1>Keep running</h1>
+      <span class="run-meta" id="fileMeta">Loading…</span>
+    </div>
+
+    <div id="emptyState" class="empty" hidden>Could not load run data.</div>
+    <div id="dashboard" hidden>
+      <section>
+        <h2>Summary</h2>
+        <div class="tiles" id="tiles"></div>
+      </section>
+
+      <section>
+        <h2>Latest run</h2>
+        <p class="chart-hint">Compared to every earlier logged run with that field filled (percent = how many prior runs you beat on that metric).</p>
+        <div class="latest-panel" id="latestRunPanel"></div>
+      </section>
+
+      <section>
+        <h2>Relationships</h2>
+        <div class="scatter-grid">
+          <div class="chart-wrap"><canvas id="scatterMilesPace"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterPaceHr"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterCadenceHr"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterPaceCadence"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterHrMaxAvg"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterPaceVo2"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterHrVo2"></canvas></div>
+          <div class="chart-wrap"><canvas id="scatterCadenceStride"></canvas></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Charts</h2>
+        <div class="chart-tabs" id="chartTabs">
+          <button type="button" data-tab="tab-miles" class="active">Miles &amp; cumulative</button>
+          <button type="button" data-tab="tab-weekly">Weekly mileage</button>
+          <button type="button" data-tab="tab-pace">Pace &amp; heart</button>
+          <button type="button" data-tab="tab-other">Cadence &amp; weight</button>
+        </div>
+        <div id="tab-miles" class="chart-panel active">
+          <div class="chart-wrap tall"><canvas id="chartMiles"></canvas></div>
+        </div>
+        <div id="tab-weekly" class="chart-panel">
+          <div class="chart-wrap tall"><canvas id="chartWeekly"></canvas></div>
+        </div>
+        <div id="tab-pace" class="chart-panel">
+          <div class="chart-wrap"><canvas id="chartPace"></canvas></div>
+          <div class="chart-wrap"><canvas id="chartHeart"></canvas></div>
+        </div>
+        <div id="tab-other" class="chart-panel">
+          <div class="chart-wrap"><canvas id="chartCadence"></canvas></div>
+          <div class="chart-wrap"><canvas id="chartWeight"></canvas></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Calendar</h2>
+        <div id="calContainer"></div>
+        <div class="detail" id="dayDetail">
+          <h3 style="margin:0 0 0.75rem;font-size:1rem" id="detailTitle"></h3>
+          <dl id="detailDl"></dl>
+        </div>
+      </section>
+
+      <section>
+        <h2>Run log</h2>
+        <div class="table-tools">
+          <label>Month <select id="filterMonth"><option value="">All</option></select></label>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr id="tableHead"></tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  const YEAR = 2026;
+  const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTx4sViJ65Q9pcOzK2jriTid5mMGFcmW2fSZgqB6Kr5_8JHO7az_ZFNK1sR1hbASNlWlz1EcC5v0WM1/pub?gid=0&single=true&output=csv";
+  const MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const MONTH_TO_NUM = Object.fromEntries(MONTH_NAMES.map((m, i) => [m, i + 1]));
+
+  Chart.defaults.color = "#888";
+  Chart.defaults.borderColor = "#e0e0e0";
+  Chart.defaults.font.family = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.plugins.legend.display = false;
+
+  let chartInstances = [];
+  let byDate = new Map();
+  let runs = [];
+  let timelineIsos = [];
+  let calYear = YEAR;
+  let calMonth = 0;
+  let selectedIso = null;
+  let tableSort = { key: "iso", dir: 1 };
+
+  function parseCsv(text) {
+    const rows = [];
+    let i = 0;
+    const len = text.length;
+    while (i < len) {
+      const row = [];
+      while (i < len) {
+        let cell = "";
+        if (text[i] === '"') {
+          i++;
+          while (i < len) {
+            if (text[i] === '"') {
+              if (text[i + 1] === '"') { cell += '"'; i += 2; }
+              else { i++; break; }
+            } else { cell += text[i++]; }
+          }
+        } else {
+          while (i < len && text[i] !== "," && text[i] !== "\n" && text[i] !== "\r") {
+            cell += text[i++];
+          }
+        }
+        row.push(cell.trim());
+        if (i < len && text[i] === ",") i++;
+        if (i >= len || text[i] === "\n" || text[i] === "\r") break;
+      }
+      if (row.some((c) => c.length)) rows.push(row);
+      while (i < len && (text[i] === "\n" || text[i] === "\r")) i++;
+    }
+    return rows;
+  }
+
+  function pad2(n) { return String(n).padStart(2, "0"); }
+
+  function toIso(year, monthIndex, day) {
+    return `${year}-${pad2(monthIndex + 1)}-${pad2(day)}`;
+  }
+
+  function timeToSeconds(s) {
+    if (!s || typeof s !== "string") return null;
+    const t = s.trim();
+    if (!t) return null;
+    const parts = t.split(":").map((p) => parseInt(p, 10));
+    if (parts.some((n) => Number.isNaN(n))) return null;
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    return null;
+  }
+
+  function formatDuration(sec) {
+    if (sec == null || Number.isNaN(sec)) return "—";
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = Math.floor(sec % 60);
+    if (h > 0) return `${h}:${pad2(m)}:${pad2(s)}`;
+    return `${m}:${pad2(s)}`;
+  }
+
+  function formatPaceSeconds(sec) {
+    if (sec == null || Number.isNaN(sec)) return "—";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${pad2(s)}`;
+  }
+
+  function parseRowsToObjects(table) {
+    if (!table.length) return [];
+    const headers = table[0].map((h) => String(h).trim());
+    const out = [];
+    for (let r = 1; r < table.length; r++) {
+      const vals = table[r];
+      const o = {};
+      headers.forEach((h, j) => { o[h] = vals[j] != null ? String(vals[j]).trim() : ""; });
+      const mon = o.mon || "";
+      const d = parseInt(o.d, 10);
+      const monthNum = MONTH_TO_NUM[mon];
+      if (!monthNum || !d) continue;
+      const iso = toIso(YEAR, monthNum - 1, d);
+      o.iso = iso;
+      o._monthNum = monthNum;
+      o._day = d;
+      const hasMiles = o.miles !== "" && !Number.isNaN(parseFloat(o.miles));
+      const hasTime = o.time !== "";
+      o.isRun = hasMiles || hasTime;
+      o.milesNum = hasMiles ? parseFloat(o.miles) : null;
+      o.timeSec = timeToSeconds(o.time);
+      o.paceSec = timeToSeconds(o.min_miles);
+      o.cadenceNum = o.cadence !== "" && !Number.isNaN(parseFloat(o.cadence)) ? parseFloat(o.cadence) : null;
+      o.heartNum = o.heart !== "" && !Number.isNaN(parseFloat(o.heart)) ? parseFloat(o.heart) : null;
+      o.maxheartNum = o.maxheart !== "" && !Number.isNaN(parseFloat(o.maxheart)) ? parseFloat(o.maxheart) : null;
+      o.vo2Num = o.vo2max !== "" && !Number.isNaN(parseFloat(o.vo2max)) ? parseFloat(o.vo2max) : null;
+      o.strideNum = o.stride !== "" && !Number.isNaN(parseFloat(o.stride)) ? parseFloat(o.stride) : null;
+      o.lbsNum = o.lbs !== "" && !Number.isNaN(parseFloat(o.lbs)) ? parseFloat(o.lbs) : null;
+      out.push(o);
+    }
+    return out;
+  }
+
+  function isoDayMs(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    return +new Date(y, m - 1, d);
+  }
+
+  function enumerateDaysInclusive(startIso, endIso) {
+    const out = [];
+    const cur = new Date(isoDayMs(startIso));
+    const end = new Date(isoDayMs(endIso));
+    while (cur <= end) {
+      out.push(toIso(cur.getFullYear(), cur.getMonth(), cur.getDate()));
+      cur.setDate(cur.getDate() + 1);
+    }
+    return out;
+  }
+
+  function updateTimeline() {
+    const keys = [...byDate.keys()].sort();
+    if (!keys.length) { timelineIsos = []; return; }
+    const dataMax = keys[keys.length - 1];
+    const startIso = runs.length ? runs[0].iso : keys[0];
+    const t = new Date();
+    let endIso = toIso(t.getFullYear(), t.getMonth(), t.getDate());
+    if (endIso > dataMax) endIso = dataMax;
+    if (endIso < startIso) endIso = startIso;
+    timelineIsos = enumerateDaysInclusive(startIso, endIso);
+  }
+
+  function mondayKey(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    const day = dt.getDay();
+    const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+    const mon = new Date(dt.setDate(diff));
+    return toIso(mon.getFullYear(), mon.getMonth(), mon.getDate());
+  }
+
+  function destroyCharts() {
+    chartInstances.forEach((c) => c.destroy());
+    chartInstances = [];
+  }
+
+  function buildWeeklyMiles() {
+    const map = new Map();
+    runs.forEach((r) => {
+      const k = mondayKey(r.iso);
+      map.set(k, (map.get(k) || 0) + (r.milesNum || 0));
+    });
+    if (!timelineIsos.length) return [];
+    const startW = mondayKey(timelineIsos[0]);
+    const endW = mondayKey(timelineIsos[timelineIsos.length - 1]);
+    const series = [];
+    const cur = new Date(isoDayMs(startW));
+    const end = new Date(isoDayMs(endW));
+    while (cur <= end) {
+      const iso = toIso(cur.getFullYear(), cur.getMonth(), cur.getDate());
+      series.push({ x: isoDayMs(iso), y: map.get(iso) || 0 });
+      cur.setDate(cur.getDate() + 7);
+    }
+    return series;
+  }
+
+  function currentStreak() {
+    if (!runs.length) return 0;
+    const runSet = new Set(runs.map((r) => r.iso));
+    const now = new Date();
+    let d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (!runSet.has(toIso(d.getFullYear(), d.getMonth(), d.getDate()))) {
+      d.setDate(d.getDate() - 1);
+    }
+    let streak = 0;
+    while (runSet.has(toIso(d.getFullYear(), d.getMonth(), d.getDate()))) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function rolling7Miles() {
+    if (!runs.length) return null;
+    const last = runs[runs.length - 1];
+    const [ly, lm, ld] = last.iso.split("-").map(Number);
+    const end = new Date(ly, lm - 1, ld);
+    const start = new Date(end);
+    start.setDate(start.getDate() - 6);
+    const startIso = toIso(start.getFullYear(), start.getMonth(), start.getDate());
+    let sum = 0;
+    runs.forEach((r) => { if (r.iso >= startIso && r.iso <= last.iso) sum += r.milesNum || 0; });
+    return sum;
+  }
+
+  function bestWeekMiles() {
+    const series = buildWeeklyMiles();
+    if (!series.length) return null;
+    return Math.max(...series.map((s) => s.y));
+  }
+
+  function latestWeight() {
+    for (let i = runs.length - 1; i >= 0; i--) {
+      if (runs[i].lbsNum != null) return runs[i].lbsNum;
+    }
+    return null;
+  }
+
+  function compareToPrior(prior, pick, value, type) {
+    const vals = prior.map(pick).filter((v) => v != null && !Number.isNaN(v));
+    const n = vals.length;
+    if (value == null || Number.isNaN(value)) return { kind: "missing" };
+    if (prior.length === 0) return { kind: "first" };
+    if (n === 0) return { kind: "no_prior_data" };
+    const beat = type === "lower_better"
+      ? vals.filter((v) => v > value).length
+      : vals.filter((v) => v < value).length;
+    return { kind: "ok", pct: Math.round((100 * beat) / n), n };
+  }
+
+  function cmpHtml(cmp, okText) {
+    if (cmp.kind === "missing") return `<div class="pct">—</div>`;
+    if (cmp.kind === "first") return `<div class="pct">—</div>`;
+    if (cmp.kind === "no_prior_data") return `<div class="pct">No earlier runs with this metric.</div>`;
+    return `<div class="pct">${okText(cmp.pct, cmp.n)}</div>`;
+  }
+
+  function renderLatestRun() {
+    const el = document.getElementById("latestRunPanel");
+    if (!runs.length) { el.innerHTML = ""; return; }
+    const latest = runs[runs.length - 1];
+    const prior = runs.slice(0, -1);
+    const firstRunNote = prior.length === 0
+      ? `<p class="raw" style="margin-top:0">First logged run — percentiles show once you have earlier workouts to compare.</p>`
+      : "";
+    const rows = [];
+    rows.push(`<div class="latest-row"><div class="metric">When</div><div><div class="value">${latest.iso} (${latest.day || "—"})</div></div></div>`);
+    const pushMetric = (label, valStr, pick, raw, type, okText) => {
+      const cmp = compareToPrior(prior, pick, raw, type);
+      rows.push(`<div class="latest-row"><div class="metric">${label}</div><div><div class="value">${valStr}</div>${cmpHtml(cmp, okText)}</div></div>`);
+    };
+    pushMetric("Distance", latest.milesNum != null ? `${latest.milesNum.toFixed(2)} mi` : "—", (r) => r.milesNum, latest.milesNum, "higher_better", (pct, n) => `Farther than ${pct}% of ${n} prior runs`);
+    pushMetric("Duration", latest.timeSec != null ? formatDuration(latest.timeSec) : latest.time || "—", (r) => r.timeSec, latest.timeSec, "higher_better", (pct, n) => `Longer duration than ${pct}% of ${n} prior runs`);
+    pushMetric("Pace", latest.min_miles || (latest.paceSec != null ? formatPaceSeconds(latest.paceSec) + " /mi" : "—"), (r) => r.paceSec, latest.paceSec, "lower_better", (pct, n) => `Faster pace than ${pct}% of ${n} prior runs`);
+    pushMetric("Cadence", latest.cadenceNum != null ? `${Math.round(latest.cadenceNum)} spm` : latest.cadence || "—", (r) => r.cadenceNum, latest.cadenceNum, "higher_better", (pct, n) => `Higher cadence than ${pct}% of ${n} prior runs`);
+    pushMetric("Avg HR", latest.heartNum != null ? `${Math.round(latest.heartNum)} bpm` : latest.heart || "—", (r) => r.heartNum, latest.heartNum, "lower_better", (pct, n) => `Lower avg HR than ${pct}% of ${n} prior runs`);
+    pushMetric("Max HR", latest.maxheartNum != null ? `${Math.round(latest.maxheartNum)} bpm` : latest.maxheart || "—", (r) => r.maxheartNum, latest.maxheartNum, "lower_better", (pct, n) => `Lower max HR than ${pct}% of ${n} prior runs`);
+    pushMetric("Weight", latest.lbsNum != null ? `${latest.lbsNum} lbs` : latest.lbs || "—", (r) => r.lbsNum, latest.lbsNum, "lower_better", (pct, n) => `Lower weight than ${pct}% of ${n} prior runs`);
+    pushMetric("VO2 max", latest.vo2Num != null ? String(latest.vo2Num) : latest.vo2max || "—", (r) => r.vo2Num, latest.vo2Num, "higher_better", (pct, n) => `Higher than ${pct}% of ${n} prior runs`);
+    pushMetric("Stride", latest.strideNum != null ? String(latest.strideNum) : latest.stride || "—", (r) => r.strideNum, latest.strideNum, "higher_better", (pct, n) => `Higher than ${pct}% of ${n} prior runs`);
+    el.innerHTML = `<h3>Most recent workout</h3>${firstRunNote}<div class="latest-metrics">${rows.join("")}</div>`;
+  }
+
+  function renderTiles() {
+    const totalMiles = runs.reduce((a, r) => a + (r.milesNum || 0), 0);
+    const first = runs[0], last = runs[runs.length - 1];
+    const range = first && last ? `${first.iso} → ${last.iso}` : "—";
+    const r7 = rolling7Miles(), bw = bestWeekMiles(), lw = latestWeight();
+    const tiles = [
+      { label: "Runs", value: String(runs.length), sub: "logged workouts" },
+      { label: "Total miles", value: totalMiles.toFixed(1), sub: range },
+      { label: "Last 7 days", value: r7 != null ? r7.toFixed(1) : "—", sub: "mi (from last run date)" },
+      { label: "Streak", value: String(currentStreak()), sub: "consecutive run days to date" },
+      { label: "Best week", value: bw != null ? bw.toFixed(1) : "—", sub: "mi (Mon–Sun buckets)" },
+      { label: "Latest weight", value: lw != null ? String(lw) : "—", sub: "lbs" },
+    ];
+    document.getElementById("tiles").innerHTML = tiles
+      .map((t) => `<div class="tile"><div class="label">${t.label}</div><div class="value">${t.value}</div><div class="sub">${t.sub}</div></div>`)
+      .join("");
+  }
+
+  function renderCharts() {
+    destroyCharts();
+    if (!timelineIsos.length) return;
+    const xMin = isoDayMs(timelineIsos[0]);
+    const xMax = isoDayMs(timelineIsos[timelineIsos.length - 1]);
+
+    function rollingAvgSeries(valueFn, hw) {
+      const pts = runs.map((r) => ({ x: isoDayMs(r.iso), y: valueFn(r) })).filter((p) => p.y != null);
+      if (pts.length < 2) return [];
+      return pts.map((_, i) => {
+        const lo = Math.max(0, i - hw), hi = Math.min(pts.length - 1, i + hw);
+        const slice = pts.slice(lo, hi + 1);
+        return { x: pts[i].x, y: slice.reduce((s, p) => s + p.y, 0) / slice.length };
+      });
+    }
+
+    function avgLine(valueFn) {
+      return {
+        type: "line", label: "Avg", data: rollingAvgSeries(valueFn, 3),
+        borderColor: "rgba(0,0,0,0.18)", borderWidth: 2,
+        pointRadius: 0, tension: 0.4, spanGaps: true,
+      };
+    }
+
+    const timeTooltip = {
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title(items) {
+              const ms = items[0]?.parsed?.x;
+              if (ms == null) return "";
+              const d = new Date(ms);
+              return toIso(d.getFullYear(), d.getMonth(), d.getDate());
+            },
+          },
+        },
+      },
+    };
+
+    function xScaleDay() {
+      return {
+        type: "time", min: xMin, max: xMax,
+        time: { unit: "day", displayFormats: { day: "MMM d yyyy" } },
+        ticks: { maxRotation: 45, maxTicksLimit: 20 },
+        title: { display: true, text: "Calendar date" },
+      };
+    }
+
+    function xScaleWeek() {
+      return {
+        type: "time", min: xMin, max: xMax,
+        time: { unit: "week", displayFormats: { week: "MMM d yyyy" } },
+        ticks: { maxRotation: 45, maxTicksLimit: 14 },
+        title: { display: true, text: "Week (Monday)" },
+      };
+    }
+
+    const dailyMiles = timelineIsos.map((iso) => {
+      const r = byDate.get(iso);
+      return { x: isoDayMs(iso), y: r && r.isRun && r.milesNum != null ? r.milesNum : null };
+    });
+    let cum = 0;
+    const dailyCum = timelineIsos.map((iso) => {
+      const r = byDate.get(iso);
+      if (r && r.isRun && r.milesNum != null) cum += r.milesNum;
+      return { x: isoDayMs(iso), y: cum };
+    });
+    const dailyPace = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.paceSec != null ? r.paceSec : null }; });
+    const dailyHrAvg = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.heartNum != null ? r.heartNum : null }; });
+    const dailyHrMax = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.maxheartNum != null ? r.maxheartNum : null }; });
+    const dailyCadence = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.cadenceNum != null ? r.cadenceNum : null }; });
+    const dailyLbs = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.lbsNum != null ? r.lbsNum : null }; });
+
+    chartInstances.push(new Chart(document.getElementById("chartMiles"), {
+      data: {
+        datasets: [
+          { type: "bar", label: "Miles", data: dailyMiles, backgroundColor: "rgba(230,81,0,0.55)", yAxisID: "y", maxBarThickness: 10 },
+          { type: "line", label: "Cumulative mi", data: dailyCum, borderColor: "#0066cc", backgroundColor: "transparent", tension: 0.15, spanGaps: false, pointRadius: 0, yAxisID: "y1" },
+        ],
+      },
+      options: {
+        ...timeTooltip, responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        scales: {
+          x: xScaleDay(),
+          y: { type: "linear", position: "left", title: { display: true, text: "Miles" } },
+          y1: { type: "linear", position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "Cumulative" } },
+        },
+      },
+    }));
+
+    chartInstances.push(new Chart(document.getElementById("chartWeekly"), {
+      type: "bar",
+      data: { datasets: [{ label: "Weekly miles", data: buildWeeklyMiles(), backgroundColor: "rgba(0,102,204,0.45)", maxBarThickness: 14 }] },
+      options: { ...timeTooltip, responsive: true, maintainAspectRatio: false, scales: { x: xScaleWeek(), y: { title: { display: true, text: "Miles" }, beginAtZero: true } } },
+    }));
+
+    chartInstances.push(new Chart(document.getElementById("chartPace"), {
+      type: "scatter",
+      data: {
+        datasets: [
+          { label: "Pace", data: dailyPace.filter((p) => p.y != null), backgroundColor: "#e65100", borderColor: "#e65100", borderWidth: 0, pointRadius: 4, pointHoverRadius: 6 },
+          { ...avgLine((r) => r.paceSec) },
+        ],
+      },
+      options: {
+        ...timeTooltip, responsive: true, maintainAspectRatio: false,
+        scales: { x: { ...xScaleDay(), type: "time" }, y: { reverse: true, ticks: { callback(v) { return formatPaceSeconds(v); } }, title: { display: true, text: "min/mi" } } },
+        plugins: { ...timeTooltip.plugins, legend: { display: false } },
+      },
+    }));
+
+    chartInstances.push(new Chart(document.getElementById("chartHeart"), {
+      type: "scatter",
+      data: {
+        datasets: [
+          { label: "Avg HR", data: dailyHrAvg.filter((p) => p.y != null), backgroundColor: "#c62828", borderColor: "#c62828", borderWidth: 0, pointRadius: 4, pointHoverRadius: 6 },
+          { label: "Max HR", data: dailyHrMax.filter((p) => p.y != null), backgroundColor: "#6a1b9a", borderColor: "#6a1b9a", borderWidth: 0, pointRadius: 4, pointHoverRadius: 6 },
+          { ...avgLine((r) => r.heartNum) },
+        ],
+      },
+      options: { ...timeTooltip, responsive: true, maintainAspectRatio: false, scales: { x: { ...xScaleDay(), type: "time" }, y: { title: { display: true, text: "bpm" } } }, plugins: { ...timeTooltip.plugins } },
+    }));
+
+    chartInstances.push(new Chart(document.getElementById("chartCadence"), {
+      type: "scatter",
+      data: {
+        datasets: [
+          { label: "Cadence", data: dailyCadence.filter((p) => p.y != null), backgroundColor: "#00695c", borderColor: "#00695c", borderWidth: 0, pointRadius: 4, pointHoverRadius: 6 },
+          { ...avgLine((r) => r.cadenceNum) },
+        ],
+      },
+      options: { ...timeTooltip, responsive: true, maintainAspectRatio: false, scales: { x: { ...xScaleDay(), type: "time" }, y: { title: { display: true, text: "spm" } } }, plugins: { ...timeTooltip.plugins, legend: { display: false } } },
+    }));
+
+    chartInstances.push(new Chart(document.getElementById("chartWeight"), {
+      type: "scatter",
+      data: {
+        datasets: [
+          { label: "Weight", data: dailyLbs.filter((p) => p.y != null), backgroundColor: "#546e7a", borderColor: "#546e7a", borderWidth: 0, pointRadius: 4, pointHoverRadius: 6 },
+          { ...avgLine((r) => r.lbsNum) },
+        ],
+      },
+      options: { ...timeTooltip, responsive: true, maintainAspectRatio: false, scales: { x: { ...xScaleDay(), type: "time" }, y: { title: { display: true, text: "lbs" } } }, plugins: { ...timeTooltip.plugins, legend: { display: false } } },
+    }));
+
+    function scatterCorrelation(canvasId, pts, xLab, yLab, yReverse, yTickFmt, xReverse, xTickFmt) {
+      if (!pts.length) return;
+      const ctx = document.getElementById(canvasId);
+      const xr = xReverse === true;
+      const xtf = typeof xTickFmt === "function" ? xTickFmt : null;
+      const latestIso = runs.length ? runs[runs.length - 1].iso : null;
+      const prior = pts.filter((p) => p.iso !== latestIso);
+      const latest = pts.filter((p) => p.iso === latestIso);
+      chartInstances.push(new Chart(ctx, {
+        type: "scatter",
+        data: {
+          datasets: [
+            { label: "Runs", data: prior.map((p) => ({ x: p.x, y: p.y })), backgroundColor: "rgba(0,102,204,0.25)", borderColor: "rgba(0,102,204,0.55)", borderWidth: 1, pointRadius: 4, pointHoverRadius: 6 },
+            ...(latest.length ? [{ label: "Latest", data: latest.map((p) => ({ x: p.x, y: p.y })), backgroundColor: "#e65100", borderColor: "#bf360c", borderWidth: 1.5, pointRadius: 7, pointHoverRadius: 9 }] : []),
+          ],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { type: "linear", reverse: xr, title: { display: true, text: xLab }, ticks: xtf ? { callback: (v) => xtf(v) } : {} },
+            y: { type: "linear", reverse: !!yReverse, title: { display: true, text: yLab }, ticks: yTickFmt ? { callback: (v) => yTickFmt(v) } : {} },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title(items) { const ds = items[0].datasetIndex === 0 ? prior : latest; return ds[items[0].dataIndex]?.iso || ""; },
+                label(c) {
+                  const xStr = xtf ? xtf(c.parsed.x) : c.parsed.x;
+                  const yStr = yTickFmt ? yTickFmt(c.parsed.y) : c.parsed.y;
+                  return `${xLab}: ${xStr} · ${yLab}: ${yStr}`;
+                },
+              },
+            },
+          },
+        },
+      }));
+    }
+
+    scatterCorrelation("scatterMilesPace", runs.filter((r) => r.milesNum != null && r.paceSec != null).map((r) => ({ x: r.milesNum, y: r.paceSec, iso: r.iso })), "Miles", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterPaceHr", runs.filter((r) => r.paceSec != null && r.heartNum != null).map((r) => ({ x: r.paceSec, y: r.heartNum, iso: r.iso })), "Pace (min/mi)", "Avg HR (bpm)", false, null, true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterCadenceHr", runs.filter((r) => r.cadenceNum != null && r.heartNum != null).map((r) => ({ x: r.cadenceNum, y: r.heartNum, iso: r.iso })), "Cadence (spm)", "Avg HR (bpm)", false, null);
+    scatterCorrelation("scatterPaceCadence", runs.filter((r) => r.paceSec != null && r.cadenceNum != null).map((r) => ({ x: r.cadenceNum, y: r.paceSec, iso: r.iso })), "Cadence (spm)", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterHrMaxAvg", runs.filter((r) => r.heartNum != null && r.maxheartNum != null).map((r) => ({ x: r.heartNum, y: r.maxheartNum, iso: r.iso })), "Avg HR (bpm)", "Max HR (bpm)", false, null);
+    scatterCorrelation("scatterPaceVo2", runs.filter((r) => r.paceSec != null && r.vo2Num != null).map((r) => ({ x: r.paceSec, y: r.vo2Num, iso: r.iso })), "Pace (min/mi)", "% time at VO2 max", false, null, true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterHrVo2", runs.filter((r) => r.heartNum != null && r.vo2Num != null).map((r) => ({ x: r.heartNum, y: r.vo2Num, iso: r.iso })), "Avg HR (bpm)", "% time at VO2 max", false, null);
+    scatterCorrelation("scatterCadenceStride", runs.filter((r) => r.cadenceNum != null && r.strideNum != null).map((r) => ({ x: r.cadenceNum, y: r.strideNum, iso: r.iso })), "Cadence (spm)", "Stride", false, null);
+  }
+
+  function renderCalendar() {
+    const container = document.getElementById("calContainer");
+    const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+    const maxMiles = Math.max(0, ...[...byDate.values()].filter((r) => r.isRun).map((r) => r.milesNum || 0));
+    const months = [];
+    let my = calYear, mm = calMonth;
+    for (let i = 0; i < 4; i++) {
+      months.unshift({ year: my, month: mm });
+      mm--;
+      if (mm < 0) { mm = 11; my--; }
+    }
+    function renderMonth(year, month) {
+      const first = new Date(year, month, 1);
+      const startPad = first.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      let html = `<div class="cal-month"><div class="cal-month-title">${MONTH_NAMES[month]} ${year}</div><div class="cal-grid">`;
+      html += weekdays.map((w) => `<div class="cal-head">${w}</div>`).join("");
+      for (let i = 0; i < startPad; i++) html += `<div class="cal-cell out"></div>`;
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = toIso(year, month, day);
+        const row = byDate.get(iso);
+        const isRun = row && row.isRun;
+        if (isRun) {
+          let cls = "cal-cell run" + (selectedIso === iso ? " selected" : "");
+          const mi = row.milesNum;
+          const intensity = maxMiles > 0 && mi != null ? 0.15 + (0.35 * mi) / maxMiles : 0.2;
+          html += `<div class="${cls}" data-iso="${iso}" style="background:rgba(230,81,0,${intensity.toFixed(2)})"><span class="num">${day}</span>`;
+          if (mi != null) html += `<span class="mi">${mi.toFixed(1)}</span>`;
+          html += `</div>`;
+        } else {
+          html += `<div class="cal-cell"><span class="num">${day}</span></div>`;
+        }
+      }
+      html += `</div></div>`;
+      return html;
+    }
+    container.innerHTML = `<div class="cal-months">${months.map(({ year, month }) => renderMonth(year, month)).join("")}</div>`;
+    container.querySelectorAll(".cal-cell.run").forEach((el) => {
+      el.addEventListener("click", () => {
+        selectedIso = el.getAttribute("data-iso");
+        showDetail(selectedIso);
+        renderCalendar();
+        syncTableSelection();
+      });
+    });
+  }
+
+  function showDetail(iso) {
+    const panel = document.getElementById("dayDetail");
+    const row = byDate.get(iso);
+    if (!row || !row.isRun) { panel.classList.remove("visible"); return; }
+    document.getElementById("detailTitle").textContent = `${iso} (${row.day || "—"})`;
+    const fields = [
+      ["Time", row.time || "—"], ["Miles", row.miles || "—"], ["Pace (min/mi)", row.min_miles || "—"],
+      ["Cadence", row.cadence || "—"], ["Heart", row.heart || "—"], ["Max heart", row.maxheart || "—"],
+      ["VO2 max", row.vo2max || "—"], ["Stride", row.stride || "—"], ["Weight (lbs)", row.lbs || "—"],
+    ];
+    document.getElementById("detailDl").innerHTML = fields.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+    panel.classList.add("visible");
+  }
+
+  function syncTableSelection() {
+    document.querySelectorAll("tr.run-row").forEach((tr) => {
+      tr.classList.toggle("selected", tr.getAttribute("data-iso") === selectedIso);
+    });
+  }
+
+  function getTableRowsFiltered() {
+    const sel = document.getElementById("filterMonth").value;
+    let list = runs.slice();
+    if (sel !== "") list = list.filter((r) => r._monthNum === parseInt(sel, 10));
+    const { key, dir } = tableSort;
+    list.sort((a, b) => {
+      if (key === "iso") { return a.iso < b.iso ? -dir : a.iso > b.iso ? dir : 0; }
+      const numKeys = ["milesNum", "paceSec", "cadenceNum", "heartNum", "maxheartNum", "vo2Num", "strideNum", "lbsNum", "timeSec"];
+      if (numKeys.includes(key)) {
+        const an = a[key] == null ? -Infinity : a[key];
+        const bn = b[key] == null ? -Infinity : b[key];
+        return an < bn ? -dir : an > bn ? dir : 0;
+      }
+      return String(a[key] || "").localeCompare(String(b[key] || "")) * dir;
+    });
+    return list;
+  }
+
+  function renderTable() {
+    const cols = [
+      { key: "iso", label: "Date" }, { key: "day", label: "Dow" }, { key: "timeSec", label: "Time" },
+      { key: "milesNum", label: "Miles" }, { key: "paceSec", label: "Pace" }, { key: "cadenceNum", label: "Cadence" },
+      { key: "heartNum", label: "HR" }, { key: "maxheartNum", label: "Max" }, { key: "vo2Num", label: "VO2" },
+      { key: "strideNum", label: "Stride" }, { key: "lbsNum", label: "lbs" },
+    ];
+    const head = document.getElementById("tableHead");
+    head.innerHTML = cols.map((c) => {
+      const arrow = tableSort.key === c.key ? (tableSort.dir === 1 ? " ▲" : " ▼") : "";
+      return `<th data-sort="${c.key}">${c.label}${arrow}</th>`;
+    }).join("");
+    head.querySelectorAll("th").forEach((th) => {
+      th.addEventListener("click", () => {
+        const k = th.getAttribute("data-sort");
+        if (tableSort.key === k) tableSort.dir *= -1;
+        else { tableSort.key = k; tableSort.dir = 1; }
+        renderTable();
+      });
+    });
+    const body = document.getElementById("tableBody");
+    body.innerHTML = getTableRowsFiltered().map((r) => {
+      const pace = r.min_miles || (r.paceSec != null ? formatPaceSeconds(r.paceSec) : "");
+      return `<tr class="run-row" data-iso="${r.iso}">
+        <td>${r.iso}</td><td>${r.day || ""}</td><td>${r.time || ""}</td>
+        <td>${r.milesNum != null ? r.milesNum.toFixed(2) : ""}</td><td>${pace}</td>
+        <td>${r.cadenceNum != null ? r.cadenceNum : ""}</td><td>${r.heartNum != null ? r.heartNum : ""}</td>
+        <td>${r.maxheartNum != null ? r.maxheartNum : ""}</td><td>${r.vo2Num != null ? r.vo2Num : ""}</td>
+        <td>${r.strideNum != null ? r.strideNum : ""}</td><td>${r.lbsNum != null ? r.lbsNum : ""}</td>
+      </tr>`;
+    }).join("");
+    body.querySelectorAll("tr.run-row").forEach((tr) => {
+      tr.addEventListener("click", () => {
+        selectedIso = tr.getAttribute("data-iso");
+        const d = byDate.get(selectedIso);
+        if (d && d._monthNum) { calYear = YEAR; calMonth = d._monthNum - 1; }
+        showDetail(selectedIso);
+        renderCalendar();
+        syncTableSelection();
+      });
+    });
+    syncTableSelection();
+  }
+
+  function populateMonthFilter() {
+    const sel = document.getElementById("filterMonth");
+    const months = [...new Set(runs.map((r) => r._monthNum))].sort((a, b) => a - b);
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All</option>' + months.map((m) => `<option value="${m}">${MONTH_NAMES[m - 1]}</option>`).join("");
+    if ([...sel.options].some((o) => o.value === cur)) sel.value = cur;
+  }
+
+  function initChartTabs() {
+    document.getElementById("chartTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-tab]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-tab");
+      document.querySelectorAll(".chart-tabs button").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".chart-panel").forEach((p) => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(id).classList.add("active");
+    });
+  }
+
+  function processCsvText(text) {
+    const table = parseCsv(text);
+    const allRows = parseRowsToObjects(table);
+    byDate = new Map();
+    allRows.forEach((r) => byDate.set(r.iso, r));
+    runs = allRows.filter((r) => r.isRun).sort((a, b) => (a.iso < b.iso ? -1 : 1));
+    updateTimeline();
+    document.getElementById("emptyState").hidden = true;
+    document.getElementById("dashboard").hidden = false;
+    document.getElementById("fileMeta").textContent = `${runs.length} runs · updated ${new Date().toLocaleDateString()}`;
+    if (runs.length) { calYear = YEAR; calMonth = runs[runs.length - 1]._monthNum - 1; }
+    selectedIso = runs.length ? runs[runs.length - 1].iso : null;
+    renderTiles();
+    renderLatestRun();
+    renderCharts();
+    populateMonthFilter();
+    document.getElementById("filterMonth").onchange = () => renderTable();
+    renderCalendar();
+    if (selectedIso) showDetail(selectedIso);
+    renderTable();
+  }
+
+  async function boot() {
+    let text = "";
+    try {
+      const res = await fetch(SHEETS_CSV_URL);
+      if (res.ok) text = await res.text();
+    } catch (_) {}
+    if (text.trim()) {
+      processCsvText(text);
+    } else {
+      document.getElementById("fileMeta").textContent = "Could not load data.";
+      document.getElementById("emptyState").hidden = false;
+      document.getElementById("dashboard").hidden = true;
+    }
+  }
+
+  initChartTabs();
+  boot();
+})();
+  </script>
+</body>
+</html>
