@@ -295,8 +295,7 @@
 
       <section>
         <h2>Latest run</h2>
-        <p class="chart-hint">Compared to every earlier logged run with that field filled (percent = how many prior runs you beat on that metric).</p>
-        <div class="latest-panel" id="latestRunPanel"></div>
+<div class="latest-panel" id="latestRunPanel"></div>
       </section>
 
       <section>
@@ -851,13 +850,14 @@
     const container = document.getElementById("calContainer");
     const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
     const maxMiles = Math.max(0, ...[...byDate.values()].filter((r) => r.isRun).map((r) => r.milesNum || 0));
-    const months = [];
+    let months = [];
     let my = calYear, mm = calMonth;
     for (let i = 0; i < 4; i++) {
       months.unshift({ year: my, month: mm });
       mm--;
       if (mm < 0) { mm = 11; my--; }
     }
+    months = months.filter((m) => m.year >= YEAR);
     function renderMonth(year, month) {
       const first = new Date(year, month, 1);
       const startPad = first.getDay();
