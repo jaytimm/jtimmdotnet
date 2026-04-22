@@ -478,6 +478,7 @@
       o.vo2Num = o.vo2max !== "" && !Number.isNaN(parseFloat(o.vo2max)) ? parseFloat(o.vo2max) : null;
       o.strideNum = o.stride !== "" && !Number.isNaN(parseFloat(o.stride)) ? parseFloat(o.stride) : null;
       o.lbsNum = o.lbs !== "" && !Number.isNaN(parseFloat(o.lbs)) ? parseFloat(o.lbs) : null;
+      o.excludeChart = o.exclude === "1" || o.exclude === "true";
       out.push(o);
     }
     return out;
@@ -653,6 +654,7 @@
   function renderCharts() {
     destroyCharts();
     if (!timelineIsos.length) return;
+    const chartRuns = runs.filter((r) => !r.excludeChart);
     const xMin = isoDayMs(timelineIsos[0]);
     const xMax = isoDayMs(timelineIsos[timelineIsos.length - 1]);
 
@@ -709,19 +711,19 @@
 
     const dailyMiles = timelineIsos.map((iso) => {
       const r = byDate.get(iso);
-      return { x: isoDayMs(iso), y: r && r.isRun && r.milesNum != null ? r.milesNum : null };
+      return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.milesNum != null ? r.milesNum : null };
     });
     let cum = 0;
     const dailyCum = timelineIsos.map((iso) => {
       const r = byDate.get(iso);
-      if (r && r.isRun && r.milesNum != null) cum += r.milesNum;
+      if (r && r.isRun && !r.excludeChart && r.milesNum != null) cum += r.milesNum;
       return { x: isoDayMs(iso), y: cum };
     });
-    const dailyPace = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.paceSec != null ? r.paceSec : null }; });
-    const dailyHrAvg = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.heartNum != null ? r.heartNum : null }; });
-    const dailyHrMax = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.maxheartNum != null ? r.maxheartNum : null }; });
-    const dailyCadence = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.cadenceNum != null ? r.cadenceNum : null }; });
-    const dailyLbs = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && r.lbsNum != null ? r.lbsNum : null }; });
+    const dailyPace = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.paceSec != null ? r.paceSec : null }; });
+    const dailyHrAvg = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.heartNum != null ? r.heartNum : null }; });
+    const dailyHrMax = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.maxheartNum != null ? r.maxheartNum : null }; });
+    const dailyCadence = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.cadenceNum != null ? r.cadenceNum : null }; });
+    const dailyLbs = timelineIsos.map((iso) => { const r = byDate.get(iso); return { x: isoDayMs(iso), y: r && r.isRun && !r.excludeChart && r.lbsNum != null ? r.lbsNum : null }; });
 
     chartInstances.push(new Chart(document.getElementById("chartMiles"), {
       data: {
@@ -835,14 +837,14 @@
       }));
     }
 
-    scatterCorrelation("scatterMilesPace", runs.filter((r) => r.milesNum != null && r.paceSec != null).map((r) => ({ x: r.milesNum, y: r.paceSec, iso: r.iso })), "Miles", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
-    scatterCorrelation("scatterPaceHr", runs.filter((r) => r.paceSec != null && r.heartNum != null).map((r) => ({ x: r.paceSec, y: r.heartNum, iso: r.iso })), "Pace (min/mi)", "Avg HR (bpm)", false, null, true, (v) => formatPaceSeconds(v));
-    scatterCorrelation("scatterCadenceHr", runs.filter((r) => r.cadenceNum != null && r.heartNum != null).map((r) => ({ x: r.cadenceNum, y: r.heartNum, iso: r.iso })), "Cadence (spm)", "Avg HR (bpm)", false, null);
-    scatterCorrelation("scatterPaceCadence", runs.filter((r) => r.paceSec != null && r.cadenceNum != null).map((r) => ({ x: r.cadenceNum, y: r.paceSec, iso: r.iso })), "Cadence (spm)", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
-    scatterCorrelation("scatterHrMaxAvg", runs.filter((r) => r.heartNum != null && r.maxheartNum != null).map((r) => ({ x: r.heartNum, y: r.maxheartNum, iso: r.iso })), "Avg HR (bpm)", "Max HR (bpm)", false, null);
-    scatterCorrelation("scatterPaceVo2", runs.filter((r) => r.paceSec != null && r.vo2Num != null).map((r) => ({ x: r.paceSec, y: r.vo2Num, iso: r.iso })), "Pace (min/mi)", "% time at VO2 max", false, null, true, (v) => formatPaceSeconds(v));
-    scatterCorrelation("scatterHrVo2", runs.filter((r) => r.heartNum != null && r.vo2Num != null).map((r) => ({ x: r.heartNum, y: r.vo2Num, iso: r.iso })), "Avg HR (bpm)", "% time at VO2 max", false, null);
-    scatterCorrelation("scatterCadenceStride", runs.filter((r) => r.cadenceNum != null && r.strideNum != null).map((r) => ({ x: r.cadenceNum, y: r.strideNum, iso: r.iso })), "Cadence (spm)", "Stride", false, null);
+    scatterCorrelation("scatterMilesPace", chartRuns.filter((r) => r.milesNum != null && r.paceSec != null).map((r) => ({ x: r.milesNum, y: r.paceSec, iso: r.iso })), "Miles", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterPaceHr", chartRuns.filter((r) => r.paceSec != null && r.heartNum != null).map((r) => ({ x: r.paceSec, y: r.heartNum, iso: r.iso })), "Pace (min/mi)", "Avg HR (bpm)", false, null, true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterCadenceHr", chartRuns.filter((r) => r.cadenceNum != null && r.heartNum != null).map((r) => ({ x: r.cadenceNum, y: r.heartNum, iso: r.iso })), "Cadence (spm)", "Avg HR (bpm)", false, null);
+    scatterCorrelation("scatterPaceCadence", chartRuns.filter((r) => r.paceSec != null && r.cadenceNum != null).map((r) => ({ x: r.cadenceNum, y: r.paceSec, iso: r.iso })), "Cadence (spm)", "Pace (min/mi)", true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterHrMaxAvg", chartRuns.filter((r) => r.heartNum != null && r.maxheartNum != null).map((r) => ({ x: r.heartNum, y: r.maxheartNum, iso: r.iso })), "Avg HR (bpm)", "Max HR (bpm)", false, null);
+    scatterCorrelation("scatterPaceVo2", chartRuns.filter((r) => r.paceSec != null && r.vo2Num != null).map((r) => ({ x: r.paceSec, y: r.vo2Num, iso: r.iso })), "Pace (min/mi)", "% time at VO2 max", false, null, true, (v) => formatPaceSeconds(v));
+    scatterCorrelation("scatterHrVo2", chartRuns.filter((r) => r.heartNum != null && r.vo2Num != null).map((r) => ({ x: r.heartNum, y: r.vo2Num, iso: r.iso })), "Avg HR (bpm)", "% time at VO2 max", false, null);
+    scatterCorrelation("scatterCadenceStride", chartRuns.filter((r) => r.cadenceNum != null && r.strideNum != null).map((r) => ({ x: r.cadenceNum, y: r.strideNum, iso: r.iso })), "Cadence (spm)", "Stride", false, null);
   }
 
   function renderCalendar() {
