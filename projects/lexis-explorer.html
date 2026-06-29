@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>lexis · lexical norm explorer</title>
+<title>Lexical Norm Explorer — Jason Timm</title>
 <style>
 :root{
   --ink:#222; --bg:#fff; --muted:#666; --faint:#999; --hair:#e0e0e0; --hair2:#efefef;
@@ -24,6 +24,13 @@ button{font-family:inherit;cursor:pointer}
 
 /* ---- shell ---- */
 .shell{display:flex;flex-direction:column;min-height:100%}
+.site-strip{border-bottom:1px solid var(--hair2);background:var(--bg)}
+.site-strip-inner{display:flex;align-items:baseline;gap:20px;max-width:1140px;margin:0 auto;padding:10px 24px}
+.site-strip .site-home{font-weight:600;font-size:14px;color:var(--ink);letter-spacing:-.01em}
+.site-strip .site-home:hover{text-decoration:none;color:var(--accent)}
+.site-strip nav{margin-left:auto;gap:18px}
+.site-strip nav a{font-size:13px;color:var(--muted);font-weight:500}
+.site-strip nav a:hover{color:var(--ink);text-decoration:none}
 header{border-bottom:1px solid var(--hair);background:var(--bg)}
 .bar{display:flex;align-items:baseline;gap:26px;padding:18px 24px;max-width:1140px;margin:0 auto;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:9px}
@@ -166,6 +173,15 @@ footer .mono{color:var(--muted)}
 </head>
 <body>
 <div class="shell">
+<div class="site-strip">
+  <div class="site-strip-inner">
+    <a class="site-home" href="../index.html">Jason Timm</a>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</div>
 <header>
   <div class="bar">
     <div class="brand"><span class="name">lexis</span><span class="tag">norm explorer</span></div>
