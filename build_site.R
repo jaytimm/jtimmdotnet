@@ -70,7 +70,7 @@ generate_post_list <- function() {
   }
 
   # Add Projects section
-  post_list_md <- paste0(post_list_md, "---\n\n<p class=\"section-label\">Projects</p>\n\n[NM Election Explorer](projects/nm-election-maps.html) — interactive precinct-level map of New Mexico election results\n\n")
+  post_list_md <- paste0(post_list_md, "---\n\n<p class=\"section-label\">Projects</p>\n\n[NM Election Explorer](projects/nm-election-maps.html) — interactive precinct-level map of New Mexico election results\n\n[Keep running](projects/keep-running.html) — 2026 running log and dashboard\n\n[Lexical Norm Explorer](projects/lexis-explorer.html) — browse and compare lexical norms across English words\n\n")
 
   # Add last updated timestamp (italic)
   post_list_md <- paste0(post_list_md, "*Last updated: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "*")
