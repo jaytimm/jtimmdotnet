@@ -449,6 +449,7 @@ window.buildTabsets = function(tocID) {
 		if (is_empty(data.r)) data.r = document.referrer
 		if (is_empty(data.t)) data.t = document.title
 		if (is_empty(data.p)) data.p = get_path()
+		if (vars.no_session) data.ns = (typeof(vars.no_session) === 'function' ? vars.no_session(false) : vars.no_session)
 
 		if (rcb) data.r = rcb(data.r)
 		if (tcb) data.t = tcb(data.t)
@@ -590,10 +591,11 @@ window.buildTabsets = function(tocID) {
 		var send = function(elem) {
 			return function() {
 				goatcounter.count({
-					event:    true,
-					path:     (elem.dataset.goatcounterClick || elem.name || elem.id || ''),
-					title:    (elem.dataset.goatcounterTitle || elem.title || (elem.innerHTML || '').substr(0, 200) || ''),
-					referrer: (elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || ''),
+					event:      true,
+					path:       (elem.dataset.goatcounterClick || elem.name || elem.id || ''),
+					title:      (elem.dataset.goatcounterTitle || elem.title || (elem.innerHTML || '').substr(0, 200) || ''),
+					referrer:   (elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || ''),
+					no_session: ['1', 't', 'true'].indexOf((elem.dataset.goatcounterNoSession || '').toLowerCase()) !== -1,
 				})
 			}
 		}
@@ -703,6 +705,8 @@ window.buildTabsets = function(tocID) {
           <p class="section-label">
           Posts
           </p>
+          <p>2026-08-18: <a href="posts/2026-08-18-decade-of-majority-minority-counties.html">A
+          Decade of Majority-Minority Counties</a></p>
           <p>2026-03-23: <a href="posts/2026-03-23-county-voting-patterns-2016-2024.html">County
           Presidential Voting Patterns: 2016, 2020, and 2024</a></p>
           <p>2026-01-06: <a href="posts/2026-01-06-competition-and-representation-nm-state-legislature.html">Competition
@@ -725,9 +729,12 @@ window.buildTabsets = function(tocID) {
           <p><a href="projects/nm-election-maps.html">NM Election
           Explorer</a> — interactive precinct-level map of New Mexico
           election results</p>
-          <p><a href="projects/keep-running.html">Keep running</a> — 2026 running log and dashboard</p>
-          <p><a href="projects/lexis-explorer.html">Lexical Norm Explorer</a> — browse and compare lexical norms across English words</p>
-          <p><em>Last updated: 2026-03-29 11:46:02</em></p>
+          <p><a href="projects/keep-running.html">Keep running</a> —
+          2026 running log and dashboard</p>
+          <p><a href="projects/lexis-explorer.html">Lexical Norm
+          Explorer</a> — browse and compare lexical norms across English
+          words</p>
+          <p><em>Last updated: 2026-08-18 10:33:31</em></p>
         </div>
       </article>
           </div>
