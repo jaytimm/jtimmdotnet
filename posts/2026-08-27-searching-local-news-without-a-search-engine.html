@@ -186,6 +186,28 @@ blockquote p:last-child {
 margin-bottom: 0;
 }
 
+.post-intro {
+margin: 1.5rem 0;
+padding: 1.25rem 1.5rem;
+background: #eef4f3;
+border-left: 4px solid #5ba3a0;
+border-radius: 4px;
+}
+.post-intro p:last-child {
+margin-bottom: 0;
+}
+
+.post-summary {
+margin: 1.5rem 0;
+padding: 1.25rem 1.5rem;
+background: #f6f2eb;
+border-left: 4px solid #a78b64;
+border-radius: 4px;
+}
+.post-summary p:last-child {
+margin-bottom: 0;
+}
+
 .llm-response {
 margin: 1.5rem 0;
 padding: 1.25rem 1.5rem;
@@ -3218,51 +3240,36 @@ Engine</h1>
         <div class="post-content">
           <div id="introduction" class="section level2">
           <h2>Introduction</h2>
+          <div class="post-intro">
           <p>Building a collection of URLs from Google or DuckDuckGo has
           become an increasingly brittle endeavor. Search-result markup
           and access rules change, automated requests get blocked, and
           endpoints disappear. Commercial search APIs are more stable,
           but they introduce keys, usage fees, and dependence on
           changing terms of service.</p>
-          <p>The loss matters especially for local news. Local outlets
-          cover school boards, county commissions, rural hospitals,
-          water systems, fires, festivals, and development disputes that
-          rarely enter a coherent national stream. The <a href="https://www.rebuildlocalnews.org/new-local-journalist-index-reveals-2026-data-on-local-news-crisis/">2026
-          Local Journalist Index</a> found severe reporting shortages in
-          70% of U.S. counties, with most counties producing no local
-          education or health coverage during the period studied. The
-          local reporting that remains is scattered across individual
-          outlet sites and difficult to search as a collection. RSS
-          provides a practical way to bring it together: choose the
-          publishers, collect what they publish, and search the
-          resulting material locally. Feed URLs also move or disappear
-          as publishers change platforms, so the source list has to be
-          maintained. We combine <a href="https://github.com/jaytimm/local-rags-rss"><code>local-rags-rss</code></a>,
-          a directory of local publishers and validated feeds, with
-          <code>textpress</code> for collection, processing, and
-          search.</p>
-          <p>The directory starts with the outlet registry assembled by
-          <a href="https://github.com/wm-newslab/3DLNews">3DLNews</a>
-          and the Local Memory Project, then validates inherited feeds,
-          discovers replacements, and reconciles outlet identities. The
-          result is a national set of working RSS and Atom endpoints
-          with county and Census geography. We use it to collect a
-          recent national news snapshot, search RSS descriptions with a
-          BM25 index, narrow results by place, and retrieve full
-          articles for a small RAG example.</p>
+          <p>That problem is especially acute for local news, which is
+          scattered across individual outlet sites and difficult to
+          search as a collection. RSS provides a practical alternative:
+          choose the publishers, collect what they publish, and search
+          the resulting material locally.</p>
+          <p><code>textpress</code> ships with
+          <code>rss_local_rags</code>, a national catalog of validated
+          local news feeds with outlet and geographic metadata. The
+          catalog is a pinned snapshot from the <a href="https://github.com/jaytimm/local-rags-rss"><code>local-rags-rss</code></a>
+          project, which builds on the outlet registry assembled by <a href="https://github.com/wm-newslab/3DLNews">3DLNews</a> and
+          the Local Memory Project. Here we use that built-in catalog to
+          collect a recent national news snapshot, search RSS
+          descriptions with a BM25 index, narrow results by place, and
+          retrieve full articles for a small RAG example.</p>
+          </div>
           <hr />
           </div>
           <div id="a-national-directory-of-local-feeds" class="section level2">
           <h2>A National Directory of Local Feeds</h2>
           <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
-          <p>We begin with the validated feed directory produced by
-          <code>local-rags-rss</code>.</p>
-          <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>local_rags_path <span class="ot">&lt;-</span> <span class="st">&quot;../packages/local-rags-rss&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>local_rags <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">file.path</span>(local_rags_path, <span class="st">&quot;output/local_rags_rss.csv&quot;</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">col_types =</span> readr<span class="sc">::</span><span class="fu">cols</span>(<span class="at">fips =</span> readr<span class="sc">::</span><span class="fu">col_character</span>())</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span></code></pre></div>
+          <p>We begin with the validated feed directory bundled with
+          <code>textpress</code>.</p>
+          <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>local_rags <span class="ot">&lt;-</span> textpress<span class="sc">::</span>rss_local_rags</span></code></pre></div>
           <p>Each row pairs a local outlet and validated feed with
           county and Census geography. The feed URL tells us where to
           collect recent items; the geographic fields let us map
@@ -3367,30 +3374,18 @@ Engine</h1>
           </div>
           <div id="metro-and-nonmetro-outlets" class="section level3">
           <h3>Metro and nonmetro outlets</h3>
-          <p>County FIPS connects the directory to the 2023 Rural-Urban
-          Continuum Codes. We use their broad metro/nonmetro distinction
-          rather than all nine codes.</p>
-          <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>rucc <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">file.path</span>(local_rags_path, <span class="st">&quot;config/rucc_2023.csv&quot;</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">col_types =</span> readr<span class="sc">::</span><span class="fu">cols</span>(<span class="at">fips =</span> readr<span class="sc">::</span><span class="fu">col_character</span>())</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>local_rags <span class="ot">&lt;-</span> local_rags <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    rucc <span class="sc">|&gt;</span> <span class="fu">select</span>(fips, rucc_2023, metro_status),</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">&quot;fips&quot;</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  )</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>local_rags <span class="sc">|&gt;</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(metro_status)) <span class="sc">|&gt;</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="at">feeds =</span> <span class="fu">n</span>(),</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="at">counties =</span> <span class="fu">n_distinct</span>(fips),</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    <span class="at">.by =</span> metro_status</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">&quot;t&quot;</span>))</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-036a2dc2b2175c23266b" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-036a2dc2b2175c23266b">{"x":{"filter":"none","vertical":false,"data":[["Nonmetro","Metro"],[557,1022],[475,435]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>metro_status<\/th>\n      <th>feeds<\/th>\n      <th>counties<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2]},{"name":"metro_status","targets":0},{"name":"feeds","targets":1},{"name":"counties","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+          <p>The directory includes the 2023 Rural-Urban Continuum Code
+          for each outlet’s county. We use its broad metro/nonmetro
+          distinction rather than all nine codes.</p>
+          <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>local_rags <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="at">feeds =</span> <span class="fu">n</span>(),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">counties =</span> <span class="fu">n_distinct</span>(fips),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">.by =</span> metro_status</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">&quot;t&quot;</span>))</span></code></pre></div>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-2ee497cf2fb248d10f8a" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-2ee497cf2fb248d10f8a">{"x":{"filter":"none","vertical":false,"data":[["Nonmetro","Metro"],[557,1053],[475,440]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>metro_status<\/th>\n      <th>feeds<\/th>\n      <th>counties<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2]},{"name":"metro_status","targets":0},{"name":"feeds","targets":1},{"name":"counties","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
           <p>Metro status describes an outlet’s home county, not the
           full reach of its reporting. A paper may cover neighboring
           counties, and one feed may serve several publications. Even
@@ -3409,16 +3404,16 @@ Engine</h1>
           saved snapshot so the same set of stories is searched each
           time the post is rendered.</p>
           <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rss_items <span class="ot">&lt;-</span> textpress<span class="sc">::</span><span class="fu">fetch_rss</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  local_rags<span class="sc">$</span>feed_url,</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  local_rags<span class="sc">$</span>url,</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span></span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    local_rags <span class="sc">|&gt;</span></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>      <span class="fu">select</span>(</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>        feed_url, outlet, state_abbr, census_region,</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>        census_division, county, fips, metro_status</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>        url, state_abbr, census_division,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>        county, fips, metro_status</span>
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>      ),</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">&quot;feed_url&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;feed_url&quot;</span> <span class="ot">=</span> <span class="st">&quot;url&quot;</span>)</span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  )</span></code></pre></div>
           <p>The saved snapshot contains 31,385 feed items collected on
           August 27, 2026.</p>
@@ -3432,8 +3427,8 @@ Engine</h1>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>      stringr<span class="sc">::</span><span class="fu">str_squish</span>()</span>
 <span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  )</span></code></pre></div>
           <p>A few cleaned feed items look like this.</p>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-775d73a4026d559ffddd" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-775d73a4026d559ffddd">{"x":{"filter":"none","vertical":false,"data":[["2026-08-28T02:07:01Z","2026-08-27T17:33:05Z","2026-08-27T17:31:58Z","2026-08-27T17:29:07Z","2026-08-27T17:23:42Z","2026-08-27T17:23:30Z","2026-08-27T17:22:34Z","2026-08-27T17:21:37Z","2026-08-27T17:20:44Z","2026-08-27T17:20:28Z"],["Baltimore Times","Antrim Review","Antrim Review","Antrim Review","Tullahoma News","Elizabethton Star","Dallas Observer","Port Times Record","Charleston City Paper","New York Post"],["MD","MI","MI","MI","TN","TN","TX","NY","SC","NY"],["Baltimore city","Antrim County","Antrim County","Antrim County","Coffee County","Carter County","Dallas County","Suffolk County","Charleston County","New York County"],["EBDI and BDC Announce Strategic Alignment to Advance East Baltimore’s Next Phase of Revitalization","Steve Kershner added to Michigan Ski Hall of Fame","Blazer Bash signals  start of school year","Feed the Kids continues to  provide meals for area youth","ARPA funds get city $200K in equipment","TN advocates warn Head Start rollbacks risk kids, workers","Funding has to come from somewhere as City Council requests budget revisions","New York State Parks to offer free viewing of partial lunar eclipse and blood moon Aug. 27","Ariail: Whatever Trump wants …","Josh Kushner may face subpoenas as UEFA weighs criminal case against FIFA boss Gianni Infantino"],["New operating model preserves EBDI s mission and community commitments while bringing additional capacity to complete East Baltimore s next","Steve Kershner of Bellaire was recently inducted into the Michigan Ski Hall of Fame in recognition of more than five decades of contributions to sk...","By: Elizabeth Dunham Staff Writer Photos by Elizabeth Dunham Scarlett Westom, 9, left, and Olivia Wegener, 9, right, peruse the books available at ...","By: Ben Murphy Contributing Writer Photo by Elizabeth Dunham The Project Feed the Kids cooler downtown Kalkaska is accessible 24/7. KALKASKA – Proj...","American Rescue Plan Act dollars will be buying the city over $200K in machinery to replace outdated equipment and trucks.","Tennessee child advocates are sounding the alarm over efforts by the Trump administration to cut regulations for the federal Head Start program. He...","Funding for pools, libraries, animal services and the Dallas zoo were discussed on Wednesday.","The New York State Office of Parks, Recreation and Historic Preservation has announced that several Long Island State Parks will remain open during...","","UEFA asked a federal judge for permission to force Kushner and his venture capital firm to turn over documents and sit for depositions."]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>published_at<\/th>\n      <th>outlet<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>title<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"published_at","targets":0},{"name":"outlet","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"title","targets":4},{"name":"description","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-f0f34bfa4e6cdb1c87bb" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-f0f34bfa4e6cdb1c87bb">{"x":{"filter":"none","vertical":false,"data":[["2026-08-28T02:07:01Z","2026-08-27T17:33:05Z","2026-08-27T17:31:58Z","2026-08-27T17:29:07Z","2026-08-27T17:23:42Z","2026-08-27T17:23:30Z","2026-08-27T17:22:34Z","2026-08-27T17:21:37Z","2026-08-27T17:20:44Z","2026-08-27T17:20:28Z"],["baltimoretimes-online.com","www.antrimreview.net","www.antrimreview.net","www.antrimreview.net","www.tullahomanews.com","elizabethton.com","www.dallasobserver.com","tbrnewsmedia.com","charlestoncitypaper.com","nypost.com"],["MD","MI","MI","MI","TN","TN","TX","NY","SC","NY"],["Baltimore city","Antrim County","Antrim County","Antrim County","Coffee County","Carter County","Dallas County","Suffolk County","Charleston County","New York County"],["EBDI and BDC Announce Strategic Alignment to Advance East Baltimore’s Next Phase of Revitalization","Steve Kershner added to Michigan Ski Hall of Fame","Blazer Bash signals  start of school year","Feed the Kids continues to  provide meals for area youth","ARPA funds get city $200K in equipment","TN advocates warn Head Start rollbacks risk kids, workers","Funding has to come from somewhere as City Council requests budget revisions","New York State Parks to offer free viewing of partial lunar eclipse and blood moon Aug. 27","Ariail: Whatever Trump wants …","Josh Kushner may face subpoenas as UEFA weighs criminal case against FIFA boss Gianni Infantino"],["New operating model preserves EBDI s mission and community commitments while bringing additional capacity to complete East Baltimore s next","Steve Kershner of Bellaire was recently inducted into the Michigan Ski Hall of Fame in recognition of more than five decades of contributions to sk...","By: Elizabeth Dunham Staff Writer Photos by Elizabeth Dunham Scarlett Westom, 9, left, and Olivia Wegener, 9, right, peruse the books available at ...","By: Ben Murphy Contributing Writer Photo by Elizabeth Dunham The Project Feed the Kids cooler downtown Kalkaska is accessible 24/7. KALKASKA – Proj...","American Rescue Plan Act dollars will be buying the city over $200K in machinery to replace outdated equipment and trucks.","Tennessee child advocates are sounding the alarm over efforts by the Trump administration to cut regulations for the federal Head Start program. He...","Funding for pools, libraries, animal services and the Dallas zoo were discussed on Wednesday.","The New York State Office of Parks, Recreation and Historic Preservation has announced that several Long Island State Parks will remain open during...","","UEFA asked a federal judge for permission to force Kushner and his venture capital firm to turn over documents and sit for depositions."]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>published_at<\/th>\n      <th>source<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>title<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"published_at","targets":0},{"name":"source","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"title","targets":4},{"name":"description","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <hr />
           </div>
           <div id="dates-feed-depth-and-syndication" class="section level2">
@@ -3464,7 +3459,7 @@ Engine</h1>
 <span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>      stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="st">&quot;[^[:alnum:]]&quot;</span>)</span>
 <span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="fu">group_by</span>(title_key, description_key) <span class="sc">|&gt;</span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">syndication_count =</span> <span class="fu">n_distinct</span>(outlet)) <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">syndication_count =</span> <span class="fu">n_distinct</span>(source)) <span class="sc">|&gt;</span></span>
 <span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="fu">slice_max</span>(published_at, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
 <span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">search_id =</span> <span class="fu">paste0</span>(<span class="st">&quot;item-&quot;</span>, <span class="fu">row_number</span>()))</span></code></pre></div>
@@ -3510,7 +3505,7 @@ Engine</h1>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>        <span class="st">&quot;&lt;/a&gt;&quot;</span></span>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>      )</span>
 <span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="fu">select</span>(date, outlet, state_abbr, county, metro_status, story) <span class="sc">|&gt;</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="fu">select</span>(date, source, state_abbr, county, metro_status, story) <span class="sc">|&gt;</span></span>
 <span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
 <span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>      <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>      <span class="at">escape =</span> <span class="cn">FALSE</span>,</span>
@@ -3533,8 +3528,8 @@ Engine</h1>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a></span>
 <span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>county_fair_hits <span class="sc">|&gt;</span></span>
 <span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="fu">show_hits</span>(<span class="st">&quot;National results: county fair livestock&quot;</span>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-400c428859885a725e76" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-400c428859885a725e76">{"x":{"filter":"none","vertical":false,"caption":"<caption>National results: county fair livestock<\/caption>","data":[["2026-08-21","2026-08-20","2026-08-19","2026-08-26","2026-08-24","2026-08-19","2026-08-26","2026-08-27","2026-08-27","2026-08-21","2026-08-26","2026-08-05","2026-08-27","2026-08-25","2026-08-15"],["The UWM Post","Murfreesboro Diamond","Gridley Herald","Herald Dispatch","Richfield Reaper","Gridley Herald","Times-Gazette","The Daily Orange","Ag Week","Scotts Valley Banner","Pocahontas Times","Coffey County Republican","High Plains Journal","Urbana Daily Citizen","Landmark"],["WI","AR","CA","MN","UT","CA","OH","NY","ND","CA","WV","KS","KS","OH","MO"],["Milwaukee County","Pike County","Butte County","Brown County","Sevier County","Butte County","Highland County","Onondaga County","Grand Forks County","Santa Cruz County","Pocahontas County","Coffey County","Ford County","Champaign County","Platte County"],["Metro","Nonmetro","Metro","Nonmetro","Nonmetro","Metro","Nonmetro","Metro","Metro","Metro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Metro"],["<a href=\"https://uwmpost.com/multimedia/wisconsin-state-fair-media-coverage-on-august-11-2026\" target=\"_blank\" rel=\"noopener noreferrer\">Wisconsin State Fair Media Coverage on August 11, 2026<\/a>","<a href=\"https://swarkansasnews.com/2026/08/20/parade-monday-to-kick-off-howard-county-fair/\" target=\"_blank\" rel=\"noopener noreferrer\">Parade Monday to kick off Howard County Fair<\/a>","<a href=\"http://www.gridleyherald.com/2026/08/19/580972/butte-county-fair-offers-alternate-fun\" target=\"_blank\" rel=\"noopener noreferrer\">Butte County Fair Offers Alternate Fun<\/a>","<a href=\"https://www.sleepyeyenews.com/sleepy-eye-ffa-at-brown-county-fair-2/\" target=\"_blank\" rel=\"noopener noreferrer\">Sleepy Eye FFA at Brown County Fair<\/a>","<a href=\"https://www.richfieldreaper.com/news/2026/08/24/bagley-named-sevier-countys-2026-cowboy-of-the-year/\" target=\"_blank\" rel=\"noopener noreferrer\">Bagley Named Sevier County’s 2026 Cowboy of the Year<\/a>","<a href=\"http://www.gridleyherald.com/2026/08/19/580970/golden-days-and-country-ways-at-the-butte-county-fair-\" target=\"_blank\" rel=\"noopener noreferrer\">Golden Days and Country Ways at the Butte County Fair!<\/a>","<a href=\"https://www.timesgazette.com/2026/08/26/premier-showmen-attend-beef-clinic/\" target=\"_blank\" rel=\"noopener noreferrer\">Premier Showmen attend beef clinic<\/a>","<a href=\"http://dailyorange.com/2026/08/great-ny-state-fairs-new-parking-restrictions-divide-burden-vendors/\" target=\"_blank\" rel=\"noopener noreferrer\">Great NY State Fair’s new parking restrictions draw divide, burden vendors<\/a>","<a href=\"https://www.agweek.com/news/policy/north-dakota-water-commission-adds-2-million-to-drought-water-program\" target=\"_blank\" rel=\"noopener noreferrer\">North Dakota Water Commission adds $2 million to drought water program<\/a>","<a href=\"https://pressbanner.com/entries-open-for-2026-santa-cruz-county-fair/\" target=\"_blank\" rel=\"noopener noreferrer\">Entries open for 2026 Santa Cruz County Fair<\/a>","<a href=\"https://pocahontastimes.com/seventy-five-years-ago-388/\" target=\"_blank\" rel=\"noopener noreferrer\">Seventy-Five Years Ago<\/a>","<a href=\"https://www.coffeycountyonline.com/index.php/2026/08/05/august-6-2026-online-edition/\" target=\"_blank\" rel=\"noopener noreferrer\">August 6, 2026 – Online Edition<\/a>","<a href=\"https://hpj.com/2026/08/27/texas-man-arrested-in-cattle-cases-involving-nearly-200000-in-unpaid-cattle-purchases/\" target=\"_blank\" rel=\"noopener noreferrer\">Texas man arrested in cattle cases involving nearly $200,000 in unpaid cattle purchases <\/a>","<a href=\"https://www.urbanacitizen.com/2026/08/25/jr-fair-rabbit-sale-2/\" target=\"_blank\" rel=\"noopener noreferrer\">Jr. Fair Rabbit sale<\/a>","<a href=\"https://plattecountylandmark.com/2026/08/15/15-years-ago-aug-17-2011/\" target=\"_blank\" rel=\"noopener noreferrer\">15 Years Ago–Aug. 17, 2011<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>outlet<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"outlet","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-d69caef8d36869054879" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-d69caef8d36869054879">{"x":{"filter":"none","vertical":false,"caption":"<caption>National results: county fair livestock<\/caption>","data":[["2026-08-21","2026-08-20","2026-08-19","2026-08-26","2026-08-24","2026-08-19","2026-08-26","2026-08-27","2026-08-27","2026-08-21","2026-08-26","2026-08-05","2026-08-27","2026-08-25","2026-08-15"],["uwmpost.com","swarkansasnews.com","www.gridleyherald.com","www.sleepyeyenews.com","www.richfieldreaper.com","www.gridleyherald.com","www.timesgazette.com","dailyorange.com","www.agweek.com","pressbanner.com","pocahontastimes.com","www.coffeycountyonline.com","hpj.com","www.urbanacitizen.com","plattecountylandmark.com"],["WI","AR","CA","MN","UT","CA","OH","NY","ND","CA","WV","KS","KS","OH","MO"],["Milwaukee County","Pike County","Butte County","Brown County","Sevier County","Butte County","Highland County","Onondaga County","Grand Forks County","Santa Cruz County","Pocahontas County","Coffey County","Ford County","Champaign County","Platte County"],["Metro","Nonmetro","Metro","Nonmetro","Nonmetro","Metro","Nonmetro","Metro","Metro","Metro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Metro"],["<a href=\"https://uwmpost.com/multimedia/wisconsin-state-fair-media-coverage-on-august-11-2026\" target=\"_blank\" rel=\"noopener noreferrer\">Wisconsin State Fair Media Coverage on August 11, 2026<\/a>","<a href=\"https://swarkansasnews.com/2026/08/20/parade-monday-to-kick-off-howard-county-fair/\" target=\"_blank\" rel=\"noopener noreferrer\">Parade Monday to kick off Howard County Fair<\/a>","<a href=\"http://www.gridleyherald.com/2026/08/19/580972/butte-county-fair-offers-alternate-fun\" target=\"_blank\" rel=\"noopener noreferrer\">Butte County Fair Offers Alternate Fun<\/a>","<a href=\"https://www.sleepyeyenews.com/sleepy-eye-ffa-at-brown-county-fair-2/\" target=\"_blank\" rel=\"noopener noreferrer\">Sleepy Eye FFA at Brown County Fair<\/a>","<a href=\"https://www.richfieldreaper.com/news/2026/08/24/bagley-named-sevier-countys-2026-cowboy-of-the-year/\" target=\"_blank\" rel=\"noopener noreferrer\">Bagley Named Sevier County’s 2026 Cowboy of the Year<\/a>","<a href=\"http://www.gridleyherald.com/2026/08/19/580970/golden-days-and-country-ways-at-the-butte-county-fair-\" target=\"_blank\" rel=\"noopener noreferrer\">Golden Days and Country Ways at the Butte County Fair!<\/a>","<a href=\"https://www.timesgazette.com/2026/08/26/premier-showmen-attend-beef-clinic/\" target=\"_blank\" rel=\"noopener noreferrer\">Premier Showmen attend beef clinic<\/a>","<a href=\"http://dailyorange.com/2026/08/great-ny-state-fairs-new-parking-restrictions-divide-burden-vendors/\" target=\"_blank\" rel=\"noopener noreferrer\">Great NY State Fair’s new parking restrictions draw divide, burden vendors<\/a>","<a href=\"https://www.agweek.com/news/policy/north-dakota-water-commission-adds-2-million-to-drought-water-program\" target=\"_blank\" rel=\"noopener noreferrer\">North Dakota Water Commission adds $2 million to drought water program<\/a>","<a href=\"https://pressbanner.com/entries-open-for-2026-santa-cruz-county-fair/\" target=\"_blank\" rel=\"noopener noreferrer\">Entries open for 2026 Santa Cruz County Fair<\/a>","<a href=\"https://pocahontastimes.com/seventy-five-years-ago-388/\" target=\"_blank\" rel=\"noopener noreferrer\">Seventy-Five Years Ago<\/a>","<a href=\"https://www.coffeycountyonline.com/index.php/2026/08/05/august-6-2026-online-edition/\" target=\"_blank\" rel=\"noopener noreferrer\">August 6, 2026 – Online Edition<\/a>","<a href=\"https://hpj.com/2026/08/27/texas-man-arrested-in-cattle-cases-involving-nearly-200000-in-unpaid-cattle-purchases/\" target=\"_blank\" rel=\"noopener noreferrer\">Texas man arrested in cattle cases involving nearly $200,000 in unpaid cattle purchases <\/a>","<a href=\"https://www.urbanacitizen.com/2026/08/25/jr-fair-rabbit-sale-2/\" target=\"_blank\" rel=\"noopener noreferrer\">Jr. Fair Rabbit sale<\/a>","<a href=\"https://plattecountylandmark.com/2026/08/15/15-years-ago-aug-17-2011/\" target=\"_blank\" rel=\"noopener noreferrer\">15 Years Ago–Aug. 17, 2011<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>source<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"source","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <p>The geographic metadata makes more pointed comparisons
           possible. The same index can ask about wildfire in western
           states or water across the Mountain division.</p>
@@ -3548,8 +3543,8 @@ Engine</h1>
 <span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
 <span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>wildfire_hits <span class="sc">|&gt;</span></span>
 <span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="fu">show_hits</span>(<span class="st">&quot;Western states: wildfire evacuation&quot;</span>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-5d4febfa2b89c327926d" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-5d4febfa2b89c327926d">{"x":{"filter":"none","vertical":false,"caption":"<caption>Western states: wildfire evacuation<\/caption>","data":[["2026-08-25","2026-08-19","2026-08-26","2026-08-12","2026-08-26","2026-08-24","2026-08-20","2026-08-17","2026-08-26","2026-08-27","2026-08-25","2026-08-04","2026-08-25","2026-08-26","2026-08-25"],["Nugget","Pathfinder","Valley News","Santa Fe Reporter","Mountain View Voice","Santa Fe Reporter","Lyons Recorder","Santa Fe Reporter","BizWest","Seattle Times","Santa Fe Reporter","Business Times","East County Magazine","Sanders County Ledger","Central Oregonian"],["OR","MT","CA","NM","CA","NM","CO","NM","CO","WA","NM","CO","CA","MT","OR"],["Deschutes County","Missoula County","Riverside County","Santa Fe County","Santa Clara County","Santa Fe County","Boulder County","Santa Fe County","Boulder County","King County","Santa Fe County","Mesa County","San Diego County","Sanders County","Crook County"],["Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Nonmetro","Metro"],["<a href=\"https://www.nuggetnews.com/story/2026/08/26/news/future-of-akawa-burn-lies-in-the-soil/39439.html\" target=\"_blank\" rel=\"noopener noreferrer\">Future of Akawa burn lies in the soil<\/a>","<a href=\"https://www.seeleylake.com/story/2026/08/20/opinion/protect-seeley-lake-before-the-next-fire/12076.html\" target=\"_blank\" rel=\"noopener noreferrer\">Protect Seeley Lake before the next fire<\/a>","<a href=\"https://myvalleynews.com/blog/2026/08/25/wood-fire-burns-60-acres-near-perris-prompts-evacuation-warnings/\" target=\"_blank\" rel=\"noopener noreferrer\">Wood Fire burns 60 acres near Perris, prompts evacuation warnings<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-remains-at-zero-percent-containment/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Remains at 0% Containment<\/a>","<a href=\"https://www.mv-voice.com/news/2026/08/26/roadwork-to-blame-for-miramonte-avenue-gas-leak-in-mountain-view/\" target=\"_blank\" rel=\"noopener noreferrer\">Roadwork to blame for Miramonte Avenue gas leak in Mountain View<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-growth-slows/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Growth Slows<\/a>","<a href=\"https://lyonsrecorder.org/2026/08/20/summertime-message-fire-chief-stumpf/?utm_source=rss&utm_medium=rss&utm_campaign=summertime-message-fire-chief-stumpf\" target=\"_blank\" rel=\"noopener noreferrer\">Summertime message from Fire Chief Stumpf<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-now-state-s-third-largest-fire-of-2026/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Now State's Third-Largest Fire of 2026<\/a>","<a href=\"https://bizwest.com/2026/08/26/sales-tax-issue-heads-for-larimer-ballot/\" target=\"_blank\" rel=\"noopener noreferrer\">Sales tax issue heads for Larimer ballot<\/a>","<a href=\"https://www.seattletimes.com/opinion/lift-roadless-rule-give-forest-service-flexibility-in-fire-prevention/?utm_source=RSS&utm_medium=Referral&utm_campaign=RSS_all\" target=\"_blank\" rel=\"noopener noreferrer\">Lift Roadless Rule, give Forest Service flexibility in fire prevention<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-crew-mourns-loss-of-member/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Crew Mourns Loss of Member<\/a>","<a href=\"https://thebusinesstimes.com/protection-from-wildfire-starts-with-preparation/\" target=\"_blank\" rel=\"noopener noreferrer\">Protection from wildfire starts with preparation<\/a>","<a href=\"https://eastcountymagazine.org/santee-attains-fire-risk-reduction-community-status/\" target=\"_blank\" rel=\"noopener noreferrer\">Santee attains “Fire Risk Reduction Community” status<\/a>","<a href=\"https://www.scledger.net/story/2026/08/27/news/lightning-sparks-handful-of-fires/14227.html\" target=\"_blank\" rel=\"noopener noreferrer\">Lightning sparks handful of fires<\/a>","<a href=\"https://centraloregonian.com/2026/08/25/wildfire-also-challenges-mental-health/\" target=\"_blank\" rel=\"noopener noreferrer\">How Oregon’s wildfires can affect your mental health<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>outlet<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"outlet","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-a6ebab5a8eb0bc8ca795" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-a6ebab5a8eb0bc8ca795">{"x":{"filter":"none","vertical":false,"caption":"<caption>Western states: wildfire evacuation<\/caption>","data":[["2026-08-25","2026-08-19","2026-08-26","2026-08-12","2026-08-26","2026-08-24","2026-08-20","2026-08-17","2026-08-26","2026-08-27","2026-08-25","2026-08-04","2026-08-25","2026-08-26","2026-08-25"],["www.nuggetnews.com","www.seeleylake.com","myvalleynews.com","sfreporter.com","www.mv-voice.com","sfreporter.com","lyonsrecorder.org","sfreporter.com","bizwest.com","www.seattletimes.com","sfreporter.com","thebusinesstimes.com","eastcountymagazine.org","www.scledger.net","centraloregonian.com"],["OR","MT","CA","NM","CA","NM","CO","NM","CO","WA","NM","CO","CA","MT","OR"],["Deschutes County","Missoula County","Riverside County","Santa Fe County","Santa Clara County","Santa Fe County","Boulder County","Santa Fe County","Boulder County","King County","Santa Fe County","Mesa County","San Diego County","Sanders County","Crook County"],["Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Metro","Nonmetro","Metro"],["<a href=\"https://www.nuggetnews.com/story/2026/08/26/news/future-of-akawa-burn-lies-in-the-soil/39439.html\" target=\"_blank\" rel=\"noopener noreferrer\">Future of Akawa burn lies in the soil<\/a>","<a href=\"https://www.seeleylake.com/story/2026/08/20/opinion/protect-seeley-lake-before-the-next-fire/12076.html\" target=\"_blank\" rel=\"noopener noreferrer\">Protect Seeley Lake before the next fire<\/a>","<a href=\"https://myvalleynews.com/blog/2026/08/25/wood-fire-burns-60-acres-near-perris-prompts-evacuation-warnings/\" target=\"_blank\" rel=\"noopener noreferrer\">Wood Fire burns 60 acres near Perris, prompts evacuation warnings<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-remains-at-zero-percent-containment/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Remains at 0% Containment<\/a>","<a href=\"https://www.mv-voice.com/news/2026/08/26/roadwork-to-blame-for-miramonte-avenue-gas-leak-in-mountain-view/\" target=\"_blank\" rel=\"noopener noreferrer\">Roadwork to blame for Miramonte Avenue gas leak in Mountain View<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-growth-slows/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Growth Slows<\/a>","<a href=\"https://lyonsrecorder.org/2026/08/20/summertime-message-fire-chief-stumpf/?utm_source=rss&utm_medium=rss&utm_campaign=summertime-message-fire-chief-stumpf\" target=\"_blank\" rel=\"noopener noreferrer\">Summertime message from Fire Chief Stumpf<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-now-state-s-third-largest-fire-of-2026/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Now State's Third-Largest Fire of 2026<\/a>","<a href=\"https://bizwest.com/2026/08/26/sales-tax-issue-heads-for-larimer-ballot/\" target=\"_blank\" rel=\"noopener noreferrer\">Sales tax issue heads for Larimer ballot<\/a>","<a href=\"https://www.seattletimes.com/opinion/lift-roadless-rule-give-forest-service-flexibility-in-fire-prevention/?utm_source=RSS&utm_medium=Referral&utm_campaign=RSS_all\" target=\"_blank\" rel=\"noopener noreferrer\">Lift Roadless Rule, give Forest Service flexibility in fire prevention<\/a>","<a href=\"http://sfreporter.com/news/frijoles-fire-crew-mourns-loss-of-member/\" target=\"_blank\" rel=\"noopener noreferrer\">Frijoles Fire Crew Mourns Loss of Member<\/a>","<a href=\"https://thebusinesstimes.com/protection-from-wildfire-starts-with-preparation/\" target=\"_blank\" rel=\"noopener noreferrer\">Protection from wildfire starts with preparation<\/a>","<a href=\"https://eastcountymagazine.org/santee-attains-fire-risk-reduction-community-status/\" target=\"_blank\" rel=\"noopener noreferrer\">Santee attains “Fire Risk Reduction Community” status<\/a>","<a href=\"https://www.scledger.net/story/2026/08/27/news/lightning-sparks-handful-of-fires/14227.html\" target=\"_blank\" rel=\"noopener noreferrer\">Lightning sparks handful of fires<\/a>","<a href=\"https://centraloregonian.com/2026/08/25/wildfire-also-challenges-mental-health/\" target=\"_blank\" rel=\"noopener noreferrer\">How Oregon’s wildfires can affect your mental health<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>source<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"source","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>water_hits <span class="ot">&lt;-</span> textpress<span class="sc">::</span><span class="fu">search_index</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  index, <span class="st">&quot;water drought irrigation&quot;</span>,</span>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">n =</span> <span class="fu">nrow</span>(search_items), <span class="at">stem =</span> <span class="cn">TRUE</span></span>
@@ -3560,8 +3555,8 @@ Engine</h1>
 <span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
 <span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>water_hits <span class="sc">|&gt;</span></span>
 <span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  <span class="fu">show_hits</span>(<span class="st">&quot;Mountain division: water drought irrigation&quot;</span>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-fc2f912f846fd565a5f6" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-fc2f912f846fd565a5f6">{"x":{"filter":"none","vertical":false,"caption":"<caption>Mountain division: water drought irrigation<\/caption>","data":[["2026-08-24","2026-08-23","2026-08-25","2026-08-27","2026-08-26","2026-08-25","2026-08-26","2026-08-26","2026-08-25","2026-08-19","2026-08-26","2026-08-26","2026-08-25","2026-08-27","2026-08-26"],["Fence Post","Sky-Hi News","North Forty News","Kiowa County Press","Vail Daily","Sky-Hi News","Steamboat Pilot","Steamboat Pilot","Aspen Times","Bent County Democrat","Sopris Sun","Rangely Herald Times","Bitterroot Star","Sanpete Messenger","Copper Area News"],["CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","MT","UT","AZ"],["Weld County","Grand County","Larimer County","Kiowa County","Eagle County","Grand County","Routt County","Routt County","Pitkin County","Bent County","Pitkin County","Rio Blanco County","Ravalli County","Sanpete County","Pinal County"],["Metro","Nonmetro","Metro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Metro"],["<a href=\"https://www.thefencepost.com/news/we-can-live-without-data-but-not-food/\" target=\"_blank\" rel=\"noopener noreferrer\">We can live without data, but not food<\/a>","<a href=\"https://www.skyhinews.com/news/western-slope-colorado-water-district-drought/\" target=\"_blank\" rel=\"noopener noreferrer\">How a Western Slope Colorado water district is adapting to the drought crisis and looking ahead to build long-term resiliency <\/a>","<a href=\"https://northfortynews.com/category/news/csu-study-finds-mountain-hayfields-can-improve-water-quality/\" target=\"_blank\" rel=\"noopener noreferrer\">CSU Study Finds Mountain Hayfields Can Improve Water Quality<\/a>","<a href=\"https://kiowacountypress.net/content/north-dakota-expands-drought-assistance-livestock\" target=\"_blank\" rel=\"noopener noreferrer\">North Dakota expands drought assistance for livestock<\/a>","<a href=\"https://www.vaildaily.com/news/colorado-epicenter-worst-drought-conditions-heat-records/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado remains ‘epicenter’ of worst drought conditions in the West, as heat records pile up<\/a>","<a href=\"https://www.skyhinews.com/news/colorado-water-cuts-federal-plan-river/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado dodges water cuts for next 2 years in new federal plan for Colorado River<\/a>","<a href=\"https://www.steamboatpilot.com/news/rare-yampa-river-call-curtails-junior-water-rights-amid-historic-drought/\" target=\"_blank\" rel=\"noopener noreferrer\">Rare Yampa River call curtails junior water rights amid historic drought<\/a>","<a href=\"https://www.steamboatpilot.com/news/talking-green-city-advances-water-resilience-with-new-landscaping-code/\" target=\"_blank\" rel=\"noopener noreferrer\">Talking Green: City advances water resilience with new landscaping code<\/a>","<a href=\"https://www.aspentimes.com/news/colorado-epicenter-worst-drought-conditions-heat-records/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado remains ‘epicenter’ of worst drought conditions in the West, as heat records pile up<\/a>","<a href=\"https://www.bcdemocratonline.com/none-of-southeastern-districts-2500-acre-foot-drought-water-release-set-to-reach-otero-bent-counties/\" target=\"_blank\" rel=\"noopener noreferrer\">None of Southeastern District’s 2,500 acre-foot drought water release set to reach Otero, Bent counties<\/a>","<a href=\"https://soprissun.com/balancing-thirsty-trees-in-town-with-riparian-health/\" target=\"_blank\" rel=\"noopener noreferrer\">Balancing thirsty trees in town with riparian health <\/a>","<a href=\"https://www.theheraldtimes.com/how-low-can-you-go/rio-blanco-county/\" target=\"_blank\" rel=\"noopener noreferrer\">HOW LOW CAN YOU GO?<\/a>","<a href=\"https://bitterrootstar.com/2026/08/brid-request-for-dump-truck-bids/?utm_source=rss&utm_medium=rss&utm_campaign=brid-request-for-dump-truck-bids\" target=\"_blank\" rel=\"noopener noreferrer\">BRID request for dump truck bids<\/a>","<a href=\"https://sanpetemessenger.com/fairview-sharpens-water-conservation-plan-tightens-solar-safety-regulations/\" target=\"_blank\" rel=\"noopener noreferrer\">Fairview sharpens water conservation plan, tightens solar safety regulations<\/a>","<a href=\"https://copperarea.com/desert-gardening-expo-to-be-held-oct-14/\" target=\"_blank\" rel=\"noopener noreferrer\">Desert Gardening Expo to be held Oct. 14<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>outlet<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"outlet","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-581b1b05be51badffbc2" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-581b1b05be51badffbc2">{"x":{"filter":"none","vertical":false,"caption":"<caption>Mountain division: water drought irrigation<\/caption>","data":[["2026-08-24","2026-08-23","2026-08-25","2026-08-27","2026-08-26","2026-08-25","2026-08-26","2026-08-26","2026-08-25","2026-08-19","2026-08-26","2026-08-26","2026-08-25","2026-08-27","2026-08-26"],["www.thefencepost.com","www.skyhinews.com","northfortynews.com","kiowacountypress.net","www.vaildaily.com","www.skyhinews.com","www.steamboatpilot.com","www.steamboatpilot.com","www.aspentimes.com","www.bcdemocratonline.com","soprissun.com","www.theheraldtimes.com","bitterrootstar.com","sanpetemessenger.com","copperarea.com"],["CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","CO","MT","UT","AZ"],["Weld County","Grand County","Larimer County","Kiowa County","Eagle County","Grand County","Routt County","Routt County","Pitkin County","Bent County","Pitkin County","Rio Blanco County","Ravalli County","Sanpete County","Pinal County"],["Metro","Nonmetro","Metro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Metro"],["<a href=\"https://www.thefencepost.com/news/we-can-live-without-data-but-not-food/\" target=\"_blank\" rel=\"noopener noreferrer\">We can live without data, but not food<\/a>","<a href=\"https://www.skyhinews.com/news/western-slope-colorado-water-district-drought/\" target=\"_blank\" rel=\"noopener noreferrer\">How a Western Slope Colorado water district is adapting to the drought crisis and looking ahead to build long-term resiliency <\/a>","<a href=\"https://northfortynews.com/category/news/csu-study-finds-mountain-hayfields-can-improve-water-quality/\" target=\"_blank\" rel=\"noopener noreferrer\">CSU Study Finds Mountain Hayfields Can Improve Water Quality<\/a>","<a href=\"https://kiowacountypress.net/content/north-dakota-expands-drought-assistance-livestock\" target=\"_blank\" rel=\"noopener noreferrer\">North Dakota expands drought assistance for livestock<\/a>","<a href=\"https://www.vaildaily.com/news/colorado-epicenter-worst-drought-conditions-heat-records/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado remains ‘epicenter’ of worst drought conditions in the West, as heat records pile up<\/a>","<a href=\"https://www.skyhinews.com/news/colorado-water-cuts-federal-plan-river/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado dodges water cuts for next 2 years in new federal plan for Colorado River<\/a>","<a href=\"https://www.steamboatpilot.com/news/rare-yampa-river-call-curtails-junior-water-rights-amid-historic-drought/\" target=\"_blank\" rel=\"noopener noreferrer\">Rare Yampa River call curtails junior water rights amid historic drought<\/a>","<a href=\"https://www.steamboatpilot.com/news/talking-green-city-advances-water-resilience-with-new-landscaping-code/\" target=\"_blank\" rel=\"noopener noreferrer\">Talking Green: City advances water resilience with new landscaping code<\/a>","<a href=\"https://www.aspentimes.com/news/colorado-epicenter-worst-drought-conditions-heat-records/\" target=\"_blank\" rel=\"noopener noreferrer\">Colorado remains ‘epicenter’ of worst drought conditions in the West, as heat records pile up<\/a>","<a href=\"https://www.bcdemocratonline.com/none-of-southeastern-districts-2500-acre-foot-drought-water-release-set-to-reach-otero-bent-counties/\" target=\"_blank\" rel=\"noopener noreferrer\">None of Southeastern District’s 2,500 acre-foot drought water release set to reach Otero, Bent counties<\/a>","<a href=\"https://soprissun.com/balancing-thirsty-trees-in-town-with-riparian-health/\" target=\"_blank\" rel=\"noopener noreferrer\">Balancing thirsty trees in town with riparian health <\/a>","<a href=\"https://www.theheraldtimes.com/how-low-can-you-go/rio-blanco-county/\" target=\"_blank\" rel=\"noopener noreferrer\">HOW LOW CAN YOU GO?<\/a>","<a href=\"https://bitterrootstar.com/2026/08/brid-request-for-dump-truck-bids/?utm_source=rss&utm_medium=rss&utm_campaign=brid-request-for-dump-truck-bids\" target=\"_blank\" rel=\"noopener noreferrer\">BRID request for dump truck bids<\/a>","<a href=\"https://sanpetemessenger.com/fairview-sharpens-water-conservation-plan-tightens-solar-safety-regulations/\" target=\"_blank\" rel=\"noopener noreferrer\">Fairview sharpens water conservation plan, tightens solar safety regulations<\/a>","<a href=\"https://copperarea.com/desert-gardening-expo-to-be-held-oct-14/\" target=\"_blank\" rel=\"noopener noreferrer\">Desert Gardening Expo to be held Oct. 14<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>source<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"source","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <p>Metro status adds another useful comparison. The spread of
           data centers into rural counties connects a national industry
           to local questions about infrastructure, land, water, taxes,
@@ -3582,15 +3577,15 @@ Engine</h1>
 <span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a></span>
 <span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>data_center_hits <span class="sc">|&gt;</span></span>
 <span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>  <span class="fu">show_hits</span>(<span class="st">&quot;Nonmetro counties: data centers&quot;</span>)</span></code></pre></div>
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-2a02320796175a9e75fb" style="width:100%;height:auto;"></div>
-          <script type="application/json" data-for="htmlwidget-2a02320796175a9e75fb">{"x":{"filter":"none","vertical":false,"caption":"<caption>Nonmetro counties: data centers<\/caption>","data":[["2026-08-21","2026-08-22","2026-08-24","2026-08-25","2026-08-25","2026-08-22","2026-08-25","2026-08-25","2026-08-25","2026-08-26","2026-08-19","2026-08-25","2026-08-26","2026-08-25","2026-08-27"],["Pahrump Valley Times","McKenzie County Farmer","Brownwood Bulletin","Craig Daily Press","Johnson County Graphic","Pine Bluff Commercial","Metter Advertiser","Lebanon News","Freestone County Times","Advance","Pahrump Valley Times","Lebanon News","Explore Venango","McPherson Sentinel","Statesboro Herald"],["NV","ND","TX","CO","AR","AR","GA","VA","TX","GA","NV","VA","PA","KS","GA"],["Nye County","McKenzie County","Brown County","Moffat County","Johnson County","Jefferson County","Candler County","Russell County","Freestone County","Toombs County","Nye County","Russell County","Venango County","McPherson County","Bulloch County"],["Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro"],["<a href=\"https://pvtimes.com/news/end-of-an-error-nye-county-finally-gets-good-government-189642/\" target=\"_blank\" rel=\"noopener noreferrer\">End of an Error: Nye County finally gets good government<\/a>","<a href=\"https://www.watfordcitynd.com/opinion/columns/hennen-build-here-build-now\" target=\"_blank\" rel=\"noopener noreferrer\">Hennen: Build here. Build now.<\/a>","<a href=\"https://www.brownwoodtx.com/texas-will-audit-up-to-300-projects-mostly-data-centers-after-gov-greg-abbotts-order/\" target=\"_blank\" rel=\"noopener noreferrer\">Texas will audit up to 300 projects, mostly data centers, after Gov. Greg Abbott’s order<\/a>","<a href=\"https://www.craigdailypress.com/news/town-of-hayden-becomes-first-routt-county-municipality-to-add-data-center-language-into-development-code/\" target=\"_blank\" rel=\"noopener noreferrer\">Town of Hayden becomes first Routt County municipality to add data center language into development code<\/a>","<a href=\"https://www.thegraphic.org/2026/08/25/petitions-seek-to-put-data-center-bonds-on-ballot/\" target=\"_blank\" rel=\"noopener noreferrer\">Petitions Seek To Put Data Center Bonds On Ballot<\/a>","<a href=\"https://www.pbcommercial.com/uada-researcher-examines-economic-prospects-of-ai-data-centers-in-rural-areas/\" target=\"_blank\" rel=\"noopener noreferrer\">UADA researcher examines economic prospects of AI data centers in rural areas  <\/a>","<a href=\"https://www.metteradvertiser.com/articles/headlines/is-a-data-center-in-the-plans/\" target=\"_blank\" rel=\"noopener noreferrer\">BREAKING: A data center in Metter? CCIA responds<\/a>","<a href=\"https://thelebanonnews.com/2026/08/25/data-center-developer-announces-project-in-russell-county-2026-08-26/\" target=\"_blank\" rel=\"noopener noreferrer\">Data center developer announces project in Russell County<\/a>","<a href=\"https://freestonecountytimesonline.com/data-centers-have-dug-their-own-grave/\" target=\"_blank\" rel=\"noopener noreferrer\">Data Centers Have ‘Dug Their Own Grave’<\/a>","<a href=\"https://www.theadvancenews.com/articles/featured-stories/toombs-co-introduces-data-center-regulations/\" target=\"_blank\" rel=\"noopener noreferrer\">Toombs Co. Introduces Data Center Regulations<\/a>","<a href=\"https://pvtimes.com/news/second-data-centers-101-presentation-slated-189609/\" target=\"_blank\" rel=\"noopener noreferrer\">Second Data Centers: 101 presentation slated<\/a>","<a href=\"https://thelebanonnews.com/2026/08/25/citizens-raise-objections-to-moss-3-data-center-2026-08-26/\" target=\"_blank\" rel=\"noopener noreferrer\">Citizens raise objections to Moss 3 data center<\/a>","<a href=\"https://www.explorevenango.com/politics/2026/08/26/what-shapiros-new-data-center-order-does-and-doesnt-force-developers-to-do-627567/\" target=\"_blank\" rel=\"noopener noreferrer\">What Shapiro’s New Data Center Order Does — and Doesn’t — Force Developers to Do<\/a>","<a href=\"https://www.mcphersonsentinel.com/planning-board-tells-county-to-ban-data-centers/\" target=\"_blank\" rel=\"noopener noreferrer\">Planning board tells county to ban data centers<\/a>","<a href=\"https://www.statesboroherald.com/local/ga-chamber-plans-campaign-to-show-benefits-of-data-centers/\" target=\"_blank\" rel=\"noopener noreferrer\">Ga. Chamber plans campaign to show benefits of data centers<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>outlet<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"outlet","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-900962be58f2a6d89fab" style="width:100%;height:auto;"></div>
+          <script type="application/json" data-for="htmlwidget-900962be58f2a6d89fab">{"x":{"filter":"none","vertical":false,"caption":"<caption>Nonmetro counties: data centers<\/caption>","data":[["2026-08-21","2026-08-22","2026-08-24","2026-08-25","2026-08-25","2026-08-22","2026-08-25","2026-08-25","2026-08-25","2026-08-26","2026-08-19","2026-08-25","2026-08-26","2026-08-25","2026-08-27"],["pvtimes.com","www.watfordcitynd.com","www.brownwoodtx.com","www.craigdailypress.com","www.thegraphic.org","www.pbcommercial.com","www.metteradvertiser.com","thelebanonnews.com","freestonecountytimesonline.com","www.theadvancenews.com","pvtimes.com","thelebanonnews.com","www.explorevenango.com","www.mcphersonsentinel.com","www.statesboroherald.com"],["NV","ND","TX","CO","AR","AR","GA","VA","TX","GA","NV","VA","PA","KS","GA"],["Nye County","McKenzie County","Brown County","Moffat County","Johnson County","Jefferson County","Candler County","Russell County","Freestone County","Toombs County","Nye County","Russell County","Venango County","McPherson County","Bulloch County"],["Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro","Nonmetro"],["<a href=\"https://pvtimes.com/news/end-of-an-error-nye-county-finally-gets-good-government-189642/\" target=\"_blank\" rel=\"noopener noreferrer\">End of an Error: Nye County finally gets good government<\/a>","<a href=\"https://www.watfordcitynd.com/opinion/columns/hennen-build-here-build-now\" target=\"_blank\" rel=\"noopener noreferrer\">Hennen: Build here. Build now.<\/a>","<a href=\"https://www.brownwoodtx.com/texas-will-audit-up-to-300-projects-mostly-data-centers-after-gov-greg-abbotts-order/\" target=\"_blank\" rel=\"noopener noreferrer\">Texas will audit up to 300 projects, mostly data centers, after Gov. Greg Abbott’s order<\/a>","<a href=\"https://www.craigdailypress.com/news/town-of-hayden-becomes-first-routt-county-municipality-to-add-data-center-language-into-development-code/\" target=\"_blank\" rel=\"noopener noreferrer\">Town of Hayden becomes first Routt County municipality to add data center language into development code<\/a>","<a href=\"https://www.thegraphic.org/2026/08/25/petitions-seek-to-put-data-center-bonds-on-ballot/\" target=\"_blank\" rel=\"noopener noreferrer\">Petitions Seek To Put Data Center Bonds On Ballot<\/a>","<a href=\"https://www.pbcommercial.com/uada-researcher-examines-economic-prospects-of-ai-data-centers-in-rural-areas/\" target=\"_blank\" rel=\"noopener noreferrer\">UADA researcher examines economic prospects of AI data centers in rural areas  <\/a>","<a href=\"https://www.metteradvertiser.com/articles/headlines/is-a-data-center-in-the-plans/\" target=\"_blank\" rel=\"noopener noreferrer\">BREAKING: A data center in Metter? CCIA responds<\/a>","<a href=\"https://thelebanonnews.com/2026/08/25/data-center-developer-announces-project-in-russell-county-2026-08-26/\" target=\"_blank\" rel=\"noopener noreferrer\">Data center developer announces project in Russell County<\/a>","<a href=\"https://freestonecountytimesonline.com/data-centers-have-dug-their-own-grave/\" target=\"_blank\" rel=\"noopener noreferrer\">Data Centers Have ‘Dug Their Own Grave’<\/a>","<a href=\"https://www.theadvancenews.com/articles/featured-stories/toombs-co-introduces-data-center-regulations/\" target=\"_blank\" rel=\"noopener noreferrer\">Toombs Co. Introduces Data Center Regulations<\/a>","<a href=\"https://pvtimes.com/news/second-data-centers-101-presentation-slated-189609/\" target=\"_blank\" rel=\"noopener noreferrer\">Second Data Centers: 101 presentation slated<\/a>","<a href=\"https://thelebanonnews.com/2026/08/25/citizens-raise-objections-to-moss-3-data-center-2026-08-26/\" target=\"_blank\" rel=\"noopener noreferrer\">Citizens raise objections to Moss 3 data center<\/a>","<a href=\"https://www.explorevenango.com/politics/2026/08/26/what-shapiros-new-data-center-order-does-and-doesnt-force-developers-to-do-627567/\" target=\"_blank\" rel=\"noopener noreferrer\">What Shapiro’s New Data Center Order Does — and Doesn’t — Force Developers to Do<\/a>","<a href=\"https://www.mcphersonsentinel.com/planning-board-tells-county-to-ban-data-centers/\" target=\"_blank\" rel=\"noopener noreferrer\">Planning board tells county to ban data centers<\/a>","<a href=\"https://www.statesboroherald.com/local/ga-chamber-plans-campaign-to-show-benefits-of-data-centers/\" target=\"_blank\" rel=\"noopener noreferrer\">Ga. Chamber plans campaign to show benefits of data centers<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>date<\/th>\n      <th>source<\/th>\n      <th>state_abbr<\/th>\n      <th>county<\/th>\n      <th>metro_status<\/th>\n      <th>story<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"scrollX":true,"dom":"tip","columnDefs":[{"name":"date","targets":0},{"name":"source","targets":1},{"name":"state_abbr","targets":2},{"name":"county","targets":3},{"name":"metro_status","targets":4},{"name":"story","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
           <div id="from-descriptions-to-full-articles" class="section level3">
           <h3>From descriptions to full articles</h3>
           <p>Descriptions are enough to find the stories. Once the rural
-          data-center search has reduced the national collection to a
-          small set of URLs, <code>textpress::read_urls()</code> can
-          retrieve the full articles while preserving the RSS metadata
-          and document IDs.</p>
+          data-center search has narrowed the collection,
+          <code>textpress::read_urls()</code> adds the full article text
+          to the result set while carrying its RSS and geographic
+          metadata forward.</p>
           <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>data_center_articles <span class="ot">&lt;-</span> data_center_hits <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  textpress<span class="sc">::</span><span class="fu">read_urls</span>(<span class="at">cores =</span> <span class="dv">4</span>)</span></code></pre></div>
           <p>Full text was available for ten of the 15 selected stories.
@@ -3605,7 +3600,7 @@ Engine</h1>
 <span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    data_center_hits <span class="sc">|&gt;</span></span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>      <span class="fu">select</span>(</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>        doc_id, title, outlet, state_abbr, county, published_at,</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>        doc_id, title, source, state_abbr, county, published_at,</span>
 <span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>        author, url, feed_url</span>
 <span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>      ),</span>
 <span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">&quot;doc_id&quot;</span></span>
@@ -3621,7 +3616,7 @@ Engine</h1>
           <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>rag_context <span class="ot">&lt;-</span> rag_documents <span class="sc">|&gt;</span></span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>    <span class="at">source =</span> <span class="fu">paste0</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>      <span class="st">&quot;OUTLET: &quot;</span>, outlet, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>      <span class="st">&quot;OUTLET: &quot;</span>, source, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>      <span class="st">&quot;TITLE: &quot;</span>, title, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>      <span class="st">&quot;LOCATION: &quot;</span>, county, <span class="st">&quot;, &quot;</span>, state_abbr, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
 <span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>      <span class="st">&quot;PUBLISHED: &quot;</span>, published_at, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
@@ -3654,104 +3649,115 @@ Engine</h1>
           <h3>
           LLM-generated synthesis across local reporting
           </h3>
-          <p>The surge of AI-driven data centers has pitted promises of
-          tax revenue and modernization against concerns about water
-          use, power strain, local control and long-term community costs
-          — a conflict playing out from Jefferson County, Arkansas, to
-          Pahrump, Nevada.</p>
-          <div id="economic-promises-versus-measurable-local-gains" class="section level4">
-          <h4>Economic promises versus measurable local gains</h4>
-          <p>Proponents cast data centers as fiscal game-changers: they
-          can generate substantial property tax revenue, support
-          construction jobs and, advocates say, even relieve local tax
-          burdens (McKenzie County Farmer). Research suggests the
-          picture is nuanced. A University of Arkansas Division of
-          Agriculture study modeled 100 direct jobs in three industries
-          and found data centers compare favorably with manufacturing in
-          statewide output, but the size and locality of indirect and
-          induced benefits vary widely — smaller rural counties tend to
-          see a larger share of those ripples leave the community
-          because of limited local suppliers and spending options (Pine
-          Bluff Commercial). Developers also press the point: firms
-          argue data centers have minimal demand for services like
-          schools and emergency response while delivering steady
-          municipal revenue (Lebanon News).</p>
+          <p>The boom in AI-driven data centers has opened a sharp
+          tradeoff: communities from Jefferson County, Arkansas to
+          Hayden, Colorado and Pahrump, Nevada are weighing the promise
+          of construction dollars, tax revenue and new infrastructure
+          against worries about water and power use, sprawl, and a loss
+          of local control.</p>
+          <div id="economic-promises-and-local-limits" class="section level4">
+          <h4>Economic promises and local limits</h4>
+          <p>Developers and some local leaders point to large fiscal
+          benefits and few service demands from data centers, arguing
+          these facilities can dramatically boost property tax bases and
+          fund schools and roads. Oasis Digital Properties, for example,
+          touts the ability of a Russell County, Virginia site to
+          transform underused land and generate “extraordinarily high”
+          tax revenue (thelebanonnews.com). Advocates in McKenzie
+          County, North Dakota press a similar case: data centers as
+          engines of construction jobs and long-term revenue that can
+          lower residential taxes (watfordcitynd.com). But careful,
+          county-level analysis tempers that optimism. University of
+          Arkansas researcher Frank Seo simulated one year of activity
+          and found that while data centers can compare favorably with
+          manufacturing in statewide output, much of the indirect and
+          induced spending leaks outside sparsely populated counties
+          where local supply chains and consumer markets are thin
+          (www.pbcommercial.com). In short: headline tax numbers can
+          obscure limited local circulation of benefits in many rural
+          places.</p>
           </div>
-          <div id="water-power-and-the-environmental-unknowns" class="section level4">
-          <h4>Water, power and the environmental unknowns</h4>
-          <p>Concern about resource use is a recurring theme. In
-          Georgia, the Chamber’s messaging campaign defends data
-          centers’ water and energy footprints even as researchers and
-          river advocates point to large withdrawals and evaporation at
-          power plants that support them; closed-loop cooling reduces
-          water discharge but increases electricity demand, shifting the
-          trade-off rather than eliminating it (Statesboro Herald).
-          Local activists in Russell County worry about daily water
-          needs and potential strain on nearby Lake Bonaventure and well
-          systems after a developer signaled interest in the Moss 3 site
-          (Lebanon News). Some states have responded with tighter
-          standards or pauses to force clearer answers about water and
-          grid impacts (Freestone County Times; Explore Venango).</p>
+          <div id="zoning-codes-and-the-drive-to-get-ahead-of-speculation" class="section level4">
+          <h4>Zoning, codes and the drive to get ahead of
+          speculation</h4>
+          <p>Local governments are responding by writing data-center
+          specifics into land-use rules or tightening permitting.
+          Hayden, Colorado amended its municipal code to define data
+          centers as a heavy industrial use with strict caps on size and
+          electrical demand, mandated energy and water plans, and
+          required conditional-use review to close loopholes that
+          previously allowed “all heavy industrial uses” by right
+          (craigdailypress.com). Pennsylvania’s executive order from
+          Gov. Josh Shapiro took a statewide tack, making local
+          approvals and tougher GRID standards central to any
+          fast-tracked permitting pathway while discouraging speculative
+          proposals by raising the bar for state permits
+          (explorevenango.com). These actions reflect a common impulse:
+          communities want the leverage to shape projects early, not be
+          faced with near-complete proposals that force rushed local
+          approvals.</p>
           </div>
-          <div id="local-control-zoning-and-preemptive-regulation" class="section level4">
-          <h4>Local control, zoning and preemptive regulation</h4>
-          <p>Communities have moved quickly to codify how — or whether —
-          data centers may arrive. Hayden in Moffat County, Colorado,
-          rewrote its development code to explicitly permit data centers
-          only in heavy industrial zones and to cap electrical demand,
-          require enclosed facilities, and demand energy and
-          water-supply plans as part of a conditional-use review,
-          reflecting a desire to be “proactive versus reactive” amid
-          coal-plant closures and fiscal risk (Craig Daily Press).
-          Pennsylvania’s executive order tightened statewide permitting
-          and tied tax incentives to environmental and transparency
-          benchmarks, aiming to curb speculative proposals and reinforce
-          local zoning power (Explore Venango). And in Pahrump, Nevada,
-          citizen pressure culminated in a countywide ban after public
-          meetings and outreach exposed distrust of developer claims and
-          opaque outreach tactics (Pahrump Valley Times).</p>
+          <div id="water-power-and-environmental-tradeoffs" class="section level4">
+          <h4>Water, power and environmental tradeoffs</h4>
+          <p>Concerns about resource use are driving much of the
+          opposition. In Georgia and elsewhere, public and environmental
+          groups point to large water withdrawals and the indirect water
+          costs of energy generation; researchers and trade analyses
+          place data centers among the top water-consuming commercial
+          sectors when scaled for AI growth (statesboroherald.com).
+          Developers counter that modern closed-loop cooling and on-site
+          generation can reduce withdrawals or shift impacts, but closed
+          systems often increase energy demand, and energy production
+          itself can consume or thermally affect water resources.
+          Policymakers are responding: some states and towns now require
+          energy-supply plans, water-demand analyses, noise studies and
+          thermal-mitigation measures as part of conditional approvals
+          (craigdailypress.com; explorevenango.com). The tug-of-war is
+          between technological mitigation claims and the practical
+          realities of local grids and watersheds.</p>
           </div>
-          <div id="public-distrust-transparency-and-political-backlash" class="section level4">
-          <h4>Public distrust, transparency and political backlash</h4>
-          <p>Across regions, skepticism has hardened into political
-          action. Polling shows growing public opposition to new data
-          centers, and community meetings regularly spotlight fears
-          about hidden costs, nondisclosure agreements, and promises
-          that may not materialize (Statesboro Herald; Pahrump Valley
-          Times). Critics call for surety bonds, clearer disclosure of
-          what will be hosted, and limits on the ability of utilities to
-          shift costs to ratepayers; proponents counter that
-          misinformation and fear of the unknown are driving backlash
-          (Statesboro Herald; Pahrump Valley Times).</p>
+          <div id="industry-messaging-and-political-contests" class="section level4">
+          <h4>Industry messaging and political contests</h4>
+          <p>Industry and pro-business groups are mounting messaging
+          campaigns to reshape public opinion and influence
+          policymakers. The Georgia Chamber formed a Digital
+          Infrastructure Alliance to highlight jobs and revenue and to
+          rebut what it says are inflated fears about water and
+          electricity (statesboroherald.com). At the same time,
+          opposition has hardened: national polling shows rising
+          resistance to local data-center construction, and politicians
+          from both parties have taken strong positions — from calls for
+          pauses to demands for tighter oversight — as the issue becomes
+          a visible campaign topic (statesboroherald.com). That
+          politicization complicates negotiations and makes transparent,
+          locally relevant information more urgent.</p>
           </div>
-          <div id="developer-strategies-and-state-level-responses" class="section level4">
-          <h4>Developer strategies and state-level responses</h4>
-          <p>Developers and site selectors continue pitching projects to
-          jurisdictions offering power, land and incentives — from
-          Russell County, Virginia, where a firm highlighted a 236-acre
-          site with available utility infrastructure (Lebanon News), to
-          North Dakota boosters urging rapid buildout and local-first
-          energy arrangements (McKenzie County Farmer). States,
-          meanwhile, are charting divergent paths: some impose
-          moratoriums or strict guardrails and conditional incentives
-          (Texas and Pennsylvania examples), while industry-aligned
-          groups organize campaigns to emphasize jobs and revenue
-          (Statesboro Herald). The result is a patchwork of rules that
-          shifts where and how data centers can feasibly locate.</p>
-          </div>
-          <div id="the-core-trade-off-for-rural-places" class="section level4">
-          <h4>The core trade-off for rural places</h4>
-          <p>For many rural communities, the question comes down to
-          whether short-term financial gains — construction activity,
-          large assessed values and potential tax windfalls — outweigh
-          long-term costs in water, energy, environmental change and
-          community character. That calculus is being made in town halls
-          and county commissions from Jefferson County, Arkansas, to Nye
-          County, Nevada, as residents and officials demand data, impose
-          standards and, in some cases, say no (Pine Bluff Commercial;
-          Pahrump Valley Times; Craig Daily Press). The decisions that
-          follow will shape not just tax rolls but the resilience of
-          local economies and resources for decades to come.</p>
+          <div id="community-mobilization-and-demands-for-transparency" class="section level4">
+          <h4>Community mobilization and demands for transparency</h4>
+          <p>Where projects are proposed, grassroots pushback is
+          frequent and intense. Nye County residents organized town
+          halls, presentations, and petitions that helped secure a local
+          ban on a proposed campus after sustained public comment and
+          scrutiny (pvtimes.com). In Russell County, neighbors revived
+          the organizing tactics learned during a past landfill fight,
+          mobilizing to question water capacity, energy impacts and tax
+          deals tied to a possible Moss 3 data center
+          (thelebanonnews.com). A recurring complaint is lack of clear,
+          locally specific data from developers — a gap that both
+          advocates and skeptics want filled through third-party
+          studies, surety bonds to cover abandonment, and binding
+          conditions in permits (statesboroherald.com;
+          thelebanonnews.com).</p>
+          <p>Across these patterns, the core tension persists: data
+          centers can bring concentrated fiscal gains and national
+          strategic value, but their localized impacts — and who
+          captures or bears them — are uneven. The emerging response is
+          pragmatic and procedural: require rigorous local studies,
+          harden permitting and zoning rules, and insist on transparent
+          mitigation plans so rural and small-town governments can
+          decide whether, how and on what terms to host the next wave of
+          AI infrastructure (www.pbcommercial.com; craigdailypress.com;
+          explorevenango.com).</p>
           </div>
           </div>
           <hr />
@@ -3759,6 +3765,7 @@ Engine</h1>
           </div>
           <div id="summary" class="section level2">
           <h2>Summary</h2>
+          <div class="post-summary">
           <p>Together, these tools build a searchable national
           collection from known local publishers.
           <code>local-rags-rss</code> supplies the publishers and
@@ -3773,6 +3780,7 @@ Engine</h1>
           reporting about local institutions, conflicts, and everyday
           civic life in view, while making patterns across communities
           easier to see.</p>
+          </div>
           </div>
         </div>
       </article>

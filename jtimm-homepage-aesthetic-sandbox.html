@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jason Timm — homepage mock</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:0;color:#222;background:#fff;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7}
+.container{width:100%;max-width:740px;margin:0 auto;padding:0 20px}
+.site-header{margin-bottom:40px;padding:18px 0;border-bottom:1px solid #e0e0e0}
+.site-nav a{margin-right:20px;color:#222;font-size:15px;font-weight:500;text-decoration:none}
+.site-nav a:hover,.site-nav a:focus{color:#000;text-decoration:underline}
+.site-main{padding-bottom:60px}
+h1{margin:0 0 8px;color:#111;font-size:26px;font-weight:600;line-height:1.3}
+.tagline{margin:0 0 1.5em;color:#888;font-size:17px}
+hr{margin:2em 0;border:0;border-top:1px solid #e0e0e0}
+.section-label{margin:0 0 1em;color:#888;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}
+.filter{padding:4px 9px;border:1px solid #ddd;border-radius:3px;color:#666;background:#fff;font:inherit;font-size:13px;cursor:pointer}
+.filter:hover,.filter:focus{border-color:#aaa;color:#222}
+.filter.active{border-color:#0969da;color:#0969da;background:#f6f9fd}
+.entry{display:grid;grid-template-columns:105px minmax(0,1fr);gap:18px;padding:17px 0 19px;border-bottom:1px solid #e8e8e8}
+.entry:first-of-type{border-top:1px solid #e8e8e8}
+.entry.hidden{display:none}
+.entry-meta{padding-top:2px;color:#888;font-size:13px;line-height:1.5}
+.entry-type{display:block;color:#666;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
+.entry-title{color:#0969da;font-size:17px;font-weight:500;line-height:1.4;text-decoration:none}
+.entry-title:hover,.entry-title:focus{text-decoration:underline}
+.entry-description{margin:4px 0 0;color:#555;font-size:15px;line-height:1.55}
+.site-footer{margin-top:60px;padding:20px 0;border-top:1px solid #e0e0e0;color:#aaa;font-size:13px}
+@media(max-width:600px){body{font-size:15px}h1{font-size:22px}.entry{grid-template-columns:1fr;gap:3px}.entry-type{display:inline;margin-right:7px}.entry-date{display:inline}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container"><nav class="site-nav"><a href="index.html">Jason Timm</a><a href="about.html">About</a></nav></div></header>
+
+<main class="site-main"><div class="container">
+<h1>Jason Timm</h1>
+<p class="tagline">Notes and applied work in data science, NLP, LLMs, and American politics.</p>
+<hr>
+<p class="section-label">Recent work</p>
+
+<div class="filters" aria-label="Filter work by type">
+  <button class="filter active" type="button" data-filter="all">All</button>
+  <button class="filter" type="button" data-filter="analysis">Analysis</button>
+  <button class="filter" type="button" data-filter="workflow">Workflow</button>
+  <button class="filter" type="button" data-filter="tutorial">Tutorial</button>
+  <button class="filter" type="button" data-filter="interactive">Interactive</button>
+  <button class="filter" type="button" data-filter="dashboard">Dashboard</button>
+</div>
+
+<section class="entries" aria-live="polite">
+  <article class="entry" data-type="workflow">
+    <div class="entry-meta"><span class="entry-type">Workflow</span><span class="entry-date">2026-08-27</span></div>
+    <div><a class="entry-title" href="posts/2026-08-27-searching-local-news-without-a-search-engine.html">Searching Local News Without a Search Engine</a><p class="entry-description">Build and search a national collection of local reporting with validated RSS feeds, geographic metadata, BM25 retrieval, and a small RAG example.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2026-08-18</span></div>
+    <div><a class="entry-title" href="posts/2026-08-18-decade-of-majority-minority-counties.html">A Decade of Majority-Minority Counties</a><p class="entry-description">A county-level look at how the geography and composition of majority-minority America changed between 2014 and 2024.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2026-03-23</span></div>
+    <div><a class="entry-title" href="posts/2026-03-23-county-voting-patterns-2016-2024.html">County Presidential Voting Patterns: 2016, 2020, and 2024</a><p class="entry-description">Maps and comparisons of county presidential returns across three elections, emphasizing where partisan movement did—and did not—occur.</p></div>
+  </article>
+
+  <article class="entry" data-type="interactive">
+    <div class="entry-meta"><span class="entry-type">Interactive</span><span class="entry-date">2026-02</span></div>
+    <div><a class="entry-title" href="projects/nm-election-maps.html">NM Election Explorer</a><p class="entry-description">An interactive precinct-level map for exploring New Mexico election results by year, office, candidate, and geography.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2026-01-06</span></div>
+    <div><a class="entry-title" href="posts/2026-01-06-competition-and-representation-nm-state-legislature.html">Competition and Representation in New Mexico’s State House</a><p class="entry-description">An examination of electoral competition, uncontested races, and representation across New Mexico House districts.</p></div>
+  </article>
+
+  <article class="entry" data-type="dashboard">
+    <div class="entry-meta"><span class="entry-type">Dashboard</span><span class="entry-date">2026</span></div>
+    <div><a class="entry-title" href="projects/keep-running.html">Keep running</a><p class="entry-description">A running log and dashboard for tracking weekly mileage, training patterns, routes, and progress through 2026.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2025-12-14</span></div>
+    <div><a class="entry-title" href="posts/2025-12-14-rank-choice-voting-sf.html">Ranked Choice Voting in the 2025 Santa Fe Mayoral Race</a><p class="entry-description">A round-by-round account of the mayoral count and the second-choice transfers that determined the result.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2025-11-28</span></div>
+    <div><a class="entry-title" href="posts/2025-11-28-new-mexico-redistricting-state-senate.html">New Mexico Redistricting: Exploring State Senate Maps</a><p class="entry-description">A comparison of New Mexico’s enacted State Senate map with simulated alternatives and their partisan implications.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2025-10-01</span></div>
+    <div><a class="entry-title" href="posts/2025-10-01-wnominate-nm-house.html">Ideal Point Estimation in the New Mexico House: A W-NOMINATE Analysis</a><p class="entry-description">Roll-call votes place New Mexico representatives on an estimated ideological dimension and reveal the chamber’s internal structure.</p></div>
+  </article>
+
+  <article class="entry" data-type="interactive">
+    <div class="entry-meta"><span class="entry-type">Interactive</span><span class="entry-date">2025</span></div>
+    <div><a class="entry-title" href="projects/lexis-explorer.html">Lexical Norm Explorer</a><p class="entry-description">Browse and compare psycholinguistic norms—including concreteness, valence, and age of acquisition—across English words.</p></div>
+  </article>
+
+  <article class="entry" data-type="tutorial">
+    <div class="entry-meta"><span class="entry-type">Tutorial</span><span class="entry-date">2025-08-10</span></div>
+    <div><a class="entry-title" href="posts/2025-08-10-working-with-acs-data-profile-tables.html">Working with ACS Data Profile Tables</a><p class="entry-description">A practical guide to finding, retrieving, and reshaping American Community Survey profile data in R.</p></div>
+  </article>
+
+  <article class="entry" data-type="analysis">
+    <div class="entry-meta"><span class="entry-type">Analysis</span><span class="entry-date">2025-07-23</span></div>
+    <div><a class="entry-title" href="posts/2025-07-23-new-mexico-electoral-politics.html">Two Decades of New Mexico Electoral Politics</a><p class="entry-description">Long-run trends in New Mexico voting, turnout, party competition, and geographic alignment from 2004 through 2024.</p></div>
+  </article>
+</section>
+</div></main>
+
+<footer class="site-footer"><div class="container">© 2026 Jason Timm</div></footer>
+<script>
+const filters=document.querySelectorAll('.filter');
+const entries=document.querySelectorAll('.entry');
+filters.forEach(button=>button.addEventListener('click',()=>{
+  filters.forEach(item=>item.classList.remove('active'));
+  button.classList.add('active');
+  const selected=button.dataset.filter;
+  entries.forEach(entry=>entry.classList.toggle('hidden',selected!=='all'&&entry.dataset.type!==selected));
+}));
+</script>
+</body>
+</html>
+

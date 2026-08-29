@@ -207,6 +207,32 @@ blockquote p:last-child {
   margin-bottom: 0;
 }
 
+/* Post introduction */
+.post-intro {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  background: #eef4f3;
+  border-left: 4px solid #5ba3a0;
+  border-radius: 4px;
+}
+
+.post-intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* Post summary */
+.post-summary {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  background: #f6f2eb;
+  border-left: 4px solid #a78b64;
+  border-radius: 4px;
+}
+
+.post-summary p:last-child {
+  margin-bottom: 0;
+}
+
 /* Generated synthesis */
 .llm-response {
   margin: 1.5rem 0;
