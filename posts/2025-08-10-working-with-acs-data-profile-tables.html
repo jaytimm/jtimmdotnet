@@ -3178,6 +3178,7 @@ color: #333;
 		})
 })();
 </script>
+<link rel="stylesheet" href="../assets/style.css?v=20261125">
 </head>
 <body>
   <header class="site-header">
@@ -3200,6 +3201,7 @@ Tables</h1>
         <div class="post-content">
           <div id="introduction" class="section level2">
           <h2>Introduction</h2>
+          <div class="post-intro">
           <p>The <strong>American Community Survey</strong> (ACS)
           <strong>Data Profile tables</strong> provide pre-calculated
           percentages and key demographic/economic indicators that are
@@ -3207,6 +3209,7 @@ Tables</h1>
           with these tables using the <code>tidycensus</code> package,
           focusing on pulling data across multiple geographies
           efficiently.</p>
+          </div>
           <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidycensus, dplyr, tidyr, DT, sf, GGally, ggplot2, knitr)</span></code></pre></div>
           </div>
           <div id="set-up-variable-mappings" class="section level2">
@@ -3409,6 +3412,7 @@ Tables</h1>
           </div>
           <div id="summary" class="section level2">
           <h2>Summary</h2>
+          <div class="post-summary">
           <p>Reach for the <strong>Data Profile tables</strong> when you
           need a broad demographic snapshot quickly and do not want to
           aggregate raw counts from the detailed Subject or Sequence
@@ -3423,6 +3427,7 @@ Tables</h1>
           pull from the detailed <strong>B- or C-series tables</strong>
           when a specific variable needs finer disaggregation than the
           Data Profile provides.</p>
+          </div>
           </div>
         </div>
       </article>
