@@ -188,6 +188,82 @@ th {
   margin: 0 0 1em 0;
 }
 
+/* Homepage work index */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0 0 18px;
+}
+
+.filter {
+  padding: 4px 9px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: #666;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter:hover,
+.filter:focus {
+  border-color: #aaa;
+  color: #222;
+}
+
+.filter.active {
+  border-color: #0969da;
+  color: #0969da;
+  background: #f6f9fd;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 18px;
+  padding: 17px 0 19px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.entry:first-of-type {
+  border-top: 1px solid #e8e8e8;
+}
+
+.entry.hidden {
+  display: none;
+}
+
+.entry-meta {
+  padding-top: 2px;
+  color: #888;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.entry-type {
+  display: block;
+  color: #666;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.entry-title {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.entry-description {
+  margin: 4px 0 0;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
 hr {
   border: none;
   border-top: 1px solid #e0e0e0;
@@ -281,5 +357,8 @@ li {
 @media (max-width: 600px) {
   body { font-size: 15px; }
   .post-title { font-size: 22px; }
+  .entry { grid-template-columns: 1fr; gap: 3px; }
+  .entry-type { display: inline; margin-right: 7px; }
+  .entry-date { display: inline; }
   pre { max-height: 320px; }
 }
